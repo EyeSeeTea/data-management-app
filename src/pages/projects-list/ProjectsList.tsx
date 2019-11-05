@@ -134,8 +134,10 @@ const ProjectsList: React.FC = () => {
     const goToLandingPage = () => goTo(history, "/");
     const config = getConfig(history);
 
-    const list = (_d2: unknown, filters: FiltersForList, pagination: Pagination) =>
-        Project.getList(api, filters, pagination);
+    const list = (_d2: unknown, filters: FiltersForList, pagination: Pagination) => {
+        const fullFilters = { ...filters, createdByCurrentUser: false };
+        return Project.getList(api, fullFilters, pagination);
+    };
 
     return (
         <React.Fragment>
