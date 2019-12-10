@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2019-12-09T20:04:21.862Z\n"
-"PO-Revision-Date: 2019-12-09T20:04:21.862Z\n"
+"POT-Creation-Date: 2019-12-10T18:39:10.318Z\n"
+"PO-Revision-Date: 2019-12-10T18:39:10.318Z\n"
 
 msgid "<No value>"
 msgstr ""
@@ -51,6 +51,9 @@ msgid "Field cannot be blank"
 msgstr ""
 
 msgid "Field length is invalid"
+msgstr ""
+
+msgid "Field must be composed by two letter characters"
 msgstr ""
 
 msgid "This user has no Data output and analytic organisation units assigned"
