@@ -58,9 +58,9 @@ describe("Project", () => {
         });
     });
 
-    describe("create", () => {});
+    describe("create", () => { });
 
-    describe("get", () => {});
+    describe("get", () => { });
 
     describe("code", () => {
         it("joins {subsequentLettering}{this.awardNumber}-{this.speedKey}", async () => {
@@ -145,7 +145,7 @@ describe("Project", () => {
             expect(errors3["awardNumber"]).toContain("Award Number should be a number of 5 digits");
         });
 
-        it("requires a string of two letters in subsequent lettering", async () => {
+        it("requires a string with 2 characters in subsequent lettering", async () => {
             const project = (await getProject()).set("subsequentLettering", "NG");
             const errors = await project.validate(["subsequentLettering"]);
             expect(errors["subsequentLettering"]).toHaveLength(0);
@@ -154,14 +154,14 @@ describe("Project", () => {
             const errors2 = await project2.validate(["subsequentLettering"]);
             expect(errors2["subsequentLettering"]).toHaveLength(1);
             expect(errors2["subsequentLettering"]).toContain(
-                "Subsequent Lettering must be a string of two letters only"
+                "Subsequent Lettering must have 2 characters"
             );
 
             const project3 = project.set("subsequentLettering", "NGO");
             const errors3 = await project3.validate(["subsequentLettering"]);
             expect(errors3["subsequentLettering"]).toHaveLength(1);
             expect(errors3["subsequentLettering"]).toContain(
-                "Subsequent Lettering must be a string of two letters only"
+                "Subsequent Lettering must have 2 characters"
             );
         });
 
@@ -206,13 +206,13 @@ describe("Project", () => {
             });
             const errors = await project.validate(["dataElements"]);
             expect(errors.dataElements).toEqual([
-                "The following sectors have no indicators selected: Agriculture, Livelihoods",
+                "Those sectors have no indicators selected: Agriculture, Livelihoods",
             ]);
 
             const { project: project2 } = project.updateDataElementsSelection(["qQy0N1xdwQ1"]);
             const errors2 = await project2.validate(["dataElements"]);
             expect(errors2.dataElements).toEqual([
-                "The following sectors have no indicators selected: Livelihoods",
+                "Those sectors have no indicators selected: Livelihoods",
             ]);
 
             const { project: project3 } = project2.updateDataElementsSelection([

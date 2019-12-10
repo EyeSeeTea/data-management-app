@@ -119,7 +119,7 @@ class ProjectWizardImpl extends React.Component<Props, State> {
             },
             {
                 key: "indicators",
-                label: i18n.t("Selection of Indicators"),
+                label: i18n.t("Indicators Selection"),
                 component: DataElementsStep,
                 validationKeys: ["dataElements"],
                 help: i18n.t("TODO"),
@@ -211,8 +211,8 @@ class ProjectWizardImpl extends React.Component<Props, State> {
                         lastClickableStepIndex={lastClickableStepIndex}
                     />
                 ) : (
-                    <LinearProgress />
-                )}
+                        <LinearProgress />
+                    )}
             </React.Fragment>
         );
     }

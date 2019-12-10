@@ -147,7 +147,7 @@ export type FiltersForList = Partial<{
 }>;
 
 function defineGetters(sourceObject: any, targetObject: any) {
-    Object.keys(sourceObject).forEach(function(key) {
+    Object.keys(sourceObject).forEach(function (key) {
         Object.defineProperty(targetObject, key, {
             get: () => sourceObject[key],
             enumerable: true,
@@ -205,12 +205,9 @@ class Project {
                 i18n.t("Award Number should be a number of 5 digits")
             ),
         subsequentLettering: () =>
-            validateRegexp(
-                this.subsequentLettering,
-                i18n.t("Subsequent Lettering"),
-                new RegExp(`^[a-zA-Z]{2}$`),
-                i18n.t("Subsequent Lettering must be a string of two letters only")
-            ),
+            validateLength(this.subsequentLettering, this.f("subsequentLettering"), {
+                length: Project.lengths.subsequentLettering,
+            }),
         speedKey: () =>
             validateNumber(this.speedKey.length, this.f("speedKey"), {
                 max: Project.lengths.speedKey,
@@ -420,8 +417,19 @@ class Project {
             : [];
     }
 }
+function validateLength(
+    value: string,
+    field: string,
+    { length }: { length?: number } = {}
+): ValidationError {
+    if (value.length !== 2) {
+        return [i18n.t("{{field}} must have {{length}} characters", { field, length })];
+    } else {
+        return [];
+    }
+}
 
-interface Project extends ProjectData {}
+interface Project extends ProjectData { }
 
 function getProjectFromOrgUnit(orgUnit: ProjectForList): ProjectForList {
     const process = (s: string, mapper: (d: Moment) => Moment) => toISOString(mapper(moment(s)));
@@ -475,12 +483,12 @@ function validateRegexp(
     return regexp.test(value)
         ? []
         : [
-              customMsg ||
-                  i18n.t("{{field}} does not match pattern {{pattern}}", {
-                      field,
-                      pattern: regexp.source,
-                  }),
-          ];
+            customMsg ||
+            i18n.t("{{field}} does not match pattern {{pattern}}", {
+                field,
+                pattern: regexp.source,
+            }),
+        ];
 }
 
 function getPeriodIds(dataSet: DataSetWithPeriods): string[] {

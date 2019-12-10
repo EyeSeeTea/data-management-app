@@ -121,9 +121,6 @@ msgstr ""
 msgid "Award Number should be a number of 5 digits"
 msgstr ""
 
-msgid "Subsequent Lettering must be a string of two letters only"
-msgstr ""
-
 msgid "One Organisation Unit should be selected"
 msgstr ""
 
@@ -140,6 +137,9 @@ msgid "{{field}} must be less than or equal to {{value}}"
 msgstr ""
 
 msgid "{{field}} does not match pattern {{pattern}}"
+msgstr ""
+
+msgid "{{field}} must have {{length}} characters"
 msgstr ""
 
 msgid ""
@@ -201,7 +201,7 @@ msgstr ""
 msgid "Sectors & Project Locations"
 msgstr ""
 
-msgid "Selection of Indicators"
+msgid "Indicators Selection"
 msgstr ""
 
 msgid "Summary and Save"
@@ -260,6 +260,9 @@ msgid "Details"
 msgstr ""
 
 msgid "Go to Dashboard"
+msgstr ""
+
+msgid "Reopen Datasets"
 msgstr ""
 
 msgid "Add Target Values"

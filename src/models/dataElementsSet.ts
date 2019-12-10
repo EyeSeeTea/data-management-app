@@ -91,7 +91,7 @@ export default class DataElementsSet {
             .value();
 
         return missingSectors.length > 0
-            ? [i18n.t(`The following sectors have no indicators selected: ${missingSectors.join(", ")}`)]
+            ? [i18n.t(`Those sectors have no indicators selected: ${missingSectors.join(", ")}`)]
             : [];
     }
 
@@ -218,9 +218,9 @@ export default class DataElementsSet {
                 const related =
                     dataElement.indicatorType == "sub"
                         ? _(this.dataElementsBy.sectorAndSeries).get(
-                              getSectorAndSeriesKey(dataElement, { indicatorType: "global" }),
-                              []
-                          )
+                            getSectorAndSeriesKey(dataElement, { indicatorType: "global" }),
+                            []
+                        )
                         : [];
                 return { id: dataElement.id, related };
             })

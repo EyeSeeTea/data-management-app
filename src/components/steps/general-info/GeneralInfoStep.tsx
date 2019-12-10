@@ -46,8 +46,14 @@ class GeneralInfoStep extends React.Component<StepProps> {
                 ],
             }),
             getTextField("subsequentLettering", project.subsequentLettering, {
-                validators: [validators.regexp(/^[a-zA-Z]{2}$/), validators.presence],
+                validators: [
+                    validators.length({
+                        min: Project.lengths.subsequentLettering,
+                        max: Project.lengths.subsequentLettering,
+                    }),
+                ],
             }),
+
             getTextField("speedKey", project.speedKey, {
                 validators: [
                     validators.length({
@@ -87,10 +93,6 @@ const validators = {
             _.compact([min && `min=${min}`, max && `max=${max}`]).join(", "),
         validator: (s: string) =>
             (min === undefined || s.length >= min) && (max == undefined || s.length <= max),
-    }),
-    regexp: (regexp: RegExp) => ({
-        message: i18n.t("Field must be composed by two letter characters"),
-        validator: (s: string) => new RegExp(regexp).test(s),
     }),
 };
 
