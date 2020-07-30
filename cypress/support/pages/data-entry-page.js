@@ -14,8 +14,12 @@ export default class DataEntryPage {
         cy.iframe()
             .find(elId)
             .focus()
-            .clear({ force: true })
-            .clear({ force: true })
+            .wait(10)
+            .clear({ force: true });
+
+        cy.iframe()
+            .find(elId)
+            .focus()
             .type(value, { force: true });
 
         cy.iframe()
