@@ -6,7 +6,7 @@ $ yarn install
 
 ## Build
 
-Customize main configuration file `public/app-config.json` and then build the ZIP package:
+Customize the main configuration file `public/app-config.json` and then build the ZIP package:
 
 ```
 $ yarn build-webapp
