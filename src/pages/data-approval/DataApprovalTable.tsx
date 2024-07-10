@@ -1,6 +1,7 @@
 import React from "react";
 import { useAppContext } from "../../contexts/api-context";
-import { NamedRef } from "../../domain/entities/Ref";
+// @ts-ignore
+import { Plugin } from "@dhis2/app-runtime/build/cjs/experimental";
 
 export interface DataApprovalTableProps {
     dataSetId: string;
@@ -28,15 +29,14 @@ export const DataApprovalTable: React.FunctionComponent<DataApprovalTableProps> 
     const iframeRef = React.useRef<HTMLIFrameElement>(null);
 
     return (
-        <>
-            <iframe
-                src={pluginUrl}
-                ref={iframeRef}
-                style={styles.iframe}
-                width={"100%"}
-                height={500}
-            />
-        </>
+        <Plugin
+            pluginSource={pluginBaseUrl}
+            onError={(err: any) => {
+                console.error("ERROR", err);
+            }}
+            showAlertsInPlugin={true}
+            propToPass={"42"}
+        />
     );
 };
 

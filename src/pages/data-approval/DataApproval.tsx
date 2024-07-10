@@ -169,17 +169,6 @@ const DataApproval: React.FC = () => {
 
             {projectDataSet && (
                 <Paper style={{ marginBottom: 20, padding: 20 }}>
-                    <link
-                        rel="stylesheet"
-                        type="text/css"
-                        href={api.baseUrl + "/dhis-web-approval/style/dhis-web-approval.css"}
-                    />
-                    <link
-                        rel="stylesheet"
-                        type="text/css"
-                        href={api.baseUrl + "/dhis-web-commons/css/light_blue/light_blue.css"}
-                    />
-
                     <DataApprovalTable
                         dataSetId={projectDataSet.getDataSet().id}
                         orgUnitId={projectDataSet.getOrgUnit().id}
