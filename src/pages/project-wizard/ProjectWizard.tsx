@@ -87,15 +87,15 @@ class ProjectWizardImpl extends React.Component<Props, State> {
     }
 
     getInitialProjectData = async () => {
-        if (this.props.action.type === "create") {
-            return getDevProject(
-                Project.create(this.props.api, this.props.config),
-                this.props.isDev
-            );
-        } else if (this.props.action.type === "edit") {
-            return Project.get(this.props.api, this.props.config, this.props.action.id);
-        } else if (this.props.action.type === "clone") {
-            return Project.clone(this.props.api, this.props.config, this.props.action.id);
+        switch (this.props.action.type) {
+            case "create": {
+                const project = Project.create(this.props.api, this.props.config);
+                return getDevProject(project, this.props.isDev);
+            }
+            case "edit":
+                return Project.get(this.props.api, this.props.config, this.props.action.id);
+            case "clone":
+                return Project.clone(this.props.api, this.props.config, this.props.action.id);
         }
     };
 
@@ -238,7 +238,7 @@ class ProjectWizardImpl extends React.Component<Props, State> {
                 return i18n.t("Edit project");
             case "clone":
                 return i18n.t("Clone project");
-            default:
+            case "create":
                 return i18n.t("New project");
         }
     };
