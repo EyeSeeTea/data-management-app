@@ -29,7 +29,7 @@ start_from_pro() {
 post_clone() {
     local url=$1
 
-    #set_email_password "$url"
+    set_email_password "$url"
     change_server_name "$url" "SP Platform - Test"
     set_logos "$url" "$script_dir/test-icons"
 }
