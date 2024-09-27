@@ -1,11 +1,6 @@
 #!/bin/bash
 set -e -u -o pipefail
 
-# Actions:
-#
-#   - In PRO: Create docker image and push to Harbor.
-#   - In TEST: Pull docker from Harbor and start.
-
 # Requirements: Open vendorlink (spintldhis01, stintldhis01)
 
 cd "$(dirname "$0")"
