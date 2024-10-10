@@ -3,8 +3,8 @@ script_dir="$(dirname "$(readlink -f "${BASH_SOURCE[0]:-$0}")")"
 source "$script_dir/auth.sh"
 
 export image_pro="docker.eyeseetea.com/eyeseetea/dhis2-data:40.4.1-sp-ip-pro"
-export image_dev="docker.eyeseetea.com/samaritans/dhis2-data:2.36.11.1-sp-ip-dev"
-export image_training="docker.eyeseetea.com/samaritans/dhis2-data:2.36.11.1-sp-ip-training"
+export image_dev="docker.eyeseetea.com/samaritans/dhis2-data:40.4.1-sp-ip-dev"
+export image_training="docker.eyeseetea.com/samaritans/dhis2-data:40.4.1-sp-ip-training"
 
 debug() {
     echo "$@" >&2

@@ -59,7 +59,13 @@ async function main() {
             // eslint-disable-next-line react/no-children-prop
             React.createElement(
                 Provider,
-                { config, children: null },
+                {
+                    config,
+                    children: null,
+                    plugin: false,
+                    parentAlertsAdd: undefined,
+                    showAlertsInPlugin: true,
+                },
                 React.createElement(App, { d2, api, dhis2Url: baseUrl })
             ),
             document.getElementById("root")

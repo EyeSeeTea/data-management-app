@@ -1,60 +1,41 @@
 import React from "react";
-import { LinearProgress } from "@material-ui/core";
+import { useAppContext } from "../../contexts/api-context";
 // @ts-ignore
-import { CssVariables } from "@dhis2/ui";
-// @ts-ignore
-import { SelectionProvider } from "approval-app/es/selection-context";
-// @ts-ignore
-import { AppProvider } from "approval-app/es/app-context";
-// @ts-ignore
-import { Layout } from "approval-app/es/app/layout.js";
-// @ts-ignore
-import { Display } from "approval-app/es/data-workspace/display";
-// @ts-ignore
-import { useSelectionContext } from "approval-app/es/selection-context";
+import { Plugin } from "@dhis2/app-runtime/build/cjs/experimental";
+import { OrganisationUnit } from "../../models/Project";
 
 export interface DataApprovalTableProps {
     dataSetId: string;
-    orgUnitId: string;
+    orgUnit: OrganisationUnit;
     period: { startDate: string; endDate: string };
     attributeOptionComboId: string;
 }
 
-const DataApprovalTable: React.FC<DataApprovalTableProps> = props => {
-    return (
-        <>
-            <CssVariables spacers colors theme />
+export function useDhis2Url(path: string) {
+    const { api, isDev } = useAppContext();
+    return (isDev ? "/dhis2" : api.baseUrl) + path;
+}
 
-            <AppProvider>
-                <SelectionProvider disableHistory={true}>
-                    <DataValuesTableContents {...props} />
-                </SelectionProvider>
-            </AppProvider>
-        </>
-    );
+export const DataApprovalTable: React.FunctionComponent<DataApprovalTableProps> = props => {
+    const { config } = useAppContext();
+    const pluginBaseUrl = useDhis2Url("/dhis-web-approval/plugin.html");
+
+    const params = {
+        dataSet: props.dataSetId,
+        ou: props.orgUnit.path,
+        ouDisplayName: props.orgUnit.displayName,
+        pe: props.period.startDate.replace(/-/g, ""),
+        wf: config.dataApprovalWorkflows.project.id,
+        hideSelectors: "true",
+        filter: `ao:${props.attributeOptionComboId}`,
+    };
+    const pluginUrl = pluginBaseUrl + "#/?" + new URLSearchParams(params).toString();
+
+    return <Plugin width="1000" pluginSource={pluginUrl} showAlertsInPlugin={true} />;
 };
 
-const DataValuesTableContents: React.FC<DataApprovalTableProps> = props => {
-    const { orgUnitId, dataSetId, period, attributeOptionComboId } = props;
-    const selection = useSelectionContext();
-    const isSelectionFilled = selection.orgUnit && selection.period;
-
-    React.useEffect(() => {
-        if (isSelectionFilled) return;
-        selection.selectOrgUnit({ id: orgUnitId });
-        selection.selectPeriod(period);
-        selection.selectFilter(`ao:${attributeOptionComboId}`);
-    }, [selection, isSelectionFilled, orgUnitId, period, attributeOptionComboId]);
-
-    if (!isSelectionFilled) return <LinearProgress />;
-
-    return (
-        <Layout.Container>
-            <Layout.Content>
-                <Display dataSetId={dataSetId} />
-            </Layout.Content>
-        </Layout.Container>
-    );
+const styles = {
+    iframe: { border: "none", overflow: "hidden" },
 };
 
 export default React.memo(DataApprovalTable);
