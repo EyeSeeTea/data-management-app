@@ -171,7 +171,7 @@ const DataApproval: React.FC = () => {
                 <Paper style={{ marginBottom: 20, padding: 20 }}>
                     <DataApprovalTable
                         dataSetId={projectDataSet.getDataSet().id}
-                        orgUnitId={projectDataSet.getOrgUnit().id}
+                        orgUnit={projectDataSet.getOrgUnit()}
                         attributeOptionComboId={projectDataSet.getAttributeOptionCombo().id}
                         period={periodStartEnd}
                     />
