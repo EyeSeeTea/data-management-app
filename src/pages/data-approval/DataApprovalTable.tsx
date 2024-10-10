@@ -19,6 +19,7 @@ export function useDhis2Url(path: string) {
 export const DataApprovalTable: React.FunctionComponent<DataApprovalTableProps> = props => {
     const { config } = useAppContext();
     const pluginBaseUrl = useDhis2Url("/dhis-web-approval/plugin.html");
+
     const params = {
         dataSet: props.dataSetId,
         ou: props.orgUnit.path,
@@ -30,7 +31,7 @@ export const DataApprovalTable: React.FunctionComponent<DataApprovalTableProps> 
     };
     const pluginUrl = pluginBaseUrl + "#/?" + new URLSearchParams(params).toString();
 
-    return <Plugin pluginSource={pluginUrl} showAlertsInPlugin={true} />;
+    return <Plugin width="1000" pluginSource={pluginUrl} showAlertsInPlugin={true} />;
 };
 
 const styles = {
