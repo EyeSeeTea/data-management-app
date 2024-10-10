@@ -34,8 +34,4 @@ export const DataApprovalTable: React.FunctionComponent<DataApprovalTableProps> 
     return <Plugin width="1000" pluginSource={pluginUrl} showAlertsInPlugin={true} />;
 };
 
-const styles = {
-    iframe: { border: "none", overflow: "hidden" },
-};
-
 export default React.memo(DataApprovalTable);
