@@ -6,18 +6,18 @@ script_dir=$(pwd)
 source "./lib.sh"
 source "./tasks.sh"
 
-image_test="docker.eyeseetea.com/samaritans/dhis2-data:40.4.1-sp-ip-test"
-
 start_from_pro() {
-    local url=$1
+    local url=$1 image_pro=$2
+    # shellcheck disable=SC2001
+    image_test=$(echo "$image_pro" | sed "s/ip-pro/ip-test/")
 
-    local image_test_running
-    image_test_running=$(d2-docker list | grep RUN | awk '{print $1}' | grep -m1 ip-test) || true
+    local running_image
+    running_image=$(d2-docker list | grep RUN | awk '{print $1}' | grep -m1 ip-test) || true
 
-    if test "$image_test_running"; then
-        d2-docker commit "$image_test_running"
-        docker tag "$image_test_running" "backup/sp-ip-test-$(timestamp)"
-        d2-docker stop "$image_test_running"
+    if test "$running_image"; then
+        d2-docker commit "$running_image"
+        docker tag "$running_image" "$running_image-$(timestamp)"
+        d2-docker stop "$running_image"
     fi
 
     d2-docker pull "$image_pro"
