@@ -669,8 +669,8 @@ class Project {
     }
 
     static async clone(api: D2Api, config: Config, id: Id): Promise<Project> {
-        const projectToClone = await Project.get(api, config, id);
-        const clonedDocuments = await promiseMap(projectToClone.documents, async document => {
+        const existingProject = await Project.get(api, config, id);
+        const clonedDocuments = await promiseMap(existingProject.documents, async document => {
             if (!document.id) throw new Error("Document id is missing");
             const fileResourceBlob = await api.files.get(document.id).getData();
             return ProjectDocument.create({
@@ -682,12 +682,17 @@ class Project {
             });
         });
 
-        return projectToClone
-            .set("id", generateUid())
-            .set("orgUnit", undefined)
-            .set("dataSets", undefined)
-            .set("documents", clonedDocuments)
-            .set("created", undefined);
+        const projectToClone = Project.create(api, config).set("initialData", {
+            ...existingProject.data,
+            documents: clonedDocuments,
+        });
+        return projectToClone.setObj({
+            ...existingProject.data,
+            id: generateUid(),
+            orgUnit: undefined,
+            dataSets: undefined,
+            created: undefined,
+        });
     }
 }
 
