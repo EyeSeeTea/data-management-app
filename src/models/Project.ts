@@ -28,6 +28,7 @@ import { getIds } from "../utils/dhis2";
 import { ProjectInfo } from "./ProjectInfo";
 import { isTest } from "../utils/testing";
 import { MAX_SIZE_PROJECT_IN_MB, ProjectDocument } from "./ProjectDocument";
+import { promiseMap } from "../migrations/utils";
 
 /*
 Project model.
@@ -666,6 +667,33 @@ class Project {
             .compact()
             .join("-");
     }
+
+    static async clone(api: D2Api, config: Config, id: Id): Promise<Project> {
+        const existingProject = await Project.get(api, config, id);
+        const clonedDocuments = await promiseMap(existingProject.documents, async document => {
+            if (!document.id) throw new Error("Document id is missing");
+            const fileResourceBlob = await api.files.get(document.id).getData();
+            return ProjectDocument.create({
+                ...document,
+                id: "",
+                url: undefined,
+                sharing: undefined,
+                blob: fileResourceBlob,
+            });
+        });
+
+        const projectToClone = Project.create(api, config).set("initialData", {
+            ...existingProject.data,
+            documents: clonedDocuments,
+        });
+        return projectToClone.setObj({
+            ...existingProject.data,
+            id: generateUid(),
+            orgUnit: undefined,
+            dataSets: undefined,
+            created: undefined,
+        });
+    }
 }
 
 interface Project extends ProjectData {}
@@ -768,3 +796,5 @@ export type ProjectBasic = Pick<
 >;
 
 export default Project;
+
+export type ProjectAction = "create" | "edit" | "clone";

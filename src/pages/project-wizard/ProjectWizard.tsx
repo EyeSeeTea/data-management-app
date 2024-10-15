@@ -5,7 +5,7 @@ import { Wizard, useSnackbar } from "@eyeseetea/d2-ui-components";
 import { LinearProgress } from "@material-ui/core";
 import { Location } from "history";
 
-import Project, { ValidationKey } from "../../models/Project";
+import Project, { ProjectAction, ValidationKey } from "../../models/Project";
 import { D2Api } from "../../types/d2-api";
 import { generateUrl } from "../../router";
 import i18n from "../../locales";
@@ -28,7 +28,7 @@ import { useAppHistory } from "../../utils/use-app-history";
 import { Maybe } from "../../types/utils";
 import { AttachFilesStep } from "../../components/steps/attach-files/AttachFilesStep";
 
-type Action = { type: "create" } | { type: "edit"; id: string };
+type Action = { type: "create" } | { type: "edit"; id: string } | { type: "clone"; id: string };
 
 interface ProjectWizardProps {
     action: Action;
@@ -39,7 +39,7 @@ export interface StepProps {
     project: Project;
     onChange: (project: Project) => void;
     onCancel: () => void;
-    action: "create" | "update";
+    action: ProjectAction;
 }
 
 interface Props {
@@ -76,14 +76,9 @@ class ProjectWizardImpl extends React.Component<Props, State> {
     };
 
     async componentDidMount() {
-        const { api, config, action, isDev } = this.props;
-
         try {
-            const project =
-                action.type === "create"
-                    ? getDevProject(Project.create(api, config), isDev)
-                    : await Project.get(api, config, action.id);
-            this.setState({ project });
+            const project = await this.getInitialProjectData();
+            this.setState({ project: project });
         } catch (err: any) {
             console.error(err);
             this.props.snackbar.error(i18n.t("Cannot load project") + `: ${err.message || err}`);
@@ -91,8 +86,25 @@ class ProjectWizardImpl extends React.Component<Props, State> {
         }
     }
 
+    getInitialProjectData = async () => {
+        switch (this.props.action.type) {
+            case "create": {
+                const project = Project.create(this.props.api, this.props.config);
+                return getDevProject(project, this.props.isDev);
+            }
+            case "edit":
+                return Project.get(this.props.api, this.props.config, this.props.action.id);
+            case "clone":
+                return Project.clone(this.props.api, this.props.config, this.props.action.id);
+        }
+    };
+
     isEdit() {
         return this.props.action.type === "edit";
+    }
+
+    isClone() {
+        return this.props.action.type === "clone";
     }
 
     getStepsBaseInfo(): Step[] {
@@ -220,6 +232,17 @@ class ProjectWizardImpl extends React.Component<Props, State> {
         return await getValidationMessages(this.state.project, currentStep.validationKeys);
     };
 
+    getTitle = (): string => {
+        switch (this.props.action.type) {
+            case "edit":
+                return i18n.t("Edit project");
+            case "clone":
+                return i18n.t("Clone project");
+            case "create":
+                return i18n.t("New project");
+        }
+    };
+
     render() {
         const { project, dialogOpen } = this.state;
         const { api, location, action } = this.props;
@@ -240,8 +263,8 @@ class ProjectWizardImpl extends React.Component<Props, State> {
         const stepExists = steps.find(step => step.key === urlHash);
         const firstStepKey = steps.map(step => step.key)[0];
         const initialStepKey = stepExists ? urlHash : firstStepKey;
-        const lastClickableStepIndex = this.isEdit() ? steps.length - 1 : 0;
-        const title = this.isEdit() ? i18n.t("Edit project") : i18n.t("New project");
+        const lastClickableStepIndex = this.isEdit() || this.isClone() ? steps.length - 1 : 0;
+        const title = this.getTitle();
 
         return (
             <React.Fragment>

@@ -1,6 +1,6 @@
 import _ from "lodash";
 
-import Project, { DataSetType } from "./Project";
+import Project, { DataSetType, ProjectAction } from "./Project";
 import i18n from "../locales";
 import User from "./user";
 import { generateUrl } from "../router";
@@ -11,7 +11,7 @@ import moment from "moment";
 import { appConfig } from "../app-config";
 
 type Email = string;
-type Action = "create" | "update";
+type Action = ProjectAction;
 
 export class ProjectNotification {
     constructor(
@@ -195,9 +195,22 @@ The reason provided by the user was:
         return this.sendMessage({ recipients, subject, text: text.trim() });
     }
 
+    static buildBaseMessage(action: Action): string {
+        switch (action) {
+            case "create":
+                return i18n.t("Project created");
+            case "edit":
+                return i18n.t("Project updated");
+            case "clone":
+                return i18n.t("Project created");
+            default:
+                throw new Error(`Unknown action: ${action}`);
+        }
+    }
+
     private async notifySave(recipients: Email[], action: Action) {
         const { project, currentUser } = this;
-        const baseMsg = action === "create" ? i18n.t("Project created") : i18n.t("Project updated");
+        const baseMsg = ProjectNotification.buildBaseMessage(action);
         const subject = `${baseMsg}: ${this.project.name}`;
 
         const body = [

@@ -201,8 +201,7 @@ function useSave(project: Project, action: StepProps["action"]) {
             if (response && response.status === "OK") {
                 const notificator = new ProjectNotification(api, projectSaved, currentUser, isTest);
                 notificator.notifyOnProjectSave(action);
-                const baseMsg =
-                    action === "create" ? i18n.t("Project created") : i18n.t("Project updated");
+                const baseMsg = ProjectNotification.buildBaseMessage(action);
                 const msg = `${baseMsg}: ${projectSaved.name}`;
                 history.push(generateUrl("projects"));
                 if (isDev) saveDataValues(api, projectSaved);

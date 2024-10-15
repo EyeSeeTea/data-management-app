@@ -167,6 +167,13 @@ export function getComponentConfig(
             multiple: false,
             onClick: (ids: Id[]) => onFirst(ids, id => goTo("projects.edit", { id })),
         },
+        clone: {
+            name: "clone",
+            icon: <Icon>content_copy</Icon>,
+            text: i18n.t("Clone"),
+            multiple: false,
+            onClick: (ids: Id[]) => onFirst(ids, id => goTo("projects.clone", { id })),
+        },
 
         delete: {
             name: "delete",

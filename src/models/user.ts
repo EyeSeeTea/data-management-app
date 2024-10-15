@@ -14,6 +14,7 @@ export type Action =
     | "countryDashboard"
     | "downloadData"
     | "edit"
+    | "clone"
     | "dataApproval"
     | "reopen"
     | "delete"
@@ -29,6 +30,7 @@ const actionsByRole: Record<Role, Action[]> = {
         "countryDashboard",
         "downloadData",
         "edit",
+        "clone",
         "delete",
         "dataApproval",
         "accessMER",

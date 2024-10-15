@@ -20,7 +20,7 @@ run() {
     local command=$2
     shift 2
 
-    debug "Copy deploy folder"
+    debug "Copy deploy folder: $(pwd)"
     rsync -a . "$host":deploy/
     debug "Run: $command $*"
     ssh "$host" "cd deploy &&" "$command" "$@"

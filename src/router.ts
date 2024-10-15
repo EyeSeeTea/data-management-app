@@ -6,6 +6,7 @@ const routes = {
     projects: () => "/",
     "projects.new": () => `/projects/new`,
     "projects.edit": ({ id }: { id: string }) => `/projects/edit/${id}`,
+    "projects.clone": ({ id }: { id: string }) => `/projects/clone/${id}`,
     report: () => "/report",
     actualValues: ({ id }: { id: string }) => `/actual-values/${id}`,
     targetValues: ({ id }: { id: string }) => `/target-values/${id}`,
