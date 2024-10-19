@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-08-20T12:07:28.358Z\n"
-"PO-Revision-Date: 2024-08-20T12:07:28.358Z\n"
+"POT-Creation-Date: 2024-10-18T23:21:33.588Z\n"
+"PO-Revision-Date: 2024-10-18T23:21:33.588Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -325,12 +325,27 @@ msgid ""
 "be added to this project"
 msgstr ""
 
+msgid "Edit"
+msgstr ""
+
+msgid "Start Month"
+msgstr ""
+
+msgid "End Month"
+msgstr ""
+
 msgid "Cancel Project creation?"
 msgstr ""
 
 msgid ""
 "You are about to exit the Project creation wizard. All your changes will be "
 "lost. Are you sure you want to proceed?"
+msgstr ""
+
+msgid "Cannot be blank: {{fieldName}}"
+msgstr ""
+
+msgid "{{value}} is not a valid value for {{fieldName}}"
 msgstr ""
 
 msgid "Error saving dashboard"
@@ -1024,6 +1039,9 @@ msgstr ""
 msgid "API Link"
 msgstr ""
 
+msgid "Manage Unique Beneficiaries Periods"
+msgstr ""
+
 msgid "Add Actual Values"
 msgstr ""
 
@@ -1037,9 +1055,6 @@ msgid "Add Target Values"
 msgstr ""
 
 msgid "Download Data"
-msgstr ""
-
-msgid "Edit"
 msgstr ""
 
 msgid "Clone"
@@ -1132,6 +1147,60 @@ msgid "Value must be zero or positive"
 msgstr ""
 
 msgid "You have reached the limit for this field"
+msgstr ""
+
+msgid "Loading Periods..."
+msgstr ""
+
+msgid "Saving Period..."
+msgstr ""
+
+msgid "Period saved successfully"
+msgstr ""
+
+msgid "Unique Beneficiaries Periods"
+msgstr ""
+
+msgid "{{actionPeriod}} Period"
+msgstr ""
+
+msgid "Create"
+msgstr ""
+
+msgid "January"
+msgstr ""
+
+msgid "February"
+msgstr ""
+
+msgid "March"
+msgstr ""
+
+msgid "April"
+msgstr ""
+
+msgid "May"
+msgstr ""
+
+msgid "June"
+msgstr ""
+
+msgid "July"
+msgstr ""
+
+msgid "August"
+msgstr ""
+
+msgid "September"
+msgstr ""
+
+msgid "October"
+msgstr ""
+
+msgid "November"
+msgstr ""
+
+msgid "December"
 msgstr ""
 
 msgid "{{field}} cannot be blank"

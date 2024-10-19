@@ -26,6 +26,7 @@ import { useMigrations } from "../migrations/hooks";
 import { appConfig } from "../../app-config";
 import { isTest } from "../../utils/testing";
 import i18n from "../../locales";
+import { getCompositionRoot } from "../../CompositionRoot";
 
 const settingsQuery = { userSettings: { resource: "/userSettings" } };
 
@@ -51,6 +52,7 @@ const App: React.FC<AppProps> = props => {
             const config = await getConfig(api);
             const currentUser = new User(config);
             setUsername(currentUser.data.username);
+            const compositionRoot = getCompositionRoot(api, config);
             const appContext: AppContext = {
                 d2,
                 api,
@@ -60,6 +62,7 @@ const App: React.FC<AppProps> = props => {
                 isTest: isTest(),
                 appConfig,
                 dhis2Url,
+                compositionRoot,
             };
             setAppContext(appContext);
 

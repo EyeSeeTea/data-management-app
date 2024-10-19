@@ -15,6 +15,7 @@ const routes = {
     countryDashboard: ({ id }: { id: string }) => `/country-dashboard/${id}`,
     dataApproval: dataApproval,
     countries: () => `/countries`,
+    uniqueBeneficiariesPeriods: ({ id }: { id: string }) => `/unique-beneficiaries-periods/${id}`,
 };
 
 type Routes = typeof routes;

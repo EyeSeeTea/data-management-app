@@ -1,5 +1,5 @@
 import _ from "lodash";
-import xlsx from "xlsx";
+import * as XLSX from "xlsx";
 
 import { D2Api } from "../../types/d2-api";
 import { Config } from "../../models/Config";
@@ -317,13 +317,13 @@ export class ImportDataElementSpreadSheetRepository implements ImportDataElement
 
     private getDataElementFromSheet(path: string): DataElementExcel[] {
         const sheet = this.getSheetOrThrow(path, "CreateUpdate");
-        const excelRows = xlsx.utils.sheet_to_json<SpreadSheetRecord>(sheet);
+        const excelRows = XLSX.utils.sheet_to_json<SpreadSheetRecord>(sheet);
         return this.parseRecords(excelRows);
     }
 
     private getDataElementToRemoveFromSheet(path: string): Id[] {
         const sheet = this.getSheetOrThrow(path, "Delete");
-        const excelRows = xlsx.utils.sheet_to_json<SpreadSheetRecordRemove>(sheet);
+        const excelRows = XLSX.utils.sheet_to_json<SpreadSheetRecordRemove>(sheet);
         return this.parseRecordsToRemove(excelRows);
     }
 
@@ -332,7 +332,7 @@ export class ImportDataElementSpreadSheetRepository implements ImportDataElement
     }
 
     private getSheetOrThrow(path: string, sheetName: string) {
-        const excelFile = xlsx.readFile(path);
+        const excelFile = XLSX.readFile(path);
         const excelSheetName = excelFile.SheetNames.find(sn => sn === sheetName);
         if (!excelSheetName) throw Error(`Sheet not found: ${sheetName}`);
         const sheet = excelFile.Sheets[excelSheetName];

@@ -12,6 +12,7 @@ import ProjectDashboard from "../dashboard/ProjectDashboard";
 import CountryDashboard from "../dashboard/CountryDashboard";
 import AwardNumberDashboard from "../dashboard/AwardNumberDashboard";
 import { LastLocationProvider } from "react-router-last-location";
+import { UniqueBeneficiariesPeriodsPage } from "../unique-periods/UniqueBeneficiariesPeriodsPage";
 
 const Root = () => {
     const idParam = { id: ":id" };
@@ -73,6 +74,11 @@ const Root = () => {
                         path={generateUrl("dataApproval", { id: ":id" })}
                         render={() => <DataApproval />}
                     />
+                    <Route
+                        path={generateUrl("uniqueBeneficiariesPeriods", { id: ":id" })}
+                        render={() => <UniqueBeneficiariesPeriodsPage />}
+                    />
+
                     <Route path={generateUrl("countries")} render={() => <CountriesList />} />
 
                     <Route render={() => <ProjectsList />} />
