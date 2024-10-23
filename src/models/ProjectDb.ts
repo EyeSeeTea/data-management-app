@@ -517,7 +517,7 @@ export default class ProjectDb {
         const value: ProjectInfo = {
             merDataElementIds: ids,
             uniqueBeneficiaries: {
-                ...existingData?.uniqueBeneficiaries,
+                ...(existingData?.uniqueBeneficiaries || {}),
                 indicatorsIds: selectedUniqueBeneficiariesIds,
             },
             documents: projectDocuments.map(document => document.id),
