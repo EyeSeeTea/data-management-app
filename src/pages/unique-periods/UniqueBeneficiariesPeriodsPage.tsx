@@ -10,9 +10,9 @@ import {
 import { useAppContext } from "../../contexts/api-context";
 import { Ref } from "../../domain/entities/Ref";
 import {
-    UniqueBeneficiariesPeriods,
+    UniqueBeneficiariesPeriod,
     UniqueBeneficiariesPeriodsAttrs,
-} from "../../domain/entities/UniqueBeneficiariesPeriods";
+} from "../../domain/entities/UniqueBeneficiariesPeriod";
 import { UniqueBeneficiariesSettings } from "../../domain/entities/UniqueBeneficiariesSettings";
 import i18n from "../../locales";
 import { UniquePeriodsForm } from "./UniquePeriodsForm";
@@ -52,7 +52,7 @@ export const UniqueBeneficiariesPeriodsPage = React.memo(() => {
     );
 
     const savePeriod = React.useCallback(
-        (periodData: UniqueBeneficiariesPeriods) => {
+        (periodData: UniqueBeneficiariesPeriod) => {
             loading.show(true, i18n.t("Saving Period..."));
             compositionRoot.uniqueBeneficiaries.saveSettings
                 .execute({ period: periodData, projectId: id })
@@ -74,7 +74,7 @@ export const UniqueBeneficiariesPeriodsPage = React.memo(() => {
 
     const removePeriod = React.useCallback(() => {
         if (!selectedPeriod) return;
-        const period = UniqueBeneficiariesPeriods.build(selectedPeriod).get();
+        const period = UniqueBeneficiariesPeriod.build(selectedPeriod).get();
         loading.show(true, i18n.t("Removing Period..."));
         compositionRoot.uniqueBeneficiaries.removePeriod
             .execute({ projectId: id, period })
@@ -134,7 +134,7 @@ export const UniqueBeneficiariesPeriodsPage = React.memo(() => {
                 onSave={removePeriod}
                 title={i18n.t("Are you sure you want to delete the period: {{period}}?", {
                     nsSeparator: false,
-                    period: selectedPeriod?.name,
+                    period: selectedPeriod ? selectedPeriod.name : "",
                 })}
                 onCancel={() => {
                     setDeleteModal(false);

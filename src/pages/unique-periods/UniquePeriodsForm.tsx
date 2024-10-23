@@ -4,9 +4,9 @@ import { Button, TextField } from "@material-ui/core";
 import { makeStyles, createStyles } from "@material-ui/styles";
 
 import {
-    UniqueBeneficiariesPeriods,
+    UniqueBeneficiariesPeriod,
     UniqueBeneficiariesPeriodsAttrs,
-} from "../../domain/entities/UniqueBeneficiariesPeriods";
+} from "../../domain/entities/UniqueBeneficiariesPeriod";
 import i18n from "../../locales";
 import { Maybe } from "../../types/utils";
 import { getErrors } from "../../domain/entities/generic/Errors";
@@ -14,7 +14,7 @@ import { getErrors } from "../../domain/entities/generic/Errors";
 export type UniquePeriodsFormProps = {
     existingPeriod?: UniqueBeneficiariesPeriodsAttrs;
     onClose: () => void;
-    onSubmit: (uniquePeriods: UniqueBeneficiariesPeriods) => void;
+    onSubmit: (uniquePeriods: UniqueBeneficiariesPeriod) => void;
 };
 
 const months = [
@@ -34,7 +34,7 @@ const months = [
 
 function getValueByAttribute(
     value: string,
-    attribute: keyof UniqueBeneficiariesPeriods
+    attribute: keyof UniqueBeneficiariesPeriod
 ): number | string {
     if (attribute === "endDateMonth" || attribute === "startDateMonth") {
         return Number(value);
@@ -48,13 +48,13 @@ export const UniquePeriodsForm = React.memo((props: UniquePeriodsFormProps) => {
     const snackbar = useSnackbar();
     const classes = useStyles();
     const [uniquePeriod, setUniquePeriod] = React.useState<UniqueBeneficiariesPeriodsAttrs>(
-        existingPeriod || UniqueBeneficiariesPeriods.initialPeriodData()
+        existingPeriod || UniqueBeneficiariesPeriod.initialPeriodData()
     );
 
     const validateAndSubmit = React.useCallback(
         (e: React.FormEvent) => {
             e.preventDefault();
-            UniqueBeneficiariesPeriods.build(uniquePeriod).match({
+            UniqueBeneficiariesPeriod.build(uniquePeriod).match({
                 success: period => onSubmit(period),
                 error: errors => {
                     const errorMessage = getErrors(errors);
@@ -66,7 +66,7 @@ export const UniquePeriodsForm = React.memo((props: UniquePeriodsFormProps) => {
     );
 
     const updatePeriod = React.useCallback(
-        (value: Maybe<string>, attribute: keyof UniqueBeneficiariesPeriods) => {
+        (value: Maybe<string>, attribute: keyof UniqueBeneficiariesPeriod) => {
             setUniquePeriod(prev => {
                 if (!prev) return prev;
                 return { ...prev, [attribute]: getValueByAttribute(value || "", attribute) };

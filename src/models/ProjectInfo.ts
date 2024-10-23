@@ -209,13 +209,13 @@ export class ProjectInfo {
     }
 
     private getDataElementInfoAsString(info: DataElementInfo) {
-        const { dataElement, isMER, isCovid19 } = info;
+        const { dataElement, isMER, isUniqueBeneficiary, isCovid19 } = info;
         const hiddenMsg = i18n.t("Hidden in data entry as it is selected in multiple sectors!");
-
         return [
             `${dataElement.name} - ${dataElement.code}`,
             isCovid19 ? ` [${i18n.t("COVID-19")}]` : "",
             isMER ? ` [${i18n.t("MER")}]` : "",
+            isUniqueBeneficiary ? ` [${i18n.t("Unique Beneficiary")}]` : "",
             info.usedInDataSetSection ? "" : ` - ${hiddenMsg}`,
         ].join("");
     }

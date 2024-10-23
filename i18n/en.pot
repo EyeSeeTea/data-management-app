@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-10-18T23:21:33.588Z\n"
-"PO-Revision-Date: 2024-10-18T23:21:33.588Z\n"
+"POT-Creation-Date: 2024-10-22T23:20:24.479Z\n"
+"PO-Revision-Date: 2024-10-22T23:20:24.479Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -535,6 +535,9 @@ msgstr ""
 msgid "Partner"
 msgstr ""
 
+msgid "Unique Indicators"
+msgstr ""
+
 msgid "Award Number should be a number of 5 digits"
 msgstr ""
 
@@ -697,6 +700,9 @@ msgid "Hidden in data entry as it is selected in multiple sectors!"
 msgstr ""
 
 msgid "MER"
+msgstr ""
+
+msgid "Unique Beneficiary"
 msgstr ""
 
 msgid "[SP Platform] Request for Data Review: {{-name}} ({{code}})"
@@ -947,6 +953,9 @@ msgstr ""
 msgid "Selection of MER Indicators"
 msgstr ""
 
+msgid "Select of Unique Indicators"
+msgstr ""
+
 msgid "Username Access"
 msgstr ""
 
@@ -1006,6 +1015,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Select indicators in each project that represent unique beneficiaries in "
+"the project"
+msgstr ""
+
+msgid ""
 "For activity indicators that include a response to COVID-19 (examples: "
 "COVID-19 messaging, COVID-19 specific healthcare worker trainings, etc.), "
 "please select \"yes\" under the COVID-19 column. In the future, more "
@@ -1037,6 +1051,9 @@ msgid "Last Updated By"
 msgstr ""
 
 msgid "API Link"
+msgstr ""
+
+msgid "Project Indicators Validation"
 msgstr ""
 
 msgid "Manage Unique Beneficiaries Periods"
@@ -1158,6 +1175,12 @@ msgstr ""
 msgid "Period saved successfully"
 msgstr ""
 
+msgid "Removing Period..."
+msgstr ""
+
+msgid "Period removed successfully"
+msgstr ""
+
 msgid "Unique Beneficiaries Periods"
 msgstr ""
 
@@ -1165,6 +1188,9 @@ msgid "{{actionPeriod}} Period"
 msgstr ""
 
 msgid "Create"
+msgstr ""
+
+msgid "Are you sure you want to delete the period: {{period}}?"
 msgstr ""
 
 msgid "January"

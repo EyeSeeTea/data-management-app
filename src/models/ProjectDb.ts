@@ -10,7 +10,7 @@ import {
     DataValueSetsPostRequest,
     DataValueSetsPostResponse,
 } from "../types/d2-api";
-import { D2DataSet, D2OrganisationUnit, D2ApiResponse } from "../types/d2-api";
+import { D2DataSet, D2OrganisationUnit } from "../types/d2-api";
 import { PartialModel, Ref, PartialPersistedModel, MetadataResponse } from "../types/d2-api";
 import Project, {
     getOrgUnitDatesFromProject,
@@ -371,7 +371,7 @@ export default class ProjectDb {
         await this.saveMERData(
             project.id,
             projectDocumentsSaved.filter(document => !document.markAsDeleted)
-        ).getData();
+        );
     }
 
     async saveMetadata() {
@@ -503,15 +503,26 @@ export default class ProjectDb {
         }
     }
 
-    saveMERData(orgUnitId: Id, projectDocuments: ProjectDocument[]): D2ApiResponse<void> {
+    async saveMERData(orgUnitId: Id, projectDocuments: ProjectDocument[]): Promise<void> {
         const dataStore = getDataStore(this.project.api);
+        const existingData = await dataStore
+            .get<ProjectInfo>(getProjectStorageKey({ id: orgUnitId }))
+            .getData();
+
         const dataElementsForMER = this.project.dataElementsMER.get({ onlySelected: true });
+        const selectedUniqueBeneficiariesIds = this.project.uniqueIndicators
+            .get({ onlySelected: true })
+            .map(dataElement => dataElement.id);
         const ids = _.sortBy(_.uniq(dataElementsForMER.map(de => de.id)));
         const value: ProjectInfo = {
             merDataElementIds: ids,
+            uniqueBeneficiaries: {
+                ...existingData?.uniqueBeneficiaries,
+                indicatorsIds: selectedUniqueBeneficiariesIds,
+            },
             documents: projectDocuments.map(document => document.id),
         };
-        return dataStore.save(getProjectStorageKey({ id: orgUnitId }), value);
+        await dataStore.save(getProjectStorageKey({ id: orgUnitId }), value).getData();
     }
 
     /*
@@ -728,8 +739,16 @@ export default class ProjectDb {
                 const sector = _(sectorsByCode).get(sectorCode);
                 const selectedIds = section.dataElements.map(de => de.id);
                 const selectedMERIds = _.intersection(selectedIds, projectInfo.merDataElementIds);
-                const value = { selectedIds, selectedMERIds };
-                type Value = { selectedIds: Id[]; selectedMERIds: Id[] };
+                const uniqueIndicatorsIds = _.intersection(
+                    selectedIds,
+                    projectInfo.uniqueBeneficiaries.indicatorsIds
+                );
+                const value = { selectedIds, selectedMERIds, uniqueIndicatorsIds };
+                type Value = {
+                    selectedIds: Id[];
+                    selectedMERIds: Id[];
+                    uniqueIndicatorsIds: Id[];
+                };
                 return sector ? ([sector.id, value] as [string, Value]) : null;
             })
             .compact()
@@ -745,6 +764,11 @@ export default class ProjectDb {
             groupPaired: false,
             superSet: dataElementsSelection,
         }).updateSelected(_.mapValues(dataElementsBySectorId, value => value.selectedMERIds));
+
+        const uniqueIndicators = DataElementsSet.build(config, {
+            groupPaired: false,
+            superSet: dataElementsSelection,
+        }).updateSelected(_.mapValues(dataElementsBySectorId, value => value.uniqueIndicatorsIds));
 
         const { dataSetElements } = projectDataSets.actual;
         const disaggregation = Disaggregation.buildFromDataSetElements(config, dataSetElements);
@@ -788,6 +812,7 @@ export default class ProjectDb {
             }),
             isDartApplicable: isInDartApplicableGroup,
             partner: partnerGroup,
+            uniqueIndicators,
         };
         const project = new Project(api, config, { ...projectData, initialData: projectData });
         return project;
@@ -880,7 +905,13 @@ async function getDataElementIdsForMer(api: D2Api, id: string) {
         .get<ProjectInfo | undefined>(getProjectStorageKey({ id }))
         .getData();
     if (!value) console.error("Cannot get MER selections");
-    return { documents: value?.documents || [], merDataElementIds: value?.merDataElementIds || [] };
+    return {
+        uniqueBeneficiaries: {
+            indicatorsIds: value?.uniqueBeneficiaries?.indicatorsIds || [],
+        },
+        documents: value?.documents || [],
+        merDataElementIds: value?.merDataElementIds || [],
+    };
 }
 
 export function getSectorCodeFromSectionCode(code: string | undefined) {

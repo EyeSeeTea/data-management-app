@@ -1,6 +1,6 @@
 import { generateUid } from "d2/uid";
 import { Id } from "../../domain/entities/Ref";
-import { UniqueBeneficiariesPeriods } from "../../domain/entities/UniqueBeneficiariesPeriods";
+import { UniqueBeneficiariesPeriod } from "../../domain/entities/UniqueBeneficiariesPeriod";
 import { UniqueBeneficiariesSettings } from "../../domain/entities/UniqueBeneficiariesSettings";
 import { UniqueBeneficiariesSettingsRepository } from "../../domain/repositories/UniqueBeneficiariesSettingsRepository";
 import { D2Api, DataStore } from "../../types/d2-api";
@@ -33,22 +33,25 @@ export class UniqueBeneficiariesSettingsD2Repository
         await this.dataStore
             .save(this.buildKeyId(settings.projectId), {
                 ...existingSettings,
-                uniqueBeneficiaries: { periods: this.buildPeriods(settings.periods) },
+                uniqueBeneficiaries: {
+                    ...(existingSettings?.uniqueBeneficiaries || {}),
+                    periods: this.buildPeriods(settings.periods),
+                },
             })
             .getData();
     }
 
-    private buildPeriods(periods: UniqueBeneficiariesPeriods[]): UniqueBeneficiariesPeriods[] {
+    private buildPeriods(periods: UniqueBeneficiariesPeriod[]): UniqueBeneficiariesPeriod[] {
         const periodsWithIds = this.validateIdsInPeriods(periods);
         return this.excludeDefaultPeriods(periodsWithIds);
     }
 
     private validateIdsInPeriods(
-        periods: UniqueBeneficiariesPeriods[]
-    ): UniqueBeneficiariesPeriods[] {
+        periods: UniqueBeneficiariesPeriod[]
+    ): UniqueBeneficiariesPeriod[] {
         return periods.map(period => {
             if (!period.id) {
-                return UniqueBeneficiariesPeriods.build({ ...period, id: generateUid() }).get();
+                return UniqueBeneficiariesPeriod.build({ ...period, id: generateUid() }).get();
             }
             return period;
         });
@@ -58,18 +61,18 @@ export class UniqueBeneficiariesSettingsD2Repository
         return `project-${projectId}`;
     }
 
-    private excludeDefaultPeriods(periods: UniqueBeneficiariesPeriods[]) {
-        return periods.filter(period => !UniqueBeneficiariesPeriods.isProtected(period));
+    private excludeDefaultPeriods(periods: UniqueBeneficiariesPeriod[]) {
+        return periods.filter(period => !UniqueBeneficiariesPeriod.isProtected(period));
     }
 
-    private mergeDefaultPeriodsWithExisting(existingPeriods: Maybe<UniqueBeneficiariesPeriods[]>) {
-        const defaultData = UniqueBeneficiariesPeriods.defaultPeriods();
+    private mergeDefaultPeriodsWithExisting(existingPeriods: Maybe<UniqueBeneficiariesPeriod[]>) {
+        const defaultData = UniqueBeneficiariesPeriod.defaultPeriods();
         if (!existingPeriods) return defaultData;
         return [
-            ...existingPeriods.map(period => UniqueBeneficiariesPeriods.build(period).get()),
+            ...existingPeriods.map(period => UniqueBeneficiariesPeriod.build(period).get()),
             ...defaultData,
         ];
     }
 }
 
-type D2ProjectSettings = { uniqueBeneficiaries?: { periods: UniqueBeneficiariesPeriods[] } };
+type D2ProjectSettings = { uniqueBeneficiaries?: { periods: UniqueBeneficiariesPeriod[] } };

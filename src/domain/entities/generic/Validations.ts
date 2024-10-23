@@ -1,4 +1,4 @@
-import { PeriodType } from "../UniqueBeneficiariesPeriods";
+import { PeriodType } from "../UniqueBeneficiariesPeriod";
 import { ValidationErrorKey } from "./Errors";
 
 export const periodsTypes = ["CUSTOM", "ANNUAL", "SEMIANNUAL"] as const;

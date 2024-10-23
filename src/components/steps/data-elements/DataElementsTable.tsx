@@ -37,6 +37,7 @@ export interface DataElementsTableProps {
     actions?: TableAction<DataElement>[];
     visibleFilters?: FilterKey[];
     onSectorsMatchChange(matches: Record<Id, number | undefined>): void;
+    initialFilters?: Filter;
 }
 
 const paginationOptions = {
@@ -88,9 +89,10 @@ const DataElementsTable: React.FC<DataElementsTableProps> = props => {
         customColumns,
         actions,
         onSectorsMatchChange,
+        initialFilters = {},
     } = props;
     const snackbar = useSnackbar();
-    const [filter, setFilter] = useState<Filter>({});
+    const [filter, setFilter] = useState<Filter>(initialFilters);
 
     const resetKey = { onlySelected, ...filter, sectorId };
 

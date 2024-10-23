@@ -123,11 +123,12 @@ const NodeList: React.FC<{ nodes: ProjectInfoNode[] }> = props => {
 
     return (
         <ul>
-            {nodes.map(node => {
+            {nodes.map((node, index) => {
                 switch (node.type) {
                     case "field":
                         return (
                             <LiEntry
+                                key={index}
                                 label={node.name}
                                 value={node.value}
                                 prevValue={node.prevValue}
@@ -137,6 +138,7 @@ const NodeList: React.FC<{ nodes: ProjectInfoNode[] }> = props => {
                     case "value":
                         return (
                             <LiEntry
+                                key={index}
                                 label={undefined}
                                 value={node.value}
                                 prevValue={node.prevValue}
@@ -145,7 +147,12 @@ const NodeList: React.FC<{ nodes: ProjectInfoNode[] }> = props => {
                         );
                     case "section":
                         return (
-                            <LiEntry label={node.title} value={undefined} action={node.action}>
+                            <LiEntry
+                                key={index}
+                                label={node.title}
+                                value={undefined}
+                                action={node.action}
+                            >
                                 <NodeList nodes={node.children} />
                             </LiEntry>
                         );

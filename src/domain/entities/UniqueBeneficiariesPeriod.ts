@@ -20,26 +20,26 @@ export type UniqueBeneficiariesPeriodsAttrs = {
     endDateMonth: number;
 };
 
-export class UniqueBeneficiariesPeriods extends Struct<UniqueBeneficiariesPeriodsAttrs>() {
+export class UniqueBeneficiariesPeriod extends Struct<UniqueBeneficiariesPeriodsAttrs>() {
     static build(
         data: UniqueBeneficiariesPeriodsAttrs
-    ): Either<ValidationError<UniqueBeneficiariesPeriods>[], UniqueBeneficiariesPeriods> {
+    ): Either<ValidationError<UniqueBeneficiariesPeriod>[], UniqueBeneficiariesPeriod> {
         const errors = this.checkDataAndGetErrors(data);
         if (errors.length > 0) {
             return Either.error(errors);
         }
-        return Either.success(UniqueBeneficiariesPeriods.create(data));
+        return Either.success(UniqueBeneficiariesPeriod.create(data));
     }
 
-    public static defaultPeriods(): UniqueBeneficiariesPeriods[] {
-        const yearlyPeriod = UniqueBeneficiariesPeriods.create({
+    public static defaultPeriods(): UniqueBeneficiariesPeriod[] {
+        const yearlyPeriod = UniqueBeneficiariesPeriod.create({
             id: "annual",
             name: "Annual",
             type: "ANNUAL",
             startDateMonth: 1,
             endDateMonth: 12,
         });
-        const semiAnnualPeriod = UniqueBeneficiariesPeriods.create({
+        const semiAnnualPeriod = UniqueBeneficiariesPeriod.create({
             id: "semi-annual",
             name: "Semi-annual",
             type: "SEMIANNUAL",
@@ -54,7 +54,7 @@ export class UniqueBeneficiariesPeriods extends Struct<UniqueBeneficiariesPeriod
         return data.id === "annual" || data.id === "semi-annual";
     }
 
-    public static initialPeriodData(): UniqueBeneficiariesPeriods {
+    public static initialPeriodData(): UniqueBeneficiariesPeriod {
         return this.create({
             endDateMonth: 12,
             id: "",
@@ -79,8 +79,8 @@ export class UniqueBeneficiariesPeriods extends Struct<UniqueBeneficiariesPeriod
 
     private static checkDataAndGetErrors(
         data: UniqueBeneficiariesPeriodsAttrs
-    ): ValidationError<UniqueBeneficiariesPeriods>[] {
-        const errors: ValidationError<UniqueBeneficiariesPeriods>[] = _([
+    ): ValidationError<UniqueBeneficiariesPeriod>[] {
+        const errors: ValidationError<UniqueBeneficiariesPeriod>[] = _([
             {
                 property: "name" as const,
                 errors: validateRequired(data.name),

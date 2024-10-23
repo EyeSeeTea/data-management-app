@@ -112,6 +112,13 @@ export function getComponentConfig(
     ];
 
     const allActions: Record<ContextualAction, TableAction<ProjectForList>> = {
+        projectIndicators: {
+            name: "projectIndicators",
+            text: i18n.t("Project Indicators Validation"),
+            icon: <Icon>done_all</Icon>,
+            multiple: false,
+            onClick: (ids: Id[]) => onFirst(ids, id => goTo("projectIndicators", { id })),
+        },
         periods: {
             name: "periods",
             text: i18n.t("Manage Unique Beneficiaries Periods"),

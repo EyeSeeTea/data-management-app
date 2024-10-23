@@ -1,5 +1,5 @@
 import React from "react";
-import { indicatorTypes, IndicatorType } from "../../../models/dataElementsSet";
+import { indicatorTypes, IndicatorType, PeopleOrBenefit } from "../../../models/dataElementsSet";
 import Dropdown from "../../dropdown/Dropdown";
 import i18n from "../../../locales";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
@@ -21,6 +21,7 @@ export interface Filter {
     indicatorType?: IndicatorType;
     onlySelected?: boolean;
     external?: string;
+    peopleOrBenefit?: PeopleOrBenefit;
 }
 
 export interface FilterOptions {

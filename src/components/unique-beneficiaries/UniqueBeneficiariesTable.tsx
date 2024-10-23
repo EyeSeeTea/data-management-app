@@ -3,16 +3,16 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import React from "react";
 import {
-    UniqueBeneficiariesPeriods,
+    UniqueBeneficiariesPeriod,
     UniqueBeneficiariesPeriodsAttrs,
-} from "../../domain/entities/UniqueBeneficiariesPeriods";
+} from "../../domain/entities/UniqueBeneficiariesPeriod";
 import i18n from "../../locales";
 
 export type ActionTable = { action: string; id: string };
 
 export type UniqueBeneficiariesTableProps = {
     onChangeAction: (options: ActionTable) => void;
-    periods: UniqueBeneficiariesPeriods[];
+    periods: UniqueBeneficiariesPeriod[];
 };
 
 export const UniqueBeneficiariesTable = React.memo((props: UniqueBeneficiariesTableProps) => {
@@ -82,5 +82,5 @@ function getFirstItem(values: string[]): string {
 }
 
 function showAction(rows: UniqueBeneficiariesPeriodsAttrs[]): boolean {
-    return rows.filter(row => !UniqueBeneficiariesPeriods.isProtected(row)).length === 1;
+    return rows.filter(row => !UniqueBeneficiariesPeriod.isProtected(row)).length === 1;
 }

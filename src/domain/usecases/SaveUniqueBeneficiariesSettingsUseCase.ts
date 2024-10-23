@@ -1,4 +1,4 @@
-import { UniqueBeneficiariesPeriods } from "../entities/UniqueBeneficiariesPeriods";
+import { UniqueBeneficiariesPeriod } from "../entities/UniqueBeneficiariesPeriod";
 import { UniqueBeneficiariesSettings } from "../entities/UniqueBeneficiariesSettings";
 import { UniqueBeneficiariesSettingsRepository } from "../repositories/UniqueBeneficiariesSettingsRepository";
 
@@ -8,8 +8,8 @@ export class SaveUniqueBeneficiariesSettingsUseCase {
     async execute(options: SaveSettingsOptions): Promise<void> {
         const settings = await this.repository.get(options.projectId);
         const periodExist = settings.periods.some(period => period.id === options.period.id);
-        const isPeriodProtected = UniqueBeneficiariesPeriods.isProtected(options.period);
-        const { isValid, errorMessage } = UniqueBeneficiariesPeriods.validate(options.period);
+        const isPeriodProtected = UniqueBeneficiariesPeriod.isProtected(options.period);
+        const { isValid, errorMessage } = UniqueBeneficiariesPeriod.validate(options.period);
         if (!isValid) {
             throw new Error(errorMessage);
         }
@@ -32,10 +32,10 @@ export class SaveUniqueBeneficiariesSettingsUseCase {
     }
 
     private buildPeriodsToSave(
-        existingPeriods: UniqueBeneficiariesPeriods[],
-        currentPeriod: UniqueBeneficiariesPeriods,
+        existingPeriods: UniqueBeneficiariesPeriod[],
+        currentPeriod: UniqueBeneficiariesPeriod,
         periodExist: boolean
-    ): UniqueBeneficiariesPeriods[] {
+    ): UniqueBeneficiariesPeriod[] {
         const periodsToSave = periodExist
             ? existingPeriods.map(period => {
                   return period.id === currentPeriod.id ? currentPeriod : period;
@@ -48,9 +48,9 @@ export class SaveUniqueBeneficiariesSettingsUseCase {
         return periodsToSave;
     }
 
-    private checkDuplicatesInPeriods(periods: UniqueBeneficiariesPeriods[]): boolean {
+    private checkDuplicatesInPeriods(periods: UniqueBeneficiariesPeriod[]): boolean {
         return periods.length === new Set(periods.map(period => period.name)).size;
     }
 }
 
-export type SaveSettingsOptions = { projectId: string; period: UniqueBeneficiariesPeriods };
+export type SaveSettingsOptions = { projectId: string; period: UniqueBeneficiariesPeriod };

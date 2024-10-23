@@ -1,4 +1,4 @@
 import { Id } from "./Ref";
-import { UniqueBeneficiariesPeriods } from "./UniqueBeneficiariesPeriods";
+import { UniqueBeneficiariesPeriod } from "./UniqueBeneficiariesPeriod";
 
-export type UniqueBeneficiariesSettings = { projectId: Id; periods: UniqueBeneficiariesPeriods[] };
+export type UniqueBeneficiariesSettings = { projectId: Id; periods: UniqueBeneficiariesPeriod[] };
