@@ -117,7 +117,7 @@ export function getComponentConfig(
             text: i18n.t("Project Indicators Validation"),
             icon: <Icon>done_all</Icon>,
             multiple: false,
-            onClick: (ids: Id[]) => onFirst(ids, id => goTo("projectIndicators", { id })),
+            onClick: (ids: Id[]) => onFirst(ids, id => goTo("projectIndicatorsValidation", { id })),
         },
         periods: {
             name: "periods",

@@ -107,17 +107,4 @@ export class UniqueBeneficiariesPeriod extends Struct<UniqueBeneficiariesPeriods
 
         return errors;
     }
-
-    private static validateAndGetError(value: string | number, errorMessage: string): string {
-        const valueToValidate = String(value);
-        return valueToValidate.length === 0 ? errorMessage : "";
-    }
-
-    private static validateTypes(value: PeriodType, errorMessage: string): string {
-        return periodsTypes.includes(value) ? "" : errorMessage;
-    }
-
-    private static validateMonths(monthNumber: number, errorMessage: string): string {
-        return monthNumber >= 1 && monthNumber <= 12 ? "" : errorMessage;
-    }
 }

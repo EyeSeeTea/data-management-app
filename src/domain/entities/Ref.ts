@@ -9,3 +9,4 @@ export interface NamedRef extends Ref {
 }
 
 export type Code = string;
+export type ISODateTimeString = string;

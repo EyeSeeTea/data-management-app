@@ -1,6 +1,6 @@
 import i18n from "../../../locales";
 
-export type ValidationErrorKey = "field_cannot_be_blank" | "not_in_list";
+export type ValidationErrorKey = "field_cannot_be_blank" | "not_in_list" | "positive_number";
 
 export const validationErrorMessages: Record<
     ValidationErrorKey,
@@ -14,6 +14,11 @@ export const validationErrorMessages: Record<
             value: value,
             nsSeparator: false,
         }),
+    positive_number: (fieldName: string) => {
+        return i18n.t(`{{fieldName}} must be a positive number`, {
+            fieldName: fieldName,
+        });
+    },
 };
 
 export function getErrors<T>(errors: ValidationError<T>[]) {

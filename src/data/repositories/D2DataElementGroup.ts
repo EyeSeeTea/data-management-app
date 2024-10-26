@@ -72,6 +72,7 @@ export class D2DataElementGroup {
                         id: dataElementGroup.id,
                         name: dataElementGroup.name,
                         code: dataElementGroup.code,
+                        shortName: dataElementGroup.shortName,
                         dataElements:
                             idsToDelete.length > 0
                                 ? mergeDataElements.filter(
@@ -146,9 +147,7 @@ export class D2DataElementGroup {
                         return { id: dataElementGroup.id };
                     }),
                 },
-                {
-                    importStrategy: "DELETE",
-                }
+                { importStrategy: "DELETE" }
             )
             .getData();
     }

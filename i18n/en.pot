@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-10-22T23:20:24.479Z\n"
-"PO-Revision-Date: 2024-10-22T23:20:24.479Z\n"
+"POT-Creation-Date: 2024-10-26T18:05:17.719Z\n"
+"PO-Revision-Date: 2024-10-26T18:05:17.719Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -346,6 +346,12 @@ msgid "Cannot be blank: {{fieldName}}"
 msgstr ""
 
 msgid "{{value}} is not a valid value for {{fieldName}}"
+msgstr ""
+
+msgid "{{fieldName}} must be a positive number"
+msgstr ""
+
+msgid "Loading Periods..."
 msgstr ""
 
 msgid "Error saving dashboard"
@@ -938,6 +944,41 @@ msgid ""
 "Data Entry Section"
 msgstr ""
 
+msgid ""
+"Please review the following indicators  which have been updated since "
+"{{monthName}}"
+msgstr ""
+
+msgid "Period not found"
+msgstr ""
+
+msgid "Project Indicators Validation"
+msgstr ""
+
+msgid "Select a Period"
+msgstr ""
+
+msgid "Select a period"
+msgstr ""
+
+msgid "Editable New"
+msgstr ""
+
+msgid "Returning from previous Project"
+msgstr ""
+
+msgid "Comment is required"
+msgstr ""
+
+msgid "Loading Indicators..."
+msgstr ""
+
+msgid "Saving Indicators..."
+msgstr ""
+
+msgid "Indicators saved"
+msgstr ""
+
 msgid "Cannot load project"
 msgstr ""
 
@@ -1053,9 +1094,6 @@ msgstr ""
 msgid "API Link"
 msgstr ""
 
-msgid "Project Indicators Validation"
-msgstr ""
-
 msgid "Manage Unique Beneficiaries Periods"
 msgstr ""
 
@@ -1164,9 +1202,6 @@ msgid "Value must be zero or positive"
 msgstr ""
 
 msgid "You have reached the limit for this field"
-msgstr ""
-
-msgid "Loading Periods..."
 msgstr ""
 
 msgid "Saving Period..."

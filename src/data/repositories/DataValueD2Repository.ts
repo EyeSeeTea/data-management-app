@@ -22,7 +22,7 @@ export class DataValueD2Repository implements DataValueRepository {
     async get(options: GetDataValueOptions): Promise<DataValue[]> {
         const dataElementGroup = await this.createTempDataElementGroup(options);
         const res$ = this.api.dataValues.getSet({
-            dataSet: [],
+            dataSet: options.dataSetIds || [],
             orgUnit: options.orgUnitIds,
             dataElementGroup: dataElementGroup ? [dataElementGroup.id] : undefined,
             children: options.children,
@@ -33,7 +33,9 @@ export class DataValueD2Repository implements DataValueRepository {
         const res = await res$.getData();
         if (dataElementGroup) {
             await this.d2DataElementGroup.remove([dataElementGroup]);
-            await this.exportSqlAuditDataElements(dataElementGroup.dataElements);
+            if (options.logDataElements) {
+                await this.exportSqlAuditDataElements(dataElementGroup.dataElements);
+            }
         }
         return res.dataValues;
     }

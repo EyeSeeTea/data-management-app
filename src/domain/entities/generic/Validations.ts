@@ -16,3 +16,7 @@ export function validatePeriodType(periodType: PeriodType): ValidationErrorKey[]
 export function betweenValue(value: number, from: number, to: number): ValidationErrorKey[] {
     return value >= from && value <= to ? [] : ["not_in_list"];
 }
+
+export function isPositive(value: number): ValidationErrorKey[] {
+    return value >= 0 ? [] : ["positive_number"];
+}

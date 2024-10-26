@@ -36,11 +36,7 @@ function getValueByAttribute(
     value: string,
     attribute: keyof UniqueBeneficiariesPeriod
 ): number | string {
-    if (attribute === "endDateMonth" || attribute === "startDateMonth") {
-        return Number(value);
-    } else {
-        return value;
-    }
+    return attribute === "endDateMonth" || attribute === "startDateMonth" ? Number(value) : value;
 }
 
 export const UniquePeriodsForm = React.memo((props: UniquePeriodsFormProps) => {

@@ -13,9 +13,9 @@ import {
     UniqueBeneficiariesPeriod,
     UniqueBeneficiariesPeriodsAttrs,
 } from "../../domain/entities/UniqueBeneficiariesPeriod";
-import { UniqueBeneficiariesSettings } from "../../domain/entities/UniqueBeneficiariesSettings";
 import i18n from "../../locales";
 import { UniquePeriodsForm } from "./UniquePeriodsForm";
+import { useGetUniqueBeneficiaries } from "../../hooks/UniqueBeneficiaries";
 
 export const UniqueBeneficiariesPeriodsPage = React.memo(() => {
     const { compositionRoot } = useAppContext();
@@ -23,21 +23,12 @@ export const UniqueBeneficiariesPeriodsPage = React.memo(() => {
     const history = useHistory();
     const snackbar = useSnackbar();
     const loading = useLoading();
-    const [settings, setSettings] = React.useState<UniqueBeneficiariesSettings>();
     const [savePeriodModal, setSavePeriodModal] = React.useState(false);
     const [deleteModal, setDeleteModal] = React.useState(false);
     const [selectedPeriod, setSelectedPeriod] = React.useState<UniqueBeneficiariesPeriodsAttrs>();
     const [refresh, setRefresh] = React.useState(1);
 
-    React.useEffect(() => {
-        loading.show(true, i18n.t("Loading Periods..."));
-        compositionRoot.uniqueBeneficiaries.getSettings
-            .execute(id)
-            .then(setSettings, err => {
-                snackbar.error(err.message);
-            })
-            .finally(() => loading.hide());
-    }, [compositionRoot.uniqueBeneficiaries.getSettings, loading, snackbar, id, refresh]);
+    const { settings } = useGetUniqueBeneficiaries({ id, refresh });
 
     const openSavePeriodDialog = React.useCallback(
         (options: ActionTable) => {
