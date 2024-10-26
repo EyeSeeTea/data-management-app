@@ -4,7 +4,7 @@ import i18n from "../../locales";
 import { IndicatorValidation } from "../../domain/entities/IndicatorValidation";
 import { Maybe } from "../../types/utils";
 import { UniqueBeneficiariesPeriod } from "../../domain/entities/UniqueBeneficiariesPeriod";
-import { Button, Grid, makeStyles, Paper, Typography } from "@material-ui/core";
+import { Button, Grid, makeStyles, Typography } from "@material-ui/core";
 import { IndicatorValidationTable } from "./IndicatorValidationTable";
 import PageHeader from "../../components/page-header/PageHeader";
 import { useHistory } from "react-router-dom";
