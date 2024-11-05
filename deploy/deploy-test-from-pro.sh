@@ -33,6 +33,7 @@ post_clone() {
     change_server_name "$url" "SP Platform - Test"
     set_logos "$url" "$script_dir/test-icons"
     set_email_password "$url"
+    run_analytics "$url"
 }
 
 main() {

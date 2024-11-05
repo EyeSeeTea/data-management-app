@@ -19,6 +19,7 @@ training_post_clone() {
     change_server_name "$url" "SP Platform - Training"
     add_users_to_maintainer_roles "$url"
     set_logos "$url" "$script_dir/icons/training"
+    run_analytics "$url"
 }
 
 get_app_version() {

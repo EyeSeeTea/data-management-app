@@ -63,3 +63,8 @@ set_logos() {
         -H "Content-Type: multipart/form-data" \
         "$url/api/staticContent/logo_banner"
 }
+
+run_analytics() {
+    local url=$1
+    curl -sS -u "$auth" "$url/api/resourceTables/analytics" -X POST | jq
+}
