@@ -4,4 +4,5 @@ import { UniqueBeneficiariesSettings } from "../entities/UniqueBeneficiariesSett
 export interface UniqueBeneficiariesSettingsRepository {
     get(projectId: Id): Promise<UniqueBeneficiariesSettings>;
     save(settings: UniqueBeneficiariesSettings): Promise<void>;
+    getAll(): Promise<UniqueBeneficiariesSettings[]>;
 }

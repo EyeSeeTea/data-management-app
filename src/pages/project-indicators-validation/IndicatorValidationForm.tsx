@@ -127,15 +127,19 @@ export const IndicatorValidationForm = React.memo((props: IndicatorValidationFor
                 {selectedIndicator && (
                     <Grid container>
                         <Grid item className={classes.alignRight}>
-                            <Typography variant="body1">
-                                <strong>{i18n.t("Created")}:</strong>{" "}
-                                {convertToLocalDate(selectedIndicator.createdAt)}
-                            </Typography>
+                            {selectedIndicator.createdAt && (
+                                <Typography variant="body1">
+                                    <strong>{i18n.t("Created")}:</strong>{" "}
+                                    {convertToLocalDate(selectedIndicator.createdAt)}
+                                </Typography>
+                            )}
 
-                            <Typography variant="body1">
-                                <strong>{i18n.t("Last Updated")}:</strong>{" "}
-                                {convertToLocalDate(selectedIndicator.lastUpdatedAt)}
-                            </Typography>
+                            {selectedIndicator.lastUpdatedAt && (
+                                <Typography variant="body1">
+                                    <strong>{i18n.t("Last Updated")}:</strong>{" "}
+                                    {convertToLocalDate(selectedIndicator.lastUpdatedAt)}
+                                </Typography>
+                            )}
                         </Grid>
 
                         <Grid item xs={12}>

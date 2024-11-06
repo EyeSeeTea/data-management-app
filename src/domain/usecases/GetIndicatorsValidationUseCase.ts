@@ -14,14 +14,12 @@ import { UniqueBeneficiariesSettingsRepository } from "../repositories/UniqueBen
 export class GetIndicatorsValidationUseCase {
     private actualCombination: Ref & { displayName: string };
     constructor(
-        private repositories: {
-            dataValueRepository: DataValueRepository;
-            uniqueBeneficiariesSettingsRepository: UniqueBeneficiariesSettingsRepository;
-            projectRepository: ProjectRepository;
-            config: Config;
-        }
+        private dataValueRepository: DataValueRepository,
+        private uniqueBeneficiariesSettingsRepository: UniqueBeneficiariesSettingsRepository,
+        private projectRepository: ProjectRepository,
+        private config: Config
     ) {
-        this.actualCombination = this.repositories.config.categoryOptionCombos.actual;
+        this.actualCombination = this.config.categoryOptionCombos.actual;
     }
 
     async execute(options: GetIndicatorsOptions): Promise<IndicatorValidation[]> {
@@ -36,11 +34,11 @@ export class GetIndicatorsValidationUseCase {
     }
 
     private async getSettings(projectId: Id): Promise<UniqueBeneficiariesSettings> {
-        return this.repositories.uniqueBeneficiariesSettingsRepository.get(projectId);
+        return this.uniqueBeneficiariesSettingsRepository.get(projectId);
     }
 
     private async getProjectById(projectId: Id): Promise<Project> {
-        return this.repositories.projectRepository.getById(projectId);
+        return this.projectRepository.getById(projectId);
     }
 
     private async getIndicatorsWithValues(
@@ -70,7 +68,7 @@ export class GetIndicatorsValidationUseCase {
         dataSetId: Id,
         projectId: Id,
         settings: UniqueBeneficiariesSettings,
-        indicatorsDetails: Array<{ id: Id; code: Code }>
+        indicatorsDetails: Array<{ id: Id; name: string; code: Code }>
     ): Promise<IndicatorValidation> {
         const dateRange = this.getDatesRange(period);
         const dataValues = await this.getDataValues(dataSetId, projectId, settings, dateRange);
@@ -89,7 +87,8 @@ export class GetIndicatorsValidationUseCase {
                 indicatorId,
                 existingRecord,
                 actualDataValues,
-                details
+                details,
+                Boolean(indicatorCalculation?.createdAt)
             );
         });
 
@@ -108,7 +107,7 @@ export class GetIndicatorsValidationUseCase {
         dateRange: DateRange
     ) {
         const { startDate, endDate } = dateRange;
-        return this.repositories.dataValueRepository.get({
+        return this.dataValueRepository.get({
             dataSetIds: [dataSetId],
             orgUnitIds: [projectId],
             startDate: startDate.toISOString(),

@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-10-26T21:58:24.624Z\n"
-"PO-Revision-Date: 2024-10-26T21:58:24.624Z\n"
+"POT-Creation-Date: 2024-11-06T13:59:57.869Z\n"
+"PO-Revision-Date: 2024-11-06T13:59:57.869Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -160,6 +160,9 @@ msgid "<No value>"
 msgstr ""
 
 msgid "Help"
+msgstr ""
+
+msgid "Loading..."
 msgstr ""
 
 msgid "Projects view"
@@ -861,6 +864,42 @@ msgstr ""
 msgid "Non-COVID-19"
 msgstr ""
 
+msgid "Country Project & Indicators"
+msgstr ""
+
+msgid "Select period"
+msgstr ""
+
+msgid "No projects found for selected period: {{period}}"
+msgstr ""
+
+msgid "Saving..."
+msgstr ""
+
+msgid "Loading projects and indicators..."
+msgstr ""
+
+msgid "Selected Activity Indicators"
+msgstr ""
+
+msgid "Unique Beneficiaries"
+msgstr ""
+
+msgid "Include?"
+msgstr ""
+
+msgid "Total Unique Served"
+msgstr ""
+
+msgid "Country Unique Beneficiaries"
+msgstr ""
+
+msgid "N/A"
+msgstr ""
+
+msgid "Country Projects & Indicators"
+msgstr ""
+
 msgid "Award Number Dashboard"
 msgstr ""
 
@@ -909,9 +948,6 @@ msgid "Sending..."
 msgstr ""
 
 msgid "Send"
-msgstr ""
-
-msgid "Loading..."
 msgstr ""
 
 msgid "There is no data for this month"

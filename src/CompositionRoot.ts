@@ -3,13 +3,16 @@ import { DataValueD2Repository } from "./data/repositories/DataValueD2Repository
 import { DataValueExportJsonRepository } from "./data/repositories/DataValueExportJsonRepository";
 import { ExportDataElementJsonRepository } from "./data/repositories/ExportDataElementJsonRepository";
 import { ImportDataElementSpreadSheetRepository } from "./data/repositories/ImportDataElementSpreadSheetRepository";
+import { IndicatorReportD2Repository } from "./data/repositories/IndicatorReportD2Repository";
 import { OrgUnitD2Repository } from "./data/repositories/OrgUnitD2Repository";
 import { ProjectD2Repository } from "./data/repositories/ProjectD2Repository";
 import { UniqueBeneficiariesSettingsD2Repository } from "./data/repositories/UniqueBeneficiariesSettingsD2Repository";
 import { GetIndicatorsValidationUseCase } from "./domain/usecases/GetIndicatorsValidationUseCase";
+import { GetProjectsByCountryUseCase } from "./domain/usecases/GetProjectsByCountryUseCase";
 import { GetUniqueBeneficiariesSettingsUseCase } from "./domain/usecases/GetUniqueBeneficiariesSettingsUseCase";
 import { ImportDataElementsUseCase } from "./domain/usecases/ImportDataElementsUseCase";
 import { RemoveUniqueBeneficiariesPeriodUseCase } from "./domain/usecases/RemoveUniqueBeneficiariesPeriodUseCase";
+import { SaveIndicatorReportUseCase } from "./domain/usecases/SaveIndicatorReportUseCase";
 import { SaveIndicatorsValidationUseCase } from "./domain/usecases/SaveIndicatorsValidationUseCase";
 import { SaveUniqueBeneficiariesSettingsUseCase } from "./domain/usecases/SaveUniqueBeneficiariesSettingsUseCase";
 import { Config } from "./models/Config";
@@ -27,6 +30,7 @@ export function getCompositionRoot(api: D2Api, config: Config) {
     const dataValueExportRepository = new DataValueExportJsonRepository();
     const orgUnitRepository = new OrgUnitD2Repository(api);
     const projectRepository = new ProjectD2Repository(api, config);
+    const indicatorReportRepository = new IndicatorReportD2Repository(api, config);
 
     return {
         dataElements: {
@@ -51,15 +55,24 @@ export function getCompositionRoot(api: D2Api, config: Config) {
             ),
         },
         indicators: {
-            getValidation: new GetIndicatorsValidationUseCase({
+            getValidation: new GetIndicatorsValidationUseCase(
                 dataValueRepository,
                 uniqueBeneficiariesSettingsRepository,
                 projectRepository,
-                config,
-            }),
-            saveValidation: new SaveIndicatorsValidationUseCase({
-                settingsRepository: uniqueBeneficiariesSettingsRepository,
-            }),
+                config
+            ),
+            saveValidation: new SaveIndicatorsValidationUseCase(
+                uniqueBeneficiariesSettingsRepository
+            ),
+            saveReports: new SaveIndicatorReportUseCase(indicatorReportRepository),
+        },
+        projects: {
+            getByCountry: new GetProjectsByCountryUseCase(
+                projectRepository,
+                uniqueBeneficiariesSettingsRepository,
+                dataElementRepository,
+                indicatorReportRepository
+            ),
         },
     };
 }

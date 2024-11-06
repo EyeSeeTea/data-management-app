@@ -1,7 +1,7 @@
 import React from "react";
 import { ConfirmationDialog, useLoading, useSnackbar } from "@eyeseetea/d2-ui-components";
 import { Dialog, DialogContent, DialogTitle } from "@material-ui/core";
-import { useHistory, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import PageHeader from "../../components/page-header/PageHeader";
 import {
     ActionTable,
@@ -16,11 +16,12 @@ import {
 import i18n from "../../locales";
 import { UniquePeriodsForm } from "./UniquePeriodsForm";
 import { useGetUniqueBeneficiaries } from "../../hooks/UniqueBeneficiaries";
+import { useGoTo } from "../../router";
 
 export const UniqueBeneficiariesPeriodsPage = React.memo(() => {
     const { compositionRoot } = useAppContext();
     const { id } = useParams<Ref>();
-    const history = useHistory();
+    const goTo = useGoTo();
     const snackbar = useSnackbar();
     const loading = useLoading();
     const [savePeriodModal, setSavePeriodModal] = React.useState(false);
@@ -94,7 +95,7 @@ export const UniqueBeneficiariesPeriodsPage = React.memo(() => {
         <div>
             <PageHeader
                 title={i18n.t("Unique Beneficiaries Periods")}
-                onBackClick={() => history.push("/")}
+                onBackClick={() => goTo("projects")}
             />
 
             <UniqueBeneficiariesTable

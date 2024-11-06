@@ -17,7 +17,8 @@ export type IndicatorCalculationAttrs = {
     comment: string;
     previousValue?: number;
     nextValue?: number;
-    code?: Code;
+    code: Code;
+    name: string;
 };
 
 export class IndicatorCalculation extends Struct<IndicatorCalculationAttrs>() {
@@ -81,9 +82,9 @@ export class IndicatorCalculation extends Struct<IndicatorCalculationAttrs>() {
         id: Id,
         existingRecord: Maybe<IndicatorCalculation>,
         dataValues: DataValue[],
-        details: Pick<DataElement, "id" | "code">
+        details: Pick<DataElement, "id" | "code" | "name">,
+        verifyChangesInValues: boolean
     ): IndicatorCalculation {
-        const verifyChangesInValues = Boolean(existingRecord);
         const newValueSum = _(dataValues)
             .filter(dataValue => dataValue.dataElement === id)
             .sumBy(dataValue => Number(dataValue.value || 0));
@@ -103,6 +104,7 @@ export class IndicatorCalculation extends Struct<IndicatorCalculationAttrs>() {
             previousValue: newValueHasChanged ? existingRecord?.newValue : undefined,
             nextValue: newValueHasChanged ? newValueSum : undefined,
             code: details.code,
+            name: details.name,
         }).get();
     }
 

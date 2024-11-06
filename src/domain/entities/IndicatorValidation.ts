@@ -1,4 +1,3 @@
-import _ from "lodash";
 import { Maybe } from "../../types/utils";
 import { Either } from "./generic/Either";
 import { ValidationError } from "./generic/Errors";
@@ -35,18 +34,9 @@ export class IndicatorValidation extends Struct<IndicatorValidationAttrs>() {
             value: data.period,
         };
 
-        const calculatorsProperty: ValidationError<IndicatorValidation> = {
-            property: "indicatorsCalculation",
-            errors: validateRequired(data.indicatorsCalculation),
-            value: data.indicatorsCalculation,
-        };
-
-        const errors: ValidationError<IndicatorValidation>[] = _([
-            periodProperty,
-            calculatorsProperty,
-        ])
-            .filter(validation => validation.errors.length > 0)
-            .value();
+        const errors: ValidationError<IndicatorValidation>[] = [periodProperty].filter(
+            validation => validation.errors.length > 0
+        );
 
         return errors;
     }

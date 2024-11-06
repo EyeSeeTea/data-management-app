@@ -36,7 +36,7 @@ export const IndicatorValidationTable = (props: IndicatorValidationTableProps) =
                         return (
                             <Tooltip title={hasChanged ? tooltipTitle : ""}>
                                 <Typography color={hasChanged ? "secondary" : "initial"}>
-                                    {row.code}
+                                    {row.name} ({row.code})
                                 </Typography>
                             </Tooltip>
                         );

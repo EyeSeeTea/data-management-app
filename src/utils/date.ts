@@ -48,3 +48,8 @@ export const monthFormat = "YYYYMM";
 export function getPeriodIds(range: Moment[]): Array<{ id: string }> {
     return range.map(m => ({ id: m.format(monthFormat) }));
 }
+
+export function buildMonthYearFormatDate(dateIsoString: string): string {
+    // examples: JAN 2021, NOV 2024
+    return new Date(dateIsoString).toLocaleString("default", { month: "short", year: "numeric" });
+}

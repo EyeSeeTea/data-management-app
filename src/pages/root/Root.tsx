@@ -14,6 +14,7 @@ import AwardNumberDashboard from "../dashboard/AwardNumberDashboard";
 import { LastLocationProvider } from "react-router-last-location";
 import { UniqueBeneficiariesPeriodsPage } from "../unique-periods/UniqueBeneficiariesPeriodsPage";
 import { ProjectIndicatorsValidation } from "../project-indicators-validation/ProjectIndicatorsValidation";
+import { CountryIndicatorReport } from "../country-indicator-report/CountryIndicatorReport";
 
 const Root = () => {
     const idParam = { id: ":id" };
@@ -86,6 +87,11 @@ const Root = () => {
                     />
 
                     <Route path={generateUrl("countries")} render={() => <CountriesList />} />
+
+                    <Route
+                        path={generateUrl("countryIndicatorsReport")}
+                        render={() => <CountryIndicatorReport />}
+                    />
 
                     <Route render={() => <ProjectsList />} />
                 </Switch>

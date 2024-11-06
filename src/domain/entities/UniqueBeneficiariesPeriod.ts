@@ -9,6 +9,7 @@ import {
     validatePeriodType,
     validateRequired,
 } from "./generic/Validations";
+import { Id } from "./Ref";
 
 export type PeriodType = typeof periodsTypes[number];
 
@@ -18,6 +19,7 @@ export type UniqueBeneficiariesPeriodsAttrs = {
     type: PeriodType;
     startDateMonth: number;
     endDateMonth: number;
+    projectId?: Id;
 };
 
 export class UniqueBeneficiariesPeriod extends Struct<UniqueBeneficiariesPeriodsAttrs>() {

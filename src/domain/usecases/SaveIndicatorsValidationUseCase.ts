@@ -4,13 +4,11 @@ import { UniqueBeneficiariesSettings } from "../entities/UniqueBeneficiariesSett
 import { UniqueBeneficiariesSettingsRepository } from "../repositories/UniqueBeneficiariesSettingsRepository";
 
 export class SaveIndicatorsValidationUseCase {
-    constructor(
-        private repositories: { settingsRepository: UniqueBeneficiariesSettingsRepository }
-    ) {}
+    constructor(private settingsRepository: UniqueBeneficiariesSettingsRepository) {}
 
     async execute(options: SaveIndicatorsOptions): Promise<void> {
         const { indicatorsValidation, projectId } = options;
-        const settings = await this.repositories.settingsRepository.get(projectId);
+        const settings = await this.settingsRepository.get(projectId);
 
         const hasErrors = IndicatorValidation.validateCommentIndicators(
             indicatorsValidation.indicatorsCalculation
@@ -45,7 +43,7 @@ export class SaveIndicatorsValidationUseCase {
                   })
                 : settings.indicatorsValidation.concat(indicatorValidationToSave),
         };
-        return this.repositories.settingsRepository.save(settingsToSave);
+        return this.settingsRepository.save(settingsToSave);
     }
 }
 

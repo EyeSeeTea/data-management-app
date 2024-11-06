@@ -17,6 +17,7 @@ const routes = {
     countries: () => `/countries`,
     uniqueBeneficiariesPeriods: ({ id }: { id: string }) => `/unique-beneficiaries-periods/${id}`,
     projectIndicatorsValidation: ({ id }: { id: string }) => `/project-indicators-validation/${id}`,
+    countryIndicatorsReport: () => "/country-indicators-report",
 };
 
 type Routes = typeof routes;

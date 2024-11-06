@@ -5,14 +5,7 @@ import {
     GetDataValueOptions,
 } from "../../domain/repositories/DataValueRepository";
 import { D2DataElementGroup } from "./D2DataElementGroup";
-import { Ref } from "../../domain/entities/Ref";
-import { DataElementGroup } from "../DataElementGroup";
-import { getUid } from "../../utils/dhis2";
-import { Maybe } from "../../types/utils";
 import { writeToDisk } from "../../scripts/utils/logger";
-
-const DE_DELETE_GROUP_CODE = "DEG_TEMP_REMOVE_DATAELEMENTS";
-
 export class DataValueD2Repository implements DataValueRepository {
     d2DataElementGroup: D2DataElementGroup;
     constructor(private api: D2Api) {
@@ -20,22 +13,18 @@ export class DataValueD2Repository implements DataValueRepository {
     }
 
     async get(options: GetDataValueOptions): Promise<DataValue[]> {
-        const dataElementGroup = await this.createTempDataElementGroup(options);
         const res$ = this.api.dataValues.getSet({
             dataSet: options.dataSetIds || [],
+            dataElement: options.dataElementsIds || [],
             orgUnit: options.orgUnitIds,
-            dataElementGroup: dataElementGroup ? [dataElementGroup.id] : undefined,
             children: options.children,
             includeDeleted: false,
             startDate: options.startDate,
             endDate: options.endDate,
         });
         const res = await res$.getData();
-        if (dataElementGroup) {
-            await this.d2DataElementGroup.remove([dataElementGroup]);
-            if (options.logDataElements) {
-                await this.exportSqlAuditDataElements(dataElementGroup.dataElements);
-            }
+        if (options.logDataElements && options.dataElementsIds) {
+            await this.exportSqlAuditDataElements(options.dataElementsIds);
         }
         return res.dataValues;
     }
@@ -54,24 +43,7 @@ export class DataValueD2Repository implements DataValueRepository {
         console.info("Soft deleted data values finished.");
     }
 
-    private async createTempDataElementGroup(
-        options: GetDataValueOptions
-    ): Promise<Maybe<DataElementGroup>> {
-        if (!options.dataElementsIds) return undefined;
-        const tempDataElementGroup: DataElementGroup = {
-            id: getUid("dataElementGroups", DE_DELETE_GROUP_CODE),
-            code: DE_DELETE_GROUP_CODE,
-            name: DE_DELETE_GROUP_CODE,
-            shortName: DE_DELETE_GROUP_CODE,
-            dataElements: options.dataElementsIds.map(dataElementId => ({ id: dataElementId })),
-        };
-        const ids = [tempDataElementGroup.id];
-        await this.d2DataElementGroup.save(ids, [tempDataElementGroup], [], { post: true });
-        return tempDataElementGroup;
-    }
-
-    private async exportSqlAuditDataElements(dataElements: Ref[]): Promise<void> {
-        const dataElementsIds = dataElements.map(dataElement => `'${dataElement.id}'`).join(",");
+    private async exportSqlAuditDataElements(dataElementsIds: string[]): Promise<void> {
         const sqlContent = `delete from datavalueaudit where dataelementid IN (select dataelementid from dataelement where uid IN (${dataElementsIds}));`;
         writeToDisk("audit_data_element.sql", sqlContent);
     }
