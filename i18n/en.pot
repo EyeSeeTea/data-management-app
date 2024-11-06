@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-11-06T21:14:03.006Z\n"
-"PO-Revision-Date: 2024-11-06T21:14:03.006Z\n"
+"POT-Creation-Date: 2024-11-06T21:38:31.863Z\n"
+"PO-Revision-Date: 2024-11-06T21:38:31.863Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -989,6 +989,9 @@ msgid "Project Indicators Validation"
 msgstr ""
 
 msgid "Select a Period"
+msgstr ""
+
+msgid "Unique in Project"
 msgstr ""
 
 msgid "Previous Value"

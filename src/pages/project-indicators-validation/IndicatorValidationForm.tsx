@@ -1,3 +1,4 @@
+import _ from "lodash";
 import React from "react";
 import { Dropdown, useSnackbar } from "@eyeseetea/d2-ui-components";
 import i18n from "../../locales";
@@ -108,6 +109,10 @@ export const IndicatorValidationForm = React.memo((props: IndicatorValidationFor
 
     const showNotification = hasChanged || false;
 
+    const total = _(selectedIndicator?.indicatorsCalculation).sumBy(indicator =>
+        IndicatorCalculation.getTotal(indicator)
+    );
+
     return (
         <div>
             <PageHeader
@@ -147,6 +152,11 @@ export const IndicatorValidationForm = React.memo((props: IndicatorValidationFor
                                 data={selectedIndicator.indicatorsCalculation}
                                 onRowChange={updateIndicatorsValidationRow}
                             />
+                            <div className={classes.totalContainer}>
+                                <Typography>
+                                    {i18n.t("Unique in Project")}: {total}
+                                </Typography>
+                            </div>
                         </Grid>
 
                         <Grid item className={classes.alignRight}>
@@ -196,6 +206,12 @@ function convertToLocalDate(isoDateString: Maybe<ISODateTimeString>): string {
 
 const useStyles = makeStyles({
     alignRight: { marginLeft: "auto" },
+    totalContainer: {
+        display: "flex",
+        paddingBlock: "0 1em",
+        paddingInline: "0 1em",
+        justifyContent: "flex-end",
+    },
 });
 
 IndicatorValidationForm.displayName = "IndicatorValidationForm";
