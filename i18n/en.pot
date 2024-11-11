@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-11-06T21:38:31.863Z\n"
-"PO-Revision-Date: 2024-11-06T21:38:31.863Z\n"
+"POT-Creation-Date: 2024-11-11T16:40:18.991Z\n"
+"PO-Revision-Date: 2024-11-11T16:40:18.991Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -349,6 +349,30 @@ msgid "{{value}} is not a valid value for {{fieldName}}"
 msgstr ""
 
 msgid "{{fieldName}} must be a positive number"
+msgstr ""
+
+msgid "Start date must be before end date"
+msgstr ""
+
+msgid "No unique indicators selected"
+msgstr ""
+
+msgid "Cannot delete a protected period"
+msgstr ""
+
+msgid "Cannot save indicators without comments"
+msgstr ""
+
+msgid "Period not found: {{period}}"
+msgstr ""
+
+msgid "Period is equal to the predefined annual/semi-annual period"
+msgstr ""
+
+msgid "Cannot save a protected period"
+msgstr ""
+
+msgid "Cannot save duplicate periods"
 msgstr ""
 
 msgid "Error saving dashboard"

@@ -22,7 +22,10 @@ export class SaveIndicatorsValidationUseCase {
         );
         if (!periodIsValid)
             throw new Error(
-                i18n.t(`Period not found: {{period}}`, { period: indicatorsValidation.period.id })
+                i18n.t("Period not found: {{period}}", {
+                    nsSeparator: false,
+                    period: indicatorsValidation.period.id,
+                })
             );
 
         const indicatorExist = settings.indicatorsValidation.find(
