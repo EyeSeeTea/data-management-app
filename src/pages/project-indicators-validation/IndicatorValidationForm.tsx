@@ -75,6 +75,15 @@ export const IndicatorValidationForm = React.memo((props: IndicatorValidationFor
         (value: string, indexRow: number, attributeName: IndicatorCalculationKeys) => {
             setIndicatorValidation(prevState => {
                 if (!prevState) return prevState;
+
+                if (attributeName === "editableNewValue" || attributeName === "returningValue") {
+                    const numericValue = Number(value);
+                    if (numericValue < 0) {
+                        snackbar.error(i18n.t("Value must be greater than or equal to zero"));
+                        return prevState;
+                    }
+                }
+
                 return IndicatorValidation.build({
                     ...prevState,
                     indicatorsCalculation: prevState.indicatorsCalculation.map((item, index) => {
@@ -87,7 +96,7 @@ export const IndicatorValidationForm = React.memo((props: IndicatorValidationFor
                 }).get();
             });
         },
-        []
+        [snackbar]
     );
 
     const saveIndicatorValidation = React.useCallback(

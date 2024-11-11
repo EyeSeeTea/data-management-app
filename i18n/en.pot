@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-11-11T16:40:18.991Z\n"
-"PO-Revision-Date: 2024-11-11T16:40:18.991Z\n"
+"POT-Creation-Date: 2024-11-11T20:26:06.613Z\n"
+"PO-Revision-Date: 2024-11-11T20:26:06.613Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -1007,6 +1007,9 @@ msgid ""
 msgstr ""
 
 msgid "Period not found"
+msgstr ""
+
+msgid "Value must be greater than or equal to zero"
 msgstr ""
 
 msgid "Project Indicators Validation"
