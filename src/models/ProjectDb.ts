@@ -744,12 +744,7 @@ export default class ProjectDb {
                     projectInfo.uniqueBeneficiaries.indicatorsIds
                 );
                 const value = { selectedIds, selectedMERIds, uniqueIndicatorsIds };
-                type Value = {
-                    selectedIds: Id[];
-                    selectedMERIds: Id[];
-                    uniqueIndicatorsIds: Id[];
-                };
-                return sector ? ([sector.id, value] as [string, Value]) : null;
+                return sector ? ([sector.id, value] as [string, typeof value]) : null;
             })
             .compact()
             .fromPairs()

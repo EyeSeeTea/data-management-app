@@ -30,10 +30,6 @@ export const CountryIndicatorReport = React.memo(() => {
         indicatorsReports,
     });
 
-    const updateSelectedOrgUnit = (orgUnit: OrganisationUnit) => {
-        setOrgUnit(orgUnit);
-    };
-
     const updatePeriod = (periodId: Maybe<string>) => {
         const periods = getUniquePeriods(indicatorsReports);
         const period = periods.find(period => period.id === periodId);
@@ -42,16 +38,19 @@ export const CountryIndicatorReport = React.memo(() => {
         }
     };
 
-    const updateReport = (value: boolean, row: GroupedRows) => {
-        if (!selectedPeriod) return;
+    const updateReport = React.useCallback(
+        (value: boolean, row: GroupedRows) => {
+            if (!selectedPeriod) return;
 
-        const updatedIndicators = indicatorsReports.map(indicatorReport => {
-            if (indicatorReport.period.id !== selectedPeriod.id) return indicatorReport;
+            const updatedIndicators = indicatorsReports.map(indicatorReport => {
+                if (indicatorReport.period.id !== selectedPeriod.id) return indicatorReport;
 
-            return indicatorReport.updateProjectIndicators(row.project.id, row.id, value);
-        });
-        setIndicatorsReports(updatedIndicators);
-    };
+                return indicatorReport.updateProjectIndicators(row.project.id, row.id, value);
+            });
+            setIndicatorsReports(updatedIndicators);
+        },
+        [indicatorsReports, selectedPeriod, setIndicatorsReports]
+    );
 
     const indicatorReport = indicatorsReports.find(
         report => report.period.id === selectedPeriod?.id
@@ -76,7 +75,7 @@ export const CountryIndicatorReport = React.memo(() => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <UserOrgUnits
-                        onChange={updateSelectedOrgUnit}
+                        onChange={setOrgUnit}
                         selected={orgUnit}
                         selectableLevels={[1, 2]}
                         withElevation={false}

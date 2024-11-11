@@ -1,7 +1,8 @@
 import _ from "lodash";
+import { getUid } from "../../utils/dhis2";
 
 import { Either } from "./generic/Either";
-import { ValidationError } from "./generic/Errors";
+import { ValidationError, ValidationErrorKey } from "./generic/Errors";
 import { Struct } from "./generic/Struct";
 import {
     betweenValue,
@@ -52,14 +53,14 @@ export class UniqueBeneficiariesPeriod extends Struct<UniqueBeneficiariesPeriods
         return [semiAnnualPeriod, yearlyPeriod];
     }
 
-    public static isProtected(data: UniqueBeneficiariesPeriodsAttrs): boolean {
-        return data.id === "annual" || data.id === "semi-annual";
+    isProtected(): boolean {
+        return this.id === "annual" || this.id === "semi-annual";
     }
 
     public static initialPeriodData(): UniqueBeneficiariesPeriod {
         return this.create({
             endDateMonth: 12,
-            id: "",
+            id: getUid("unique_beneficiaries_period", new Date().getTime().toString()),
             name: "",
             startDateMonth: 1,
             type: "CUSTOM",
@@ -82,6 +83,11 @@ export class UniqueBeneficiariesPeriod extends Struct<UniqueBeneficiariesPeriods
     private static checkDataAndGetErrors(
         data: UniqueBeneficiariesPeriodsAttrs
     ): ValidationError<UniqueBeneficiariesPeriod>[] {
+        const dateDifferentError: ValidationErrorKey[] =
+            data.startDateMonth > data.endDateMonth || data.startDateMonth === data.endDateMonth
+                ? ["invalid_period_date_range"]
+                : [];
+
         const errors: ValidationError<UniqueBeneficiariesPeriod>[] = _([
             {
                 property: "name" as const,
@@ -99,9 +105,14 @@ export class UniqueBeneficiariesPeriod extends Struct<UniqueBeneficiariesPeriods
                 value: data.startDateMonth,
             },
             {
-                property: "endDateMonth" as const,
-                errors: betweenValue(data.endDateMonth, 1, 12),
-                value: data.endDateMonth,
+                property: "startDateMonth" as const,
+                errors: betweenValue(data.startDateMonth, 1, 12),
+                value: data.startDateMonth,
+            },
+            {
+                property: "startDateMonth" as const,
+                errors: dateDifferentError,
+                value: data.startDateMonth,
             },
         ])
             .filter(validation => validation.errors.length > 0)

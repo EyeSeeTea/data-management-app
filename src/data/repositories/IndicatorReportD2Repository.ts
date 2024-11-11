@@ -132,10 +132,10 @@ export class IndicatorReportD2Repository implements IndicatorReportRepository {
     private async getProjectsByIds(projectIds: Id[]): Promise<ProjectCountry[]> {
         const projects = await promiseMap(projectIds, id => Project.get(this.api, this.config, id));
         return projects.map(project => ({
-            closedDate: project.endDate?.toISOString() || "",
             id: project.id,
             name: project.name,
             openingDate: project.startDate?.toISOString() || "",
+            closedDate: project.endDate?.toISOString() || "",
         }));
     }
 

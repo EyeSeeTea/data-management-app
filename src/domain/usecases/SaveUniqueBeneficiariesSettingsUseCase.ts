@@ -1,3 +1,4 @@
+import i18n from "../../locales";
 import { UniqueBeneficiariesPeriod } from "../entities/UniqueBeneficiariesPeriod";
 import { UniqueBeneficiariesSettings } from "../entities/UniqueBeneficiariesSettings";
 import { UniqueBeneficiariesSettingsRepository } from "../repositories/UniqueBeneficiariesSettingsRepository";
@@ -8,15 +9,31 @@ export class SaveUniqueBeneficiariesSettingsUseCase {
     async execute(options: SaveSettingsOptions): Promise<void> {
         const settings = await this.repository.get(options.projectId);
         const periodExist = settings.periods.some(period => period.id === options.period.id);
-        const isPeriodProtected = UniqueBeneficiariesPeriod.isProtected(options.period);
+        const isPeriodProtected = options.period.isProtected();
         const { isValid, errorMessage } = UniqueBeneficiariesPeriod.validate(options.period);
+
+        if (this.isAnnualOrSemiAnnual(options.period)) {
+            throw new Error(i18n.t("Period is equal to the predefined annual/semi-annual period"));
+        }
+
         if (!isValid) {
             throw new Error(errorMessage);
         }
+
         if (isPeriodProtected) {
-            throw new Error("Cannot save a protected period");
+            throw new Error(i18n.t("Cannot save a protected period"));
         }
+
         return this.saveSettings(settings, periodExist, options);
+    }
+
+    private isAnnualOrSemiAnnual(period: UniqueBeneficiariesPeriod): boolean {
+        const defaultPeriods = UniqueBeneficiariesPeriod.defaultPeriods();
+        return defaultPeriods.some(
+            defaultPeriod =>
+                defaultPeriod.startDateMonth === period.startDateMonth &&
+                defaultPeriod.endDateMonth === period.endDateMonth
+        );
     }
 
     private saveSettings(
@@ -43,7 +60,7 @@ export class SaveUniqueBeneficiariesSettingsUseCase {
             : [...existingPeriods, currentPeriod];
 
         if (!this.checkDuplicatesInPeriods(periodsToSave)) {
-            throw new Error("Cannot save duplicate periods");
+            throw new Error(i18n.t("Cannot save duplicate periods"));
         }
         return periodsToSave;
     }

@@ -107,7 +107,7 @@ export const IndicatorValidationForm = React.memo((props: IndicatorValidationFor
         IndicatorCalculation.commentIsRequired
     );
 
-    const showNotification = hasChanged || false;
+    const showNotification = hasChanged ?? false;
 
     const total = _(selectedIndicator?.indicatorsCalculation).sumBy(indicator =>
         IndicatorCalculation.getTotal(indicator)

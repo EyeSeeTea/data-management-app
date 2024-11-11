@@ -115,8 +115,12 @@ export class IndicatorCalculation extends Struct<IndicatorCalculationAttrs>() {
     }
 
     static calculateTotalValue(editable: Maybe<number>, returning: Maybe<number>): number {
-        if (!editable) return returning || 0;
-        if (!returning) return editable;
-        return editable + returning;
+        if (!editable) {
+            return returning || 0;
+        } else if (!returning) {
+            return editable;
+        } else {
+            return editable + returning;
+        }
     }
 }

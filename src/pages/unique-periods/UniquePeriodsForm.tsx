@@ -17,7 +17,7 @@ export type UniquePeriodsFormProps = {
     onSubmit: (uniquePeriods: UniqueBeneficiariesPeriod) => void;
 };
 
-const months = [
+export const months = [
     { value: "1", text: i18n.t("January") },
     { value: "2", text: i18n.t("February") },
     { value: "3", text: i18n.t("March") },

@@ -4,7 +4,7 @@ import { ValidationError } from "./generic/Errors";
 import { Struct } from "./generic/Struct";
 import { validateRequired } from "./generic/Validations";
 import { IndicatorCalculation } from "./IndicatorCalculation";
-import { ISODateTimeString } from "./Ref";
+import { Id, ISODateTimeString } from "./Ref";
 import { UniqueBeneficiariesPeriod } from "./UniqueBeneficiariesPeriod";
 
 export type IndicatorValidationAttrs = {
@@ -34,14 +34,36 @@ export class IndicatorValidation extends Struct<IndicatorValidationAttrs>() {
             value: data.period,
         };
 
-        const errors: ValidationError<IndicatorValidation>[] = [periodProperty].filter(
-            validation => validation.errors.length > 0
-        );
+        const errors = [periodProperty].filter(validation => validation.errors.length > 0);
 
         return errors;
     }
 
     static validateCommentIndicators(indicators: IndicatorCalculation[]): boolean {
         return indicators.some(indicator => IndicatorCalculation.commentIsRequired(indicator));
+    }
+
+    static buildIndicatorsValidationFromPeriods(
+        periods: UniqueBeneficiariesPeriod[],
+        indicatorsIds: Id[]
+    ): IndicatorValidation[] {
+        return periods.map(period => {
+            return IndicatorValidation.build({
+                createdAt: "",
+                lastUpdatedAt: "",
+                period,
+                indicatorsCalculation: indicatorsIds.map(indicatorId => {
+                    return IndicatorCalculation.build({
+                        id: indicatorId,
+                        newValue: 0,
+                        editableNewValue: undefined,
+                        returningValue: undefined,
+                        comment: "",
+                        code: "",
+                        name: "",
+                    }).get();
+                }),
+            }).get();
+        });
     }
 }

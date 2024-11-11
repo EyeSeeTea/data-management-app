@@ -36,17 +36,16 @@ export class D2ApiUbSettings {
     }
 
     private buildSettings(d2Response: Maybe<D2ProjectSettings>, projectId: string) {
-        const periods = this.mergeDefaultPeriodsWithExisting(
-            d2Response?.uniqueBeneficiaries?.periods
-        );
+        const uniqueBeneficiaries = d2Response?.uniqueBeneficiaries;
+        const periods = this.mergeDefaultPeriodsWithExisting(uniqueBeneficiaries?.periods);
 
-        const indicatorsIds = d2Response?.uniqueBeneficiaries?.indicatorsIds || [];
-        const indicatorsValidation = d2Response?.uniqueBeneficiaries?.indicatorsValidation || [];
+        const indicatorsIds = uniqueBeneficiaries?.indicatorsIds || [];
+        const indicatorsValidation = uniqueBeneficiaries?.indicatorsValidation || [];
 
         const hasIndicatorsValidation = indicatorsValidation.length > 0;
         const indicatorsToInclude = hasIndicatorsValidation
             ? this.buildExistingIndicatorsValidation(d2Response, periods)
-            : this.buildIndicatorsValidationFromPeriods(periods, indicatorsIds);
+            : IndicatorValidation.buildIndicatorsValidationFromPeriods(periods, indicatorsIds);
 
         return {
             projectId: projectId,
@@ -69,31 +68,38 @@ export class D2ApiUbSettings {
                 ...(existingSettings?.uniqueBeneficiaries || {}),
                 indicatorsIds: existingSettings?.uniqueBeneficiaries?.indicatorsIds || [],
                 periods: this.buildPeriods(settings.periods),
-                indicatorsValidation: settings.indicatorsValidation.map(indicatorValidation => {
-                    return {
-                        periodId: indicatorValidation.period.id,
-                        createdAt: indicatorValidation.createdAt || currentDate,
-                        lastUpdatedAt: currentDate,
-                        indicatorsCalculation: indicatorValidation.indicatorsCalculation.map(
-                            indicatorCalculation => {
-                                return {
-                                    comment: indicatorCalculation.comment,
-                                    editableNewValue: indicatorCalculation.editableNewValue,
-                                    id: indicatorCalculation.id,
-                                    newValue: indicatorCalculation.newValue,
-                                    returningValue: indicatorCalculation.returningValue,
-                                    total: IndicatorCalculation.getTotal(indicatorCalculation),
-                                    code: "",
-                                    name: "",
-                                };
-                            }
-                        ),
-                    };
-                }),
+                indicatorsValidation: this.mapIndicatorValidations(settings, currentDate),
             },
         };
 
         await this.dataStore.save(this.buildKeyId(settings.projectId), d2SettingsToSave).getData();
+    }
+
+    private mapIndicatorValidations(
+        settings: UniqueBeneficiariesSettings,
+        currentDate: string
+    ): D2IndicatorValidation[] {
+        return settings.indicatorsValidation.map(indicatorValidation => {
+            return {
+                periodId: indicatorValidation.period.id,
+                createdAt: indicatorValidation.createdAt || currentDate,
+                lastUpdatedAt: currentDate,
+                indicatorsCalculation: indicatorValidation.indicatorsCalculation.map(
+                    indicatorCalculation => {
+                        return {
+                            comment: indicatorCalculation.comment,
+                            editableNewValue: indicatorCalculation.editableNewValue,
+                            id: indicatorCalculation.id,
+                            newValue: indicatorCalculation.newValue,
+                            returningValue: indicatorCalculation.returningValue,
+                            total: IndicatorCalculation.getTotal(indicatorCalculation),
+                            code: "",
+                            name: "",
+                        };
+                    }
+                ),
+            };
+        });
     }
 
     private async getAllSettings(
@@ -110,7 +116,8 @@ export class D2ApiUbSettings {
 
     private convertEntriesToSettings(entries: D2Entries[]): UniqueBeneficiariesSettings[] {
         return entries.map((d2Entry): UniqueBeneficiariesSettings => {
-            return this.buildSettings(d2Entry, d2Entry.key.replace(this.getProjectKey(), ""));
+            const projectId = d2Entry.key.replace(this.getProjectKey(), "");
+            return this.buildSettings(d2Entry, projectId);
         });
     }
 
@@ -122,30 +129,6 @@ export class D2ApiUbSettings {
                 params: { page: page, pageSize: 50, fields: "uniqueBeneficiaries" },
             })
             .getData();
-    }
-
-    private buildIndicatorsValidationFromPeriods(
-        periods: UniqueBeneficiariesPeriod[],
-        indicatorsIds: Id[]
-    ): IndicatorValidation[] {
-        return periods.map(period => {
-            return IndicatorValidation.build({
-                createdAt: "",
-                lastUpdatedAt: "",
-                period,
-                indicatorsCalculation: indicatorsIds.map(indicatorId => {
-                    return IndicatorCalculation.build({
-                        id: indicatorId,
-                        newValue: 0,
-                        editableNewValue: undefined,
-                        returningValue: undefined,
-                        comment: "",
-                        code: "",
-                        name: "",
-                    }).get();
-                }),
-            }).get();
-        });
     }
 
     private buildExistingIndicatorsValidation(
@@ -200,7 +183,7 @@ export class D2ApiUbSettings {
     }
 
     private excludeDefaultPeriods(periods: UniqueBeneficiariesPeriod[]) {
-        return periods.filter(period => !UniqueBeneficiariesPeriod.isProtected(period));
+        return periods.filter(period => !period.isProtected());
     }
 
     private mergeDefaultPeriodsWithExisting(existingPeriods: Maybe<UniqueBeneficiariesPeriod[]>) {

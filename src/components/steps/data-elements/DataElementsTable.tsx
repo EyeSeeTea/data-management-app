@@ -92,7 +92,7 @@ const DataElementsTable: React.FC<DataElementsTableProps> = props => {
         initialFilters = {},
     } = props;
     const snackbar = useSnackbar();
-    const [filter, setFilter] = useState<Filter>(initialFilters);
+    const [filter, setFilter] = useState(initialFilters);
 
     const resetKey = { onlySelected, ...filter, sectorId };
 

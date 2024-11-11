@@ -1,11 +1,15 @@
 import React from "react";
+import { Id } from "../../../domain/entities/Ref";
 import { StepProps } from "../../../pages/project-wizard/ProjectWizard";
-import DataElementsStep, { DataElementsStepProps } from "../data-elements/DataElementsStep";
+import { Filter } from "../data-elements/DataElementsFilters";
+import DataElementsStep from "../data-elements/DataElementsStep";
+
+const initialFilters: Filter = { peopleOrBenefit: "people" };
 
 const UniqueIndicatorsStep: React.FC<StepProps> = props => {
     const { project } = props;
-    const getSelection: DataElementsStepProps["onSelect"] = React.useCallback(
-        (sectorId, dataElementIds) => {
+    const getSelection = React.useCallback(
+        (sectorId: Id, dataElementIds: Id[]) => {
             return project.updateUniqueBeneficiariesSelection(sectorId, dataElementIds);
         },
         [project]
@@ -16,7 +20,7 @@ const UniqueIndicatorsStep: React.FC<StepProps> = props => {
             {...props}
             onSelect={getSelection}
             dataElementsSet={project.uniqueIndicators}
-            initialFilters={{ peopleOrBenefit: "people" }}
+            initialFilters={initialFilters}
         />
     );
 };

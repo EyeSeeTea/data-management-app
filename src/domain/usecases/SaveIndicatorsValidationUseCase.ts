@@ -1,3 +1,4 @@
+import i18n from "../../locales";
 import { IndicatorValidation, IndicatorValidationAttrs } from "../entities/IndicatorValidation";
 import { Id } from "../entities/Ref";
 import { UniqueBeneficiariesSettings } from "../entities/UniqueBeneficiariesSettings";
@@ -14,12 +15,15 @@ export class SaveIndicatorsValidationUseCase {
             indicatorsValidation.indicatorsCalculation
         );
 
-        if (hasErrors) throw new Error("Cannot save indicators without comments");
+        if (hasErrors) throw new Error(i18n.t("Cannot save indicators without comments"));
 
         const periodIsValid = settings.periods.find(
             period => period.id === indicatorsValidation.period.id
         );
-        if (!periodIsValid) throw new Error(`Period not found: ${indicatorsValidation.period.id}`);
+        if (!periodIsValid)
+            throw new Error(
+                i18n.t(`Period not found: {{period}}`, { period: indicatorsValidation.period.id })
+            );
 
         const indicatorExist = settings.indicatorsValidation.find(
             item => item.period.id === indicatorsValidation.period.id

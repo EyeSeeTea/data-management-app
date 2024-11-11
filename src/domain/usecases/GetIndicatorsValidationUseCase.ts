@@ -1,3 +1,4 @@
+import i18n from "../../locales";
 import { promiseMap } from "../../migrations/utils";
 import { Config } from "../../models/Config";
 import Project from "../../models/Project";
@@ -13,6 +14,7 @@ import { UniqueBeneficiariesSettingsRepository } from "../repositories/UniqueBen
 
 export class GetIndicatorsValidationUseCase {
     private actualCombination: Ref & { displayName: string };
+
     constructor(
         private dataValueRepository: DataValueRepository,
         private uniqueBeneficiariesSettingsRepository: UniqueBeneficiariesSettingsRepository,
@@ -28,7 +30,8 @@ export class GetIndicatorsValidationUseCase {
             this.getProjectById(options.projectId),
         ]);
 
-        if (settings.indicatorsIds.length === 0) throw Error("No unique indicators selected");
+        if (settings.indicatorsIds.length === 0)
+            throw Error(i18n.t("No unique indicators selected"));
 
         return this.getIndicatorsWithValues(project, settings);
     }

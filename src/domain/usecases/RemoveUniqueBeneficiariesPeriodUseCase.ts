@@ -1,3 +1,4 @@
+import i18n from "../../locales";
 import { UniqueBeneficiariesPeriod } from "../entities/UniqueBeneficiariesPeriod";
 import { UniqueBeneficiariesSettings } from "../entities/UniqueBeneficiariesSettings";
 import { UniqueBeneficiariesSettingsRepository } from "../repositories/UniqueBeneficiariesSettingsRepository";
@@ -7,9 +8,9 @@ export class RemoveUniqueBeneficiariesPeriodUseCase {
 
     async execute(options: Options): Promise<void> {
         const settings = await this.repository.get(options.projectId);
-        const isPeriodProtected = UniqueBeneficiariesPeriod.isProtected(options.period);
+        const isPeriodProtected = options.period.isProtected();
         if (isPeriodProtected) {
-            throw new Error("Cannot delete a protected period");
+            throw new Error(i18n.t("Cannot delete a protected period"));
         }
         return this.save(settings, options);
     }

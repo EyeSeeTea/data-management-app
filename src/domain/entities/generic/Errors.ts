@@ -1,6 +1,10 @@
 import i18n from "../../../locales";
 
-export type ValidationErrorKey = "field_cannot_be_blank" | "not_in_list" | "positive_number";
+export type ValidationErrorKey =
+    | "field_cannot_be_blank"
+    | "not_in_list"
+    | "positive_number"
+    | "invalid_period_date_range";
 
 export const validationErrorMessages: Record<
     ValidationErrorKey,
@@ -18,6 +22,9 @@ export const validationErrorMessages: Record<
         return i18n.t(`{{fieldName}} must be a positive number`, {
             fieldName: fieldName,
         });
+    },
+    invalid_period_date_range: () => {
+        return i18n.t(`Start date must be before end date`);
     },
 };
 

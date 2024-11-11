@@ -34,10 +34,16 @@ export const UniqueBeneficiariesPeriodsPage = React.memo(() => {
     const openSavePeriodDialog = React.useCallback(
         (options: ActionTable) => {
             setSelectedPeriod(settings?.periods.find(period => period.id === options.id));
-            if (options.action === "add" || options.action === "edit") {
-                setSavePeriodModal(true);
-            } else if (options.action === "delete") {
-                setDeleteModal(true);
+            switch (options.action) {
+                case "add":
+                case "edit":
+                    setSavePeriodModal(true);
+                    break;
+                case "delete":
+                    setDeleteModal(true);
+                    break;
+                default:
+                    break;
             }
         },
         [settings?.periods]

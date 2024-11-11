@@ -118,10 +118,6 @@ const TotalCell: RowComponent<GroupedRows> = props => {
 };
 
 const IndicatorCell = (props: IndicatorCellProps) => {
-    const onChangeCheckbox = (value: boolean, row: GroupedRows) => {
-        props.onRowChange(value, row);
-    };
-
     const notAvailableText = i18n.t("N/A");
     const isPeriodNotAvailable = props.row.periodNotAvailable;
 
@@ -137,7 +133,7 @@ const IndicatorCell = (props: IndicatorCellProps) => {
                 ) : (
                     <Checkbox
                         checked={props.row.include}
-                        onChange={event => onChangeCheckbox(event.target.checked, props.row)}
+                        onChange={event => props.onRowChange(event.target.checked, props.row)}
                     />
                 )}
             </TableCell>

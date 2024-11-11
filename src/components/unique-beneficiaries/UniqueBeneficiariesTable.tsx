@@ -2,13 +2,11 @@ import { ObjectsList, useObjectsTable, TableConfig } from "@eyeseetea/d2-ui-comp
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import React from "react";
-import {
-    UniqueBeneficiariesPeriod,
-    UniqueBeneficiariesPeriodsAttrs,
-} from "../../domain/entities/UniqueBeneficiariesPeriod";
+import { UniqueBeneficiariesPeriod } from "../../domain/entities/UniqueBeneficiariesPeriod";
 import i18n from "../../locales";
+import { months } from "../../pages/unique-periods/UniquePeriodsForm";
 
-export type ActionTable = { action: string; id: string };
+export type ActionTable = { action: "edit" | "delete" | "add"; id: string };
 
 export type UniqueBeneficiariesTableProps = {
     onChangeAction: (options: ActionTable) => void;
@@ -17,7 +15,7 @@ export type UniqueBeneficiariesTableProps = {
 
 export const UniqueBeneficiariesTable = React.memo((props: UniqueBeneficiariesTableProps) => {
     const { onChangeAction, periods } = props;
-    const config = React.useMemo((): TableConfig<UniqueBeneficiariesPeriodsAttrs> => {
+    const config = React.useMemo((): TableConfig<UniqueBeneficiariesPeriod> => {
         return {
             onActionButtonClick: () => {
                 onChangeAction({ action: "add", id: "" });
@@ -48,11 +46,15 @@ export const UniqueBeneficiariesTable = React.memo((props: UniqueBeneficiariesTa
                     name: "startDateMonth",
                     text: i18n.t("Start Month"),
                     sortable: false,
+                    getValue: value =>
+                        months.find(month => month.value === String(value.startDateMonth))?.text,
                 },
                 {
                     name: "endDateMonth",
                     text: i18n.t("End Month"),
                     sortable: false,
+                    getValue: value =>
+                        months.find(month => month.value === String(value.endDateMonth))?.text,
                 },
             ],
             initialSorting: { field: "name", order: "asc" },
@@ -81,6 +83,6 @@ function getFirstItem(values: string[]): string {
     return value;
 }
 
-function showAction(rows: UniqueBeneficiariesPeriodsAttrs[]): boolean {
-    return rows.filter(row => !UniqueBeneficiariesPeriod.isProtected(row)).length === 1;
+function showAction(rows: UniqueBeneficiariesPeriod[]): boolean {
+    return rows.filter(row => !row.isProtected()).length === 1;
 }
