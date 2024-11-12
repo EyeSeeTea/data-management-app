@@ -55,4 +55,8 @@ export class IndicatorReport extends Struct<IndicatorReportAttrs>() {
             indicator.indicatorId === indicatorId ? { ...indicator, include } : indicator
         );
     }
+
+    static generateIndicatorFullName(indicator: ProjectIndicatorRow): string {
+        return `${indicator.indicatorName} (${indicator.indicatorCode})`;
+    }
 }

@@ -4,7 +4,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import React from "react";
 import { UniqueBeneficiariesPeriod } from "../../domain/entities/UniqueBeneficiariesPeriod";
 import i18n from "../../locales";
-import { months } from "../../pages/unique-periods/UniquePeriodsForm";
+import { getMonthNameFromNumber } from "../../utils/date";
 
 export type ActionTable = { action: "edit" | "delete" | "add"; id: string };
 
@@ -46,15 +46,13 @@ export const UniqueBeneficiariesTable = React.memo((props: UniqueBeneficiariesTa
                     name: "startDateMonth",
                     text: i18n.t("Start Month"),
                     sortable: false,
-                    getValue: value =>
-                        months.find(month => month.value === String(value.startDateMonth))?.text,
+                    getValue: value => getMonthNameFromNumber(value.startDateMonth),
                 },
                 {
                     name: "endDateMonth",
                     text: i18n.t("End Month"),
                     sortable: false,
-                    getValue: value =>
-                        months.find(month => month.value === String(value.endDateMonth))?.text,
+                    getValue: value => getMonthNameFromNumber(value.endDateMonth),
                 },
             ],
             initialSorting: { field: "name", order: "asc" },

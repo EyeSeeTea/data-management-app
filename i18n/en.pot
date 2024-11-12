@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-11-11T20:26:06.613Z\n"
-"PO-Revision-Date: 2024-11-11T20:26:06.613Z\n"
+"POT-Creation-Date: 2024-11-12T13:23:47.083Z\n"
+"PO-Revision-Date: 2024-11-12T13:23:47.083Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -360,10 +360,7 @@ msgstr ""
 msgid "Cannot delete a protected period"
 msgstr ""
 
-msgid "Cannot save indicators without comments"
-msgstr ""
-
-msgid "Period not found: {{period}}"
+msgid "Cannot save indicators without comments for period: {{period}}"
 msgstr ""
 
 msgid "Period is equal to the predefined annual/semi-annual period"
@@ -891,6 +888,9 @@ msgstr ""
 msgid "No projects found for selected period: {{period}}"
 msgstr ""
 
+msgid "Any changes will be lost. Are you sure you want to proceed?"
+msgstr ""
+
 msgid "Saving..."
 msgstr ""
 
@@ -1006,12 +1006,6 @@ msgid ""
 "{{monthName}}"
 msgstr ""
 
-msgid "Period not found"
-msgstr ""
-
-msgid "Value must be greater than or equal to zero"
-msgstr ""
-
 msgid "Project Indicators Validation"
 msgstr ""
 
@@ -1036,13 +1030,19 @@ msgstr ""
 msgid "Comment is required"
 msgstr ""
 
-msgid "Loading Indicators..."
-msgstr ""
-
 msgid "Saving Indicators..."
 msgstr ""
 
 msgid "Indicators saved"
+msgstr ""
+
+msgid "Loading Indicators..."
+msgstr ""
+
+msgid "Period not found"
+msgstr ""
+
+msgid "Value must be greater than or equal to zero"
 msgstr ""
 
 msgid "Cannot load project"
@@ -1212,9 +1212,6 @@ msgid "Report saved"
 msgstr ""
 
 msgid "The report must be saved before it can be downloaded"
-msgstr ""
-
-msgid "Any changes will be lost. Are you sure you want to proceed?"
 msgstr ""
 
 msgid "Date"

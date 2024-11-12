@@ -1,6 +1,5 @@
-import _ from "lodash";
 import React from "react";
-import { Dropdown, useLoading, useSnackbar } from "@eyeseetea/d2-ui-components";
+import { ConfirmationDialog, Dropdown, useLoading, useSnackbar } from "@eyeseetea/d2-ui-components";
 import { Button, Grid, Typography } from "@material-ui/core";
 
 import UserOrgUnits, { OrganisationUnit } from "../../components/org-units/UserOrgUnits";
@@ -11,27 +10,38 @@ import { useGoTo } from "../../router";
 import { Maybe } from "../../types/utils";
 import { GroupedRows, IndicatorReportTable } from "./IndicatorReportTable";
 import { useAppContext } from "../../contexts/api-context";
-import { getId } from "../../utils/dhis2";
 import { IndicatorReport } from "../../domain/entities/IndicatorReport";
 import { Id } from "../../domain/entities/Ref";
 import { buildSpreadSheet } from "./excel-report";
 import { downloadFile } from "../../utils/download";
+import { useConfirmChanges } from "../../hooks/UseConfirmChanges";
 
 export const CountryIndicatorReport = React.memo(() => {
     const goTo = useGoTo();
     const [orgUnit, setOrgUnit] = React.useState<OrganisationUnit>();
     const [selectedPeriod, setSelectedPeriod] = React.useState<UniqueBeneficiariesPeriod>();
+    const { confirmIfUnsavedChanges, proceedWarning, runProceedAction, wasReportModifiedSet } =
+        useConfirmChanges();
     const { indicatorsReports, setIndicatorsReports } = useGetIndicatorsReport({
         countryId: orgUnit?.id,
+        wasReportModifiedSet,
     });
 
     const saveIndicatorReport = useSaveIndicatorReport({
         countryId: orgUnit?.id,
         indicatorsReports,
+        wasReportModifiedSet,
     });
 
+    const updateOrgUnit = (orgUnit: OrganisationUnit) => {
+        confirmIfUnsavedChanges(() => {
+            setOrgUnit(orgUnit);
+            setSelectedPeriod(undefined);
+        });
+    };
+
     const updatePeriod = (periodId: Maybe<string>) => {
-        const periods = getUniquePeriods(indicatorsReports);
+        const periods = getAllPeriods(indicatorsReports);
         const period = periods.find(period => period.id === periodId);
         if (period) {
             setSelectedPeriod(period);
@@ -48,8 +58,9 @@ export const CountryIndicatorReport = React.memo(() => {
                 return indicatorReport.updateProjectIndicators(row.project.id, row.id, value);
             });
             setIndicatorsReports(updatedIndicators);
+            wasReportModifiedSet(true);
         },
-        [indicatorsReports, selectedPeriod, setIndicatorsReports]
+        [indicatorsReports, selectedPeriod, setIndicatorsReports, wasReportModifiedSet]
     );
 
     const indicatorReport = indicatorsReports.find(
@@ -58,24 +69,27 @@ export const CountryIndicatorReport = React.memo(() => {
 
     const downloadReport = () => {
         if (indicatorReport && orgUnit) {
-            console.log(indicatorReport);
             buildSpreadSheet(indicatorReport, orgUnit.displayName).then(downloadFile);
         }
     };
 
+    const changePage = React.useCallback(() => {
+        confirmIfUnsavedChanges(() => {
+            goTo("projects");
+        });
+    }, [confirmIfUnsavedChanges, goTo]);
+
     const reportHasProjects = indicatorReport && indicatorReport.projects.length > 0;
+    const titlePage = i18n.t("Country Project & Indicators");
 
     return (
         <section>
-            <PageHeader
-                title={i18n.t("Country Project & Indicators")}
-                onBackClick={() => goTo("projects")}
-            />
+            <PageHeader title={i18n.t("Country Project & Indicators")} onBackClick={changePage} />
 
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <UserOrgUnits
-                        onChange={setOrgUnit}
+                        onChange={updateOrgUnit}
                         selected={orgUnit}
                         selectableLevels={[1, 2]}
                         withElevation={false}
@@ -84,19 +98,20 @@ export const CountryIndicatorReport = React.memo(() => {
                 </Grid>
                 <Grid item xs={12}>
                     <Dropdown
-                        items={mapItemsToDropdown(getUniquePeriods(indicatorsReports))}
+                        items={mapItemsToDropdown(getAllPeriods(indicatorsReports))}
                         onChange={period => updatePeriod(period)}
                         label={i18n.t("Select period")}
                         value={selectedPeriod?.id}
                         hideEmpty
                     />
                 </Grid>
-                {reportHasProjects && (
+                {reportHasProjects && selectedPeriod && (
                     <>
                         <Grid item xs={12}>
                             <IndicatorReportTable
                                 report={indicatorReport}
                                 onRowChange={updateReport}
+                                period={selectedPeriod}
                             />
                         </Grid>
                         <Grid item>
@@ -134,18 +149,29 @@ export const CountryIndicatorReport = React.memo(() => {
                     </Typography>
                 )}
             </Grid>
+
+            {proceedWarning.type === "visible" && (
+                <ConfirmationDialog
+                    isOpen
+                    onSave={() => runProceedAction(proceedWarning.action)}
+                    onCancel={() => runProceedAction(() => {})}
+                    title={titlePage}
+                    description={i18n.t(
+                        "Any changes will be lost. Are you sure you want to proceed?"
+                    )}
+                    saveText={i18n.t("Yes")}
+                    cancelText={i18n.t("No")}
+                />
+            )}
         </section>
     );
 });
 
 CountryIndicatorReport.displayName = "CountryIndicatorReport";
 
-function getUniquePeriods(settings: IndicatorReport[]): UniqueBeneficiariesPeriod[] {
-    return _(settings)
-        .map(setting => setting.period)
-        .compact()
-        .uniqBy(getId)
-        .value();
+function getAllPeriods(settings: IndicatorReport[]): UniqueBeneficiariesPeriod[] {
+    const allPeriods = settings.flatMap(setting => setting.period);
+    return allPeriods;
 }
 
 function mapItemsToDropdown(periods: UniqueBeneficiariesPeriod[]) {
@@ -156,7 +182,7 @@ function mapItemsToDropdown(periods: UniqueBeneficiariesPeriod[]) {
 
 export function useSaveIndicatorReport(props: UseSaveCountryReportProps) {
     const { compositionRoot } = useAppContext();
-    const { countryId, indicatorsReports: reports } = props;
+    const { countryId, indicatorsReports: reports, wasReportModifiedSet } = props;
     const snackbar = useSnackbar();
     const loading = useLoading();
 
@@ -171,14 +197,20 @@ export function useSaveIndicatorReport(props: UseSaveCountryReportProps) {
             .catch(err => {
                 snackbar.error(err.message);
             })
-            .finally(() => loading.hide());
-    }, [compositionRoot, loading, snackbar, countryId, reports]);
+            .finally(() => {
+                wasReportModifiedSet(false);
+                loading.hide();
+            });
+    }, [compositionRoot, loading, snackbar, countryId, reports, wasReportModifiedSet]);
 
     return saveIndicatorReport;
 }
 
-export function useGetIndicatorsReport(props: { countryId: Maybe<Id> }) {
-    const { countryId } = props;
+export function useGetIndicatorsReport(props: {
+    countryId: Maybe<Id>;
+    wasReportModifiedSet: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+    const { countryId, wasReportModifiedSet } = props;
     const { compositionRoot } = useAppContext();
     const snackbar = useSnackbar();
     const loading = useLoading();
@@ -192,10 +224,17 @@ export function useGetIndicatorsReport(props: { countryId: Maybe<Id> }) {
             .execute({ countryId })
             .then(setIndicatorsReports)
             .catch(error => snackbar.error(error.message))
-            .finally(() => loading.hide());
-    }, [compositionRoot, countryId, loading, snackbar]);
+            .finally(() => {
+                loading.hide();
+                wasReportModifiedSet(false);
+            });
+    }, [compositionRoot, countryId, loading, snackbar, wasReportModifiedSet]);
 
     return { indicatorsReports, setIndicatorsReports };
 }
 
-type UseSaveCountryReportProps = { countryId: Maybe<Id>; indicatorsReports: IndicatorReport[] };
+type UseSaveCountryReportProps = {
+    countryId: Maybe<Id>;
+    indicatorsReports: IndicatorReport[];
+    wasReportModifiedSet: React.Dispatch<React.SetStateAction<boolean>>;
+};

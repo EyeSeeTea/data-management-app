@@ -22,18 +22,25 @@ async function generateFileInBuffer(
 }
 
 function generateRows(indicatorReport: IndicatorReport, sheet: ExcelJS.Worksheet) {
+    const notAvailableText = i18n.t("N/A");
     indicatorReport.projects.forEach(project => {
         const projectName = project.project.name;
 
         project.indicators.forEach((indicator, index) => {
             sheet.addRow({
                 projectName: index === 0 ? projectName : null,
-                indicatorCode: indicator.indicatorCode,
-                value: indicator.value,
-                include: indicator.include ? i18n.t("Yes") : i18n.t("No"),
-                total: _(project.indicators).sumBy(indicator =>
-                    indicator.include ? indicator.value || 0 : 0
-                ),
+                indicatorCode: IndicatorReport.generateIndicatorFullName(indicator),
+                value: indicator.periodNotAvailable ? notAvailableText : indicator.value,
+                include: indicator.periodNotAvailable
+                    ? notAvailableText
+                    : indicator.include
+                    ? i18n.t("Yes")
+                    : i18n.t("No"),
+                total: indicator.periodNotAvailable
+                    ? notAvailableText
+                    : _(project.indicators).sumBy(indicator =>
+                          indicator.include ? indicator.value || 0 : 0
+                      ),
             });
         });
 
@@ -44,6 +51,24 @@ function generateRows(indicatorReport: IndicatorReport, sheet: ExcelJS.Worksheet
             sheet.mergeCells(`E${startRow}:E${endRow}`);
         }
     });
+
+    generateTotalFooter(indicatorReport, sheet);
+}
+
+function generateTotalFooter(indicatorReport: IndicatorReport, sheet: ExcelJS.Worksheet) {
+    const allIndicators = indicatorReport.projects.flatMap(project => project.indicators);
+    const totalCountryBeneficiaries = _(allIndicators).sumBy(indicator =>
+        indicator.include ? indicator.value || 0 : 0
+    );
+
+    sheet.addRow({});
+    sheet.addRow({
+        value: i18n.t("Country Unique Beneficiaries"),
+        include: totalCountryBeneficiaries,
+    });
+
+    const totalRows = sheet.rowCount;
+    sheet.mergeCells(`D${totalRows}:E${totalRows}`);
 }
 
 function generateColumns(): Partial<ExcelJS.Column>[] {

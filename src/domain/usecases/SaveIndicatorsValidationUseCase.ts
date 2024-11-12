@@ -8,50 +8,62 @@ export class SaveIndicatorsValidationUseCase {
     constructor(private settingsRepository: UniqueBeneficiariesSettingsRepository) {}
 
     async execute(options: SaveIndicatorsOptions): Promise<void> {
-        const { indicatorsValidation, projectId } = options;
+        const { indicatorsValidations, projectId } = options;
         const settings = await this.settingsRepository.get(projectId);
 
-        const hasErrors = IndicatorValidation.validateCommentIndicators(
-            indicatorsValidation.indicatorsCalculation
-        );
+        const rowWithError = this.getIndexRowWithError(indicatorsValidations);
 
-        if (hasErrors) throw new Error(i18n.t("Cannot save indicators without comments"));
-
-        const periodIsValid = settings.periods.find(
-            period => period.id === indicatorsValidation.period.id
-        );
-        if (!periodIsValid)
+        if (rowWithError !== -1) {
+            const row = indicatorsValidations[rowWithError];
             throw new Error(
-                i18n.t("Period not found: {{period}}", {
+                i18n.t("Cannot save indicators without comments for period: {{period}}", {
+                    period: row.period.name,
                     nsSeparator: false,
-                    period: indicatorsValidation.period.id,
                 })
             );
+        }
 
-        const indicatorExist = settings.indicatorsValidation.find(
-            item => item.period.id === indicatorsValidation.period.id
+        const indicatorsToSave = this.buildIndicatorsToSave(indicatorsValidations, settings);
+
+        return this.saveIndicators(settings, indicatorsToSave);
+    }
+
+    private getIndexRowWithError(indicatorsValidations: IndicatorValidation[]): number {
+        return indicatorsValidations.findIndex(item =>
+            IndicatorValidation.validateCommentIndicators(item.indicatorsCalculation)
         );
+    }
 
-        const currentDate = new Date().toISOString();
-        const indicatorAttributes: IndicatorValidationAttrs = {
-            ...options.indicatorsValidation,
-            lastUpdatedAt: indicatorExist ? currentDate : undefined,
-            createdAt: indicatorExist ? indicatorExist.createdAt : currentDate,
-        };
-
-        const indicatorValidationToSave = IndicatorValidation.build(indicatorAttributes).get();
-
+    private saveIndicators(
+        settings: UniqueBeneficiariesSettings,
+        indicatorsToSave: IndicatorValidation[]
+    ): Promise<void> {
         const settingsToSave: UniqueBeneficiariesSettings = {
             ...settings,
-            indicatorsValidation: indicatorExist
-                ? settings.indicatorsValidation.map(indicator => {
-                      if (indicator.period.id !== indicatorsValidation.period.id) return indicator;
-                      return IndicatorValidation.build(indicatorValidationToSave).get();
-                  })
-                : settings.indicatorsValidation.concat(indicatorValidationToSave),
+            indicatorsValidation: indicatorsToSave,
         };
+
         return this.settingsRepository.save(settingsToSave);
+    }
+
+    private buildIndicatorsToSave(
+        indicatorsValidations: IndicatorValidation[],
+        settings: UniqueBeneficiariesSettings
+    ): IndicatorValidation[] {
+        return indicatorsValidations.map(indicator => {
+            const indicatorExist = settings.indicatorsValidation.find(
+                item => item.period.id === indicator.period.id
+            );
+
+            const currentDate = new Date().toISOString();
+            const indicatorAttributes: IndicatorValidationAttrs = {
+                ...indicator,
+                lastUpdatedAt: indicatorExist ? currentDate : undefined,
+                createdAt: indicatorExist ? indicatorExist.createdAt : currentDate,
+            };
+            return IndicatorValidation.build(indicatorAttributes).get();
+        });
     }
 }
 
-type SaveIndicatorsOptions = { projectId: Id; indicatorsValidation: IndicatorValidation };
+type SaveIndicatorsOptions = { projectId: Id; indicatorsValidations: IndicatorValidation[] };

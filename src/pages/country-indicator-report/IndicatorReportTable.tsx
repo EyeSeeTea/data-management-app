@@ -16,21 +16,24 @@ import i18n from "../../locales";
 import { Grouper, RowComponent } from "../report/rich-rows-utils";
 import TableBodyGrouped from "../report/TableBodyGrouped";
 import { buildMonthYearFormatDate } from "../../utils/date";
+import { UniqueBeneficiariesPeriod } from "../../domain/entities/UniqueBeneficiariesPeriod";
 
 type IndicatorReportTableProps = {
+    period: UniqueBeneficiariesPeriod;
     report: IndicatorReportAttrs;
     onRowChange: (value: boolean, row: GroupedRows) => void;
 };
 
 export const IndicatorReportTable = React.memo((props: IndicatorReportTableProps) => {
-    const { report, onRowChange } = props;
-
+    const { period, report, onRowChange } = props;
     const groupers: Grouper<GroupedRows>[] = React.useMemo(() => {
         return [
             {
                 name: "project",
                 getId: row => row.project.id,
-                component: ProjectCell,
+                component: function ProjectCells(props) {
+                    return <ProjectCell row={props.row} rowSpan={props.rowSpan} period={period} />;
+                },
             },
             {
                 name: "indicator",
@@ -45,7 +48,7 @@ export const IndicatorReportTable = React.memo((props: IndicatorReportTableProps
                 component: TotalCell,
             },
         ];
-    }, [onRowChange]);
+    }, [onRowChange, period]);
 
     const indicatorsRows = report.projects.flatMap(project => {
         const sumIndicators = _(project.indicators)
@@ -99,12 +102,15 @@ export const IndicatorReportTable = React.memo((props: IndicatorReportTableProps
 
 IndicatorReportTable.displayName = "IndicatorReportTable";
 
-const ProjectCell: RowComponent<GroupedRows> = props => {
+const ProjectCell = (props: ProjectCellProps) => {
+    const { rowSpan, row, period } = props;
+
     return (
-        <TableCell rowSpan={props.rowSpan}>
-            {props.row.project.name} <br /> (
-            {buildMonthYearFormatDate(props.row.project.openingDate)} -{" "}
-            {buildMonthYearFormatDate(props.row.project.closedDate)})
+        <TableCell rowSpan={rowSpan}>
+            {row.project.name} <br /> ({buildMonthYearFormatDate(row.project.openingDate)} -{" "}
+            {buildMonthYearFormatDate(row.project.closedDate)})
+            <br />
+            {period.name}
         </TableCell>
     );
 };
@@ -158,4 +164,10 @@ export type GroupedRows = {
 type IndicatorCellProps = {
     row: GroupedRows;
     onRowChange: (value: boolean, row: GroupedRows) => void;
+};
+
+type ProjectCellProps = {
+    row: GroupedRows;
+    rowSpan: number | undefined;
+    period: UniqueBeneficiariesPeriod;
 };

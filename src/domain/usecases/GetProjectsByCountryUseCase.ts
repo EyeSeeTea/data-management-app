@@ -53,14 +53,15 @@ export class GetProjectsByCountryUseCase {
         countryId: Id,
         dataElements: DataElement[]
     ): IndicatorReport[] {
-        const allPeriods = _(settings)
-            .flatMap(setting => setting.periods)
-            .uniqBy(period => period.id)
-            .value();
+        const allPeriods = settings.flatMap(setting => setting.periods);
+        const uniquePeriods = UniqueBeneficiariesPeriod.uniquePeriodsByDates(allPeriods);
 
-        return allPeriods.map((period): IndicatorReport => {
+        return uniquePeriods.map((period): IndicatorReport => {
             const existingData = existingReports.find(
-                report => report.period?.id === period.id && report.countryId === countryId
+                report =>
+                    report.period.startDateMonth === period.startDateMonth &&
+                    report.period.endDateMonth === period.endDateMonth &&
+                    report.countryId === countryId
             );
 
             return existingData
@@ -89,12 +90,20 @@ export class GetProjectsByCountryUseCase {
                     return undefined;
 
                 const isCustomPeriod = period.type === "CUSTOM";
-                const periodExist = settingsProject?.periods.find(item => item.id === period.id);
+                const periodExist = settingsProject?.periods.find(
+                    item =>
+                        item.startDateMonth === period.startDateMonth &&
+                        item.endDateMonth === period.endDateMonth
+                );
 
                 const notIndicatorsAvailable = isCustomPeriod && !periodExist;
 
                 const indicatorsCalculation = settingsProject?.indicatorsValidation
-                    .find(item => item.period.id === period.id)
+                    .find(
+                        item =>
+                            item.period.startDateMonth === period.startDateMonth &&
+                            item.period.endDateMonth === period.endDateMonth
+                    )
                     ?.indicatorsCalculation.map((indicator): ProjectIndicatorRow => {
                         return {
                             periodNotAvailable: notIndicatorsAvailable,

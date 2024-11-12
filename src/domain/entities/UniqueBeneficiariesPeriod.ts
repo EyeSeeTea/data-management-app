@@ -1,4 +1,6 @@
 import _ from "lodash";
+import { Maybe } from "../../types/utils";
+import { getMonthNameFromNumber } from "../../utils/date";
 import { getUid } from "../../utils/dhis2";
 
 import { Either } from "./generic/Either";
@@ -119,5 +121,39 @@ export class UniqueBeneficiariesPeriod extends Struct<UniqueBeneficiariesPeriods
             .value();
 
         return errors;
+    }
+
+    public static uniquePeriodsByDates(
+        periods: UniqueBeneficiariesPeriod[]
+    ): UniqueBeneficiariesPeriod[] {
+        const combinedPeriods = _(periods)
+            .groupBy(period => `${period.startDateMonth}-${period.endDateMonth}`)
+            .map((group, key): Maybe<UniqueBeneficiariesPeriod> => {
+                const [startDateMonth, endDateMonth] = key.split("-").map(Number);
+                const startMonthName = getMonthNameFromNumber(startDateMonth);
+                const endMonthName = getMonthNameFromNumber(endDateMonth);
+                const joinNames = group.map(period => period.name).join(", ");
+
+                const isAnnualOrSemiAnnual = group.some(
+                    period => period.type === "ANNUAL" || period.type === "SEMIANNUAL"
+                );
+
+                if (isAnnualOrSemiAnnual) return undefined;
+
+                return UniqueBeneficiariesPeriod.create({
+                    id: group[0].id || "",
+                    name: `${startMonthName} - ${endMonthName} (${joinNames})`,
+                    type: "CUSTOM",
+                    startDateMonth,
+                    endDateMonth,
+                });
+            })
+            .compact()
+            .value();
+
+        return _(combinedPeriods)
+            .concat(this.defaultPeriods())
+            .uniqBy(period => period.id)
+            .value();
     }
 }

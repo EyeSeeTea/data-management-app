@@ -13,7 +13,6 @@ import Project from "../../models/Project";
 import { promiseMap } from "../../migrations/utils";
 import { Config } from "../../models/Config";
 import { UniqueBeneficiariesPeriod } from "../../domain/entities/UniqueBeneficiariesPeriod";
-import { UniqueBeneficiariesSettings } from "../../domain/entities/UniqueBeneficiariesSettings";
 import { D2DataElement } from "./D2DataElement";
 
 export class IndicatorReportD2Repository implements IndicatorReportRepository {
@@ -50,14 +49,17 @@ export class IndicatorReportD2Repository implements IndicatorReportRepository {
         const currentDate = new Date().toISOString();
         return reports.map((report): D2Response => {
             const existingRecord = existingReports?.find(
-                item => item.periodId === report.period.id
+                item =>
+                    item.startDate === report.period.startDateMonth &&
+                    item.endDate === report.period.endDateMonth
             );
 
             return {
                 countryId: report.countryId,
                 createdAt: existingRecord?.createdAt || currentDate,
                 updatedAt: currentDate,
-                periodId: report.period.id,
+                endDate: report.period.endDateMonth,
+                startDate: report.period.startDateMonth,
                 projects: report.projects.map((project): D2Response["projects"][number] => ({
                     id: project.id,
                     indicators: project.indicators.map(indicator => ({
@@ -80,11 +82,17 @@ export class IndicatorReportD2Repository implements IndicatorReportRepository {
         const settingsByProjects = settings.filter(setting =>
             projectIds.includes(setting.projectId)
         );
-        const periods = this.getPeriods(settingsByProjects);
+        const periods = settingsByProjects.flatMap(setting => setting.periods);
+        const groupedPeriods = UniqueBeneficiariesPeriod.uniquePeriodsByDates(periods);
 
         return responses.map(response => {
-            const currentPeriod = periods.find(period => period.id === response.periodId);
-            if (!currentPeriod) throw Error(`Period ${response.periodId} not found`);
+            const currentPeriod = groupedPeriods.find(
+                period =>
+                    period.startDateMonth === response.startDate &&
+                    period.endDateMonth === response.endDate
+            );
+            if (!currentPeriod)
+                throw Error(`Period ${response.startDate}-${response.endDate} not found`);
 
             return IndicatorReport.create({
                 countryId: response.countryId,
@@ -122,13 +130,6 @@ export class IndicatorReportD2Repository implements IndicatorReportRepository {
         });
     }
 
-    private getPeriods(settings: UniqueBeneficiariesSettings[]): UniqueBeneficiariesPeriod[] {
-        return _(settings)
-            .flatMap(setting => setting.periods)
-            .uniqBy(period => period.id)
-            .value();
-    }
-
     private async getProjectsByIds(projectIds: Id[]): Promise<ProjectCountry[]> {
         const projects = await promiseMap(projectIds, id => Project.get(this.api, this.config, id));
         return projects.map(project => ({
@@ -146,7 +147,8 @@ export class IndicatorReportD2Repository implements IndicatorReportRepository {
 
 type D2Response = {
     countryId: Id;
-    periodId: Id;
+    startDate: number;
+    endDate: number;
     createdAt: ISODateTimeString;
     updatedAt: ISODateTimeString;
     projects: Array<{
