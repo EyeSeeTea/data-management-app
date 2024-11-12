@@ -14,7 +14,7 @@ import { IndicatorReport } from "../../domain/entities/IndicatorReport";
 import { Id } from "../../domain/entities/Ref";
 import { buildSpreadSheet } from "./excel-report";
 import { downloadFile } from "../../utils/download";
-import { useConfirmChanges } from "../../hooks/UseConfirmChanges";
+import { useConfirmChanges } from "../report/MerReport";
 
 export const CountryIndicatorReport = React.memo(() => {
     const goTo = useGoTo();
