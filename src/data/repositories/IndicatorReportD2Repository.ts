@@ -48,10 +48,8 @@ export class IndicatorReportD2Repository implements IndicatorReportRepository {
     ) {
         const currentDate = new Date().toISOString();
         return reports.map((report): D2Response => {
-            const existingRecord = existingReports?.find(
-                item =>
-                    item.startDate === report.period.startDateMonth &&
-                    item.endDate === report.period.endDateMonth
+            const existingRecord = existingReports?.find(item =>
+                report.period.equalMonths(item.startDate, item.endDate)
             );
 
             return {
@@ -86,10 +84,8 @@ export class IndicatorReportD2Repository implements IndicatorReportRepository {
         const groupedPeriods = UniqueBeneficiariesPeriod.uniquePeriodsByDates(periods);
 
         return responses.map(response => {
-            const currentPeriod = groupedPeriods.find(
-                period =>
-                    period.startDateMonth === response.startDate &&
-                    period.endDateMonth === response.endDate
+            const currentPeriod = groupedPeriods.find(period =>
+                period.equalMonths(response.startDate, response.endDate)
             );
             if (!currentPeriod)
                 throw Error(`Period ${response.startDate}-${response.endDate} not found`);

@@ -59,8 +59,7 @@ export class GetProjectsByCountryUseCase {
         return uniquePeriods.map((period): IndicatorReport => {
             const existingData = existingReports.find(
                 report =>
-                    report.period.startDateMonth === period.startDateMonth &&
-                    report.period.endDateMonth === period.endDateMonth &&
+                    report.period.equalMonths(period.startDateMonth, period.endDateMonth) &&
                     report.countryId === countryId
             );
 
@@ -90,19 +89,15 @@ export class GetProjectsByCountryUseCase {
                     return undefined;
 
                 const isCustomPeriod = period.type === "CUSTOM";
-                const periodExist = settingsProject?.periods.find(
-                    item =>
-                        item.startDateMonth === period.startDateMonth &&
-                        item.endDateMonth === period.endDateMonth
+                const periodExist = settingsProject?.periods.find(item =>
+                    period.equalMonths(item.startDateMonth, item.endDateMonth)
                 );
 
                 const notIndicatorsAvailable = isCustomPeriod && !periodExist;
 
                 const indicatorsCalculation = settingsProject?.indicatorsValidation
-                    .find(
-                        item =>
-                            item.period.startDateMonth === period.startDateMonth &&
-                            item.period.endDateMonth === period.endDateMonth
+                    .find(item =>
+                        period.equalMonths(item.period.startDateMonth, item.period.endDateMonth)
                     )
                     ?.indicatorsCalculation.map((indicator): ProjectIndicatorRow => {
                         return {

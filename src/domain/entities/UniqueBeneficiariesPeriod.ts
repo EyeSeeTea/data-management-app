@@ -156,4 +156,8 @@ export class UniqueBeneficiariesPeriod extends Struct<UniqueBeneficiariesPeriods
             .uniqBy(period => period.id)
             .value();
     }
+
+    public equalMonths(startDateMonth: number, endDateMonth: number): boolean {
+        return this.startDateMonth === startDateMonth && this.endDateMonth === endDateMonth;
+    }
 }

@@ -169,9 +169,8 @@ export const CountryIndicatorReport = React.memo(() => {
 
 CountryIndicatorReport.displayName = "CountryIndicatorReport";
 
-function getAllPeriods(settings: IndicatorReport[]): UniqueBeneficiariesPeriod[] {
-    const allPeriods = settings.flatMap(setting => setting.period);
-    return allPeriods;
+function getAllPeriods(indicatorsReports: IndicatorReport[]): UniqueBeneficiariesPeriod[] {
+    return indicatorsReports.flatMap(setting => setting.period);
 }
 
 function mapItemsToDropdown(periods: UniqueBeneficiariesPeriod[]) {

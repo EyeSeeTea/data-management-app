@@ -14,25 +14,19 @@ export class SaveUniqueBeneficiariesSettingsUseCase {
 
         if (this.isAnnualOrSemiAnnual(options.period)) {
             throw new Error(i18n.t("Period is equal to the predefined annual/semi-annual period"));
-        }
-
-        if (!isValid) {
+        } else if (!isValid) {
             throw new Error(errorMessage);
-        }
-
-        if (isPeriodProtected) {
+        } else if (isPeriodProtected) {
             throw new Error(i18n.t("Cannot save a protected period"));
+        } else {
+            return this.saveSettings(settings, periodExist, options);
         }
-
-        return this.saveSettings(settings, periodExist, options);
     }
 
     private isAnnualOrSemiAnnual(period: UniqueBeneficiariesPeriod): boolean {
         const defaultPeriods = UniqueBeneficiariesPeriod.defaultPeriods();
-        return defaultPeriods.some(
-            defaultPeriod =>
-                defaultPeriod.startDateMonth === period.startDateMonth &&
-                defaultPeriod.endDateMonth === period.endDateMonth
+        return defaultPeriods.some(defaultPeriod =>
+            defaultPeriod.equalMonths(period.startDateMonth, period.endDateMonth)
         );
     }
 
