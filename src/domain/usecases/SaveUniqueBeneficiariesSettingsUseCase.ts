@@ -18,9 +18,20 @@ export class SaveUniqueBeneficiariesSettingsUseCase {
             throw new Error(errorMessage);
         } else if (isPeriodProtected) {
             throw new Error(i18n.t("Cannot save a protected period"));
+        } else if (this.validateMonths(options.period, settings.periods)) {
+            throw new Error(i18n.t("Already exist a period with the same months"));
         } else {
             return this.saveSettings(settings, periodExist, options);
         }
+    }
+
+    private validateMonths(
+        period: UniqueBeneficiariesPeriod,
+        existingPeriods: UniqueBeneficiariesPeriod[]
+    ): boolean {
+        return existingPeriods.some(existingPeriod =>
+            existingPeriod.equalMonths(period.startDateMonth, period.endDateMonth)
+        );
     }
 
     private isAnnualOrSemiAnnual(period: UniqueBeneficiariesPeriod): boolean {

@@ -98,7 +98,7 @@ export class IndicatorCalculation extends Struct<IndicatorCalculationAttrs>() {
         return IndicatorCalculation.build({
             id: id,
             newValue: newValueSum,
-            editableNewValue: existingRecord?.editableNewValue || newValueSum,
+            editableNewValue: newValueHasChanged ? newValueSum : existingRecord?.editableNewValue,
             returningValue,
             comment: existingRecord?.comment || "",
             previousValue: newValueHasChanged ? existingRecord?.newValue : undefined,
