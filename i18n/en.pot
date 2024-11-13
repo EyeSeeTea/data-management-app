@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-11-12T13:23:47.083Z\n"
-"PO-Revision-Date: 2024-11-12T13:23:47.083Z\n"
+"POT-Creation-Date: 2024-11-13T15:09:53.588Z\n"
+"PO-Revision-Date: 2024-11-13T15:09:53.588Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -367,6 +367,9 @@ msgid "Period is equal to the predefined annual/semi-annual period"
 msgstr ""
 
 msgid "Cannot save a protected period"
+msgstr ""
+
+msgid "Already exist a period with the same months"
 msgstr ""
 
 msgid "Cannot save duplicate periods"
