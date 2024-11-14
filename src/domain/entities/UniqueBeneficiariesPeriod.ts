@@ -160,4 +160,28 @@ export class UniqueBeneficiariesPeriod extends Struct<UniqueBeneficiariesPeriods
     public equalMonths(startDateMonth: number, endDateMonth: number): boolean {
         return this.startDateMonth === startDateMonth && this.endDateMonth === endDateMonth;
     }
+
+    static buildPeriods(
+        periods: UniqueBeneficiariesPeriod[],
+        newId: Id
+    ): UniqueBeneficiariesPeriod[] {
+        const periodsWithIds = this.validateIdsInPeriods(periods, newId);
+        return this.excludeDefaultPeriods(periodsWithIds);
+    }
+
+    static validateIdsInPeriods(
+        periods: UniqueBeneficiariesPeriod[],
+        newId: Id
+    ): UniqueBeneficiariesPeriod[] {
+        return periods.map(period => {
+            if (!period.id) {
+                return UniqueBeneficiariesPeriod.build({ ...period, id: newId }).get();
+            }
+            return period;
+        });
+    }
+
+    static excludeDefaultPeriods(periods: UniqueBeneficiariesPeriod[]) {
+        return periods.filter(period => !period.isProtected());
+    }
 }

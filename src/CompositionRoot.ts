@@ -7,6 +7,7 @@ import { IndicatorReportD2Repository } from "./data/repositories/IndicatorReport
 import { OrgUnitD2Repository } from "./data/repositories/OrgUnitD2Repository";
 import { ProjectD2Repository } from "./data/repositories/ProjectD2Repository";
 import { UniqueBeneficiariesSettingsD2Repository } from "./data/repositories/UniqueBeneficiariesSettingsD2Repository";
+import { UniquePeriodD2Repository } from "./data/repositories/UniquePeriodD2Repository";
 import { GetIndicatorsValidationUseCase } from "./domain/usecases/GetIndicatorsValidationUseCase";
 import { GetProjectsByCountryUseCase } from "./domain/usecases/GetProjectsByCountryUseCase";
 import { GetUniqueBeneficiariesSettingsUseCase } from "./domain/usecases/GetUniqueBeneficiariesSettingsUseCase";
@@ -14,7 +15,7 @@ import { ImportDataElementsUseCase } from "./domain/usecases/ImportDataElementsU
 import { RemoveUniqueBeneficiariesPeriodUseCase } from "./domain/usecases/RemoveUniqueBeneficiariesPeriodUseCase";
 import { SaveIndicatorReportUseCase } from "./domain/usecases/SaveIndicatorReportUseCase";
 import { SaveIndicatorsValidationUseCase } from "./domain/usecases/SaveIndicatorsValidationUseCase";
-import { SaveUniqueBeneficiariesSettingsUseCase } from "./domain/usecases/SaveUniqueBeneficiariesSettingsUseCase";
+import { SaveUniquePeriodsUseCase } from "./domain/usecases/SaveUniquePeriodsUseCase";
 import { Config } from "./models/Config";
 import { D2Api } from "./types/d2-api";
 
@@ -31,6 +32,7 @@ export function getCompositionRoot(api: D2Api, config: Config) {
     const orgUnitRepository = new OrgUnitD2Repository(api);
     const projectRepository = new ProjectD2Repository(api, config);
     const indicatorReportRepository = new IndicatorReportD2Repository(api, config);
+    const periodRepository = new UniquePeriodD2Repository(api);
 
     return {
         dataElements: {
@@ -47,12 +49,8 @@ export function getCompositionRoot(api: D2Api, config: Config) {
             getSettings: new GetUniqueBeneficiariesSettingsUseCase(
                 uniqueBeneficiariesSettingsRepository
             ),
-            saveSettings: new SaveUniqueBeneficiariesSettingsUseCase(
-                uniqueBeneficiariesSettingsRepository
-            ),
-            removePeriod: new RemoveUniqueBeneficiariesPeriodUseCase(
-                uniqueBeneficiariesSettingsRepository
-            ),
+            saveSettings: new SaveUniquePeriodsUseCase(periodRepository),
+            removePeriod: new RemoveUniqueBeneficiariesPeriodUseCase(periodRepository),
         },
         indicators: {
             getValidation: new GetIndicatorsValidationUseCase(

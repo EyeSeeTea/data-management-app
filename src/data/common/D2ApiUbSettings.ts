@@ -67,7 +67,7 @@ export class D2ApiUbSettings {
             uniqueBeneficiaries: {
                 ...(existingSettings?.uniqueBeneficiaries || {}),
                 indicatorsIds: existingSettings?.uniqueBeneficiaries?.indicatorsIds || [],
-                periods: this.buildPeriods(settings.periods),
+                periods: UniqueBeneficiariesPeriod.buildPeriods(settings.periods, generateUid()),
                 indicatorsValidation: this.mapIndicatorValidations(settings, currentDate),
             },
         };
@@ -158,32 +158,12 @@ export class D2ApiUbSettings {
             .value();
     }
 
-    private buildPeriods(periods: UniqueBeneficiariesPeriod[]): UniqueBeneficiariesPeriod[] {
-        const periodsWithIds = this.validateIdsInPeriods(periods);
-        return this.excludeDefaultPeriods(periodsWithIds);
-    }
-
-    private validateIdsInPeriods(
-        periods: UniqueBeneficiariesPeriod[]
-    ): UniqueBeneficiariesPeriod[] {
-        return periods.map(period => {
-            if (!period.id) {
-                return UniqueBeneficiariesPeriod.build({ ...period, id: generateUid() }).get();
-            }
-            return period;
-        });
-    }
-
-    private getProjectKey() {
+    getProjectKey() {
         return "project-";
     }
 
-    private buildKeyId(projectId: Id) {
+    buildKeyId(projectId: Id) {
         return `${this.getProjectKey()}${projectId}`;
-    }
-
-    private excludeDefaultPeriods(periods: UniqueBeneficiariesPeriod[]) {
-        return periods.filter(period => !period.isProtected());
     }
 
     private mergeDefaultPeriodsWithExisting(existingPeriods: Maybe<UniqueBeneficiariesPeriod[]>) {

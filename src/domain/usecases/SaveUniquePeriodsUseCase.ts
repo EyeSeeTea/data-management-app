@@ -1,14 +1,13 @@
 import i18n from "../../locales";
 import { UniqueBeneficiariesPeriod } from "../entities/UniqueBeneficiariesPeriod";
-import { UniqueBeneficiariesSettings } from "../entities/UniqueBeneficiariesSettings";
-import { UniqueBeneficiariesSettingsRepository } from "../repositories/UniqueBeneficiariesSettingsRepository";
+import { UniquePeriodRepository } from "../repositories/UniquePeriodRepository";
 
-export class SaveUniqueBeneficiariesSettingsUseCase {
-    constructor(private repository: UniqueBeneficiariesSettingsRepository) {}
+export class SaveUniquePeriodsUseCase {
+    constructor(private repository: UniquePeriodRepository) {}
 
     async execute(options: SaveSettingsOptions): Promise<void> {
-        const settings = await this.repository.get(options.projectId);
-        const periodExist = settings.periods.some(period => period.id === options.period.id);
+        const periods = await this.repository.getByProject(options.projectId);
+        const periodExist = periods.some(period => period.id === options.period.id);
         const isPeriodProtected = options.period.isProtected();
         const { isValid, errorMessage } = UniqueBeneficiariesPeriod.validate(options.period);
 
@@ -18,10 +17,10 @@ export class SaveUniqueBeneficiariesSettingsUseCase {
             throw new Error(errorMessage);
         } else if (isPeriodProtected) {
             throw new Error(i18n.t("Cannot save a protected period"));
-        } else if (this.validateMonths(options.period, settings.periods)) {
+        } else if (this.validateMonths(options.period, periods)) {
             throw new Error(i18n.t("Already exist a period with the same months"));
         } else {
-            return this.saveSettings(settings, periodExist, options);
+            return this.saveSettings(periods, periodExist, options);
         }
     }
 
@@ -42,15 +41,12 @@ export class SaveUniqueBeneficiariesSettingsUseCase {
     }
 
     private saveSettings(
-        settings: UniqueBeneficiariesSettings,
+        periods: UniqueBeneficiariesPeriod[],
         periodExist: boolean,
         options: SaveSettingsOptions
     ) {
-        const newSettings: UniqueBeneficiariesSettings = {
-            ...settings,
-            periods: this.buildPeriodsToSave(settings.periods, options.period, periodExist),
-        };
-        return this.repository.save(newSettings);
+        const periodsToSave = this.buildPeriodsToSave(periods, options.period, periodExist);
+        return this.repository.save(options.projectId, periodsToSave);
     }
 
     private buildPeriodsToSave(
