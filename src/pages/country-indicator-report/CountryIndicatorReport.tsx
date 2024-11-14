@@ -15,6 +15,7 @@ import { Id } from "../../domain/entities/Ref";
 import { buildSpreadSheet } from "./excel-report";
 import { downloadFile } from "../../utils/download";
 import { useConfirmChanges } from "../report/MerReport";
+import { UniqueBeneficiariesSettings } from "../../domain/entities/UniqueBeneficiariesSettings";
 
 export const CountryIndicatorReport = React.memo(() => {
     const goTo = useGoTo();
@@ -22,7 +23,7 @@ export const CountryIndicatorReport = React.memo(() => {
     const [selectedPeriod, setSelectedPeriod] = React.useState<UniqueBeneficiariesPeriod>();
     const { confirmIfUnsavedChanges, proceedWarning, runProceedAction, wasReportModifiedSet } =
         useConfirmChanges();
-    const { indicatorsReports, setIndicatorsReports } = useGetIndicatorsReport({
+    const { indicatorsReports, settings, setIndicatorsReports } = useGetIndicatorsReport({
         countryId: orgUnit?.id,
         wasReportModifiedSet,
     });
@@ -68,8 +69,13 @@ export const CountryIndicatorReport = React.memo(() => {
     );
 
     const downloadReport = () => {
-        if (indicatorReport && orgUnit) {
-            buildSpreadSheet(indicatorReport, orgUnit.displayName).then(downloadFile);
+        if (indicatorReport && orgUnit && selectedPeriod) {
+            buildSpreadSheet({
+                indicatorReport,
+                countryName: orgUnit.displayName,
+                period: selectedPeriod,
+                settings,
+            }).then(downloadFile);
         }
     };
 
@@ -112,6 +118,7 @@ export const CountryIndicatorReport = React.memo(() => {
                                 report={indicatorReport}
                                 onRowChange={updateReport}
                                 period={selectedPeriod}
+                                settings={settings}
                             />
                         </Grid>
                         <Grid item>
@@ -215,13 +222,17 @@ export function useGetIndicatorsReport(props: {
     const loading = useLoading();
 
     const [indicatorsReports, setIndicatorsReports] = React.useState<IndicatorReport[]>([]);
+    const [settings, setSettings] = React.useState<UniqueBeneficiariesSettings[]>([]);
 
     React.useEffect(() => {
         if (!countryId) return;
         loading.show(true, i18n.t("Loading projects and indicators..."));
         compositionRoot.projects.getByCountry
             .execute({ countryId })
-            .then(setIndicatorsReports)
+            .then(result => {
+                setIndicatorsReports(result.indicatorsReports);
+                setSettings(result.settings);
+            })
             .catch(error => snackbar.error(error.message))
             .finally(() => {
                 loading.hide();
@@ -229,7 +240,7 @@ export function useGetIndicatorsReport(props: {
             });
     }, [compositionRoot, countryId, loading, snackbar, wasReportModifiedSet]);
 
-    return { indicatorsReports, setIndicatorsReports };
+    return { indicatorsReports, settings, setIndicatorsReports };
 }
 
 type UseSaveCountryReportProps = {

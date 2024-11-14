@@ -17,22 +17,31 @@ import { Grouper, RowComponent } from "../report/rich-rows-utils";
 import TableBodyGrouped from "../report/TableBodyGrouped";
 import { buildMonthYearFormatDate } from "../../utils/date";
 import { UniqueBeneficiariesPeriod } from "../../domain/entities/UniqueBeneficiariesPeriod";
+import { UniqueBeneficiariesSettings } from "../../domain/entities/UniqueBeneficiariesSettings";
 
 type IndicatorReportTableProps = {
     period: UniqueBeneficiariesPeriod;
+    settings: UniqueBeneficiariesSettings[];
     report: IndicatorReportAttrs;
     onRowChange: (value: boolean, row: GroupedRows) => void;
 };
 
 export const IndicatorReportTable = React.memo((props: IndicatorReportTableProps) => {
-    const { period, report, onRowChange } = props;
+    const { onRowChange, period, report, settings } = props;
     const groupers: Grouper<GroupedRows>[] = React.useMemo(() => {
         return [
             {
                 name: "project",
                 getId: row => row.project.id,
                 component: function ProjectCells(props) {
-                    return <ProjectCell row={props.row} rowSpan={props.rowSpan} period={period} />;
+                    return (
+                        <ProjectCell
+                            row={props.row}
+                            rowSpan={props.rowSpan}
+                            settings={settings}
+                            period={period}
+                        />
+                    );
                 },
             },
             {
@@ -48,7 +57,7 @@ export const IndicatorReportTable = React.memo((props: IndicatorReportTableProps
                 component: TotalCell,
             },
         ];
-    }, [onRowChange, period]);
+    }, [onRowChange, period, settings]);
 
     const indicatorsRows = report.projects.flatMap(project => {
         const sumIndicators = _(project.indicators)
@@ -103,14 +112,16 @@ export const IndicatorReportTable = React.memo((props: IndicatorReportTableProps
 IndicatorReportTable.displayName = "IndicatorReportTable";
 
 const ProjectCell = (props: ProjectCellProps) => {
-    const { rowSpan, row, period } = props;
+    const { period, rowSpan, row, settings } = props;
+
+    const currentPeriod = getCurrentPeriodForProject(settings, row.project.id, period);
 
     return (
         <TableCell rowSpan={rowSpan}>
             {row.project.name} <br /> ({buildMonthYearFormatDate(row.project.openingDate)} -{" "}
             {buildMonthYearFormatDate(row.project.closedDate)})
             <br />
-            {period.name}
+            Period: {currentPeriod?.name || i18n.t("N/A")}
         </TableCell>
     );
 };
@@ -167,7 +178,20 @@ type IndicatorCellProps = {
 };
 
 type ProjectCellProps = {
+    period: UniqueBeneficiariesPeriod;
     row: GroupedRows;
     rowSpan: number | undefined;
-    period: UniqueBeneficiariesPeriod;
+    settings: UniqueBeneficiariesSettings[];
 };
+
+export function getCurrentPeriodForProject(
+    settings: UniqueBeneficiariesSettings[],
+    projectId: Id,
+    period: UniqueBeneficiariesPeriod
+) {
+    const projectSettings = settings.find(setting => setting.projectId === projectId);
+    const currentPeriod = projectSettings?.periods.find(projectPeriod =>
+        projectPeriod.equalMonths(period.startDateMonth, period.endDateMonth)
+    );
+    return currentPeriod;
+}

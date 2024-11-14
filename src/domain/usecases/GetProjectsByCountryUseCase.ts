@@ -21,7 +21,7 @@ export class GetProjectsByCountryUseCase {
         private indicatorRepository: IndicatorReportRepository
     ) {}
 
-    async execute(options: GetCountryIndicatorsOptions): Promise<IndicatorReport[]> {
+    async execute(options: GetCountryIndicatorsOptions): Promise<IndicatorsReportsResult> {
         const [projects, settings, existingReports] = await Promise.all([
             this.getProjectsByCountry(options.countryId),
             this.getAllSettings(),
@@ -37,13 +37,14 @@ export class GetProjectsByCountryUseCase {
             dataElements
         );
 
-        return this.buildIndicatorReportFromProjects(
+        const indicatorsReports = this.buildIndicatorReportFromProjects(
             projects,
             settingsWithIndicatorsDetails,
             existingReports,
             options.countryId,
             dataElements
         );
+        return { indicatorsReports, settings: settingsWithIndicatorsDetails };
     }
 
     private buildIndicatorReportFromProjects(
@@ -53,8 +54,7 @@ export class GetProjectsByCountryUseCase {
         countryId: Id,
         dataElements: DataElement[]
     ): IndicatorReport[] {
-        const allPeriods = settings.flatMap(setting => setting.periods);
-        const uniquePeriods = UniqueBeneficiariesPeriod.uniquePeriodsByDates(allPeriods);
+        const uniquePeriods = this.getUniquePeriodsFromSettings(settings);
 
         return uniquePeriods.map((period): IndicatorReport => {
             const existingData = existingReports.find(
@@ -73,6 +73,13 @@ export class GetProjectsByCountryUseCase {
                       projects: this.generateProjects(projects, settings, period, dataElements),
                   });
         });
+    }
+
+    private getUniquePeriodsFromSettings(
+        settings: UniqueBeneficiariesSettings[]
+    ): UniqueBeneficiariesPeriod[] {
+        const allPeriods = settings.flatMap(setting => setting.periods);
+        return UniqueBeneficiariesPeriod.uniquePeriodsByDates(allPeriods);
     }
 
     private generateProjects(
@@ -190,3 +197,8 @@ export class GetProjectsByCountryUseCase {
 }
 
 export type GetCountryIndicatorsOptions = { countryId: Id };
+
+export type IndicatorsReportsResult = {
+    indicatorsReports: IndicatorReport[];
+    settings: UniqueBeneficiariesSettings[];
+};

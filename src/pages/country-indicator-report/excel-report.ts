@@ -1,13 +1,25 @@
 import ExcelJS from "exceljs";
 import _ from "lodash";
 import { IndicatorReport } from "../../domain/entities/IndicatorReport";
+import { UniqueBeneficiariesPeriod } from "../../domain/entities/UniqueBeneficiariesPeriod";
+import { UniqueBeneficiariesSettings } from "../../domain/entities/UniqueBeneficiariesSettings";
 import i18n from "../../locales";
+import { buildMonthYearFormatDate } from "../../utils/date";
+import { getCurrentPeriodForProject } from "./IndicatorReportTable";
 
-export async function buildSpreadSheet(indicatorReport: IndicatorReport, countryName: string) {
+type SpreadSheetOptions = {
+    indicatorReport: IndicatorReport;
+    countryName: string;
+    settings: UniqueBeneficiariesSettings[];
+    period: UniqueBeneficiariesPeriod;
+};
+
+export async function buildSpreadSheet(options: SpreadSheetOptions) {
+    const { indicatorReport, countryName } = options;
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet(i18n.t("Country Projects & Indicators"));
     sheet.columns = generateColumns();
-    generateRows(indicatorReport, sheet);
+    generateRows(options, sheet);
     return generateFileInBuffer(workbook, countryName, indicatorReport);
 }
 
@@ -21,10 +33,18 @@ async function generateFileInBuffer(
     return { buffer, filename };
 }
 
-function generateRows(indicatorReport: IndicatorReport, sheet: ExcelJS.Worksheet) {
+function generateRows(options: SpreadSheetOptions, sheet: ExcelJS.Worksheet) {
+    const { indicatorReport, settings, period } = options;
     const notAvailableText = i18n.t("N/A");
     indicatorReport.projects.forEach(project => {
-        const projectName = project.project.name;
+        const projectDates = `${buildMonthYearFormatDate(
+            project.project.openingDate
+        )} - ${buildMonthYearFormatDate(project.project.closedDate)}`;
+        const currentPeriod = getCurrentPeriodForProject(settings, project.id, period);
+
+        const projectName = `${project.project.name} \r\n (${projectDates}) \r\n Period: ${
+            currentPeriod?.name || notAvailableText
+        }`;
 
         project.indicators.forEach((indicator, index) => {
             sheet.addRow({
@@ -48,6 +68,7 @@ function generateRows(indicatorReport: IndicatorReport, sheet: ExcelJS.Worksheet
         const endRow = sheet.rowCount;
         if (project.indicators.length > 1) {
             sheet.mergeCells(`A${startRow}:A${endRow}`);
+            sheet.getCell(`A${startRow}`).alignment = { wrapText: true };
             sheet.mergeCells(`E${startRow}:E${endRow}`);
         }
     });
