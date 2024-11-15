@@ -84,12 +84,14 @@ export class ImportDataElementsUseCase {
         const orgUnit = await this.getOrgUnitId();
         console.info("Looking for data values in dataElements to be removed...");
         const dataValues = await this.dataValueRepository.get({
+            dataSetIds: undefined,
             includeDeleted: false,
             orgUnitIds: [orgUnit.id],
             children: true,
             endDate: "2050",
             startDate: "1950",
             dataElementsIds: dataElementsToRemove.map(dataElement => dataElement.id),
+            logDataElements: true,
         });
 
         await this.exportDataValues(dataValues);

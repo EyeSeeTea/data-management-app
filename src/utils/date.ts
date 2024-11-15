@@ -1,4 +1,5 @@
 import moment, { Moment } from "moment";
+import { months } from "../pages/unique-periods/UniquePeriodsForm";
 
 export function toISOString(date: Moment) {
     return date.format("YYYY-MM-DDTHH:mm:ss");
@@ -47,4 +48,13 @@ export const monthFormat = "YYYYMM";
 
 export function getPeriodIds(range: Moment[]): Array<{ id: string }> {
     return range.map(m => ({ id: m.format(monthFormat) }));
+}
+
+export function buildMonthYearFormatDate(dateIsoString: string): string {
+    // examples: JAN 2021, NOV 2024
+    return new Date(dateIsoString).toLocaleString("default", { month: "short", year: "numeric" });
+}
+
+export function getMonthNameFromNumber(monthNumber: string | number): string {
+    return months.find(month => month.value === monthNumber.toString())?.text || "";
 }

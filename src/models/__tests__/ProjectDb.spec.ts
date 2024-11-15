@@ -154,6 +154,11 @@ describe("ProjectDb", () => {
                 dataStoreUpdateResponse
             );
 
+            mock.onGet("/dataStore/data-management-app/project-WGC0DJ0YSis").replyOnce(
+                200,
+                expectedDataStoreMer
+            );
+
             mock.onPut(
                 "/dataStore/data-management-app/project-WGC0DJ0YSis",
                 expectedDataStoreMer
@@ -223,6 +228,7 @@ const orgUnitsMetadata = {
 const expectedDataStoreMer = {
     merDataElementIds: ["yMqK9DKbA3X"],
     documents: [],
+    uniqueBeneficiaries: { periods: [], indicatorsIds: [] },
 };
 
 const expectedOrgUnitPut = {

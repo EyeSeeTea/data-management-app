@@ -27,6 +27,7 @@ import MerSelectionStep from "../../components/steps/mer-selection/MerSelectionS
 import { useAppHistory } from "../../utils/use-app-history";
 import { Maybe } from "../../types/utils";
 import { AttachFilesStep } from "../../components/steps/attach-files/AttachFilesStep";
+import UniqueIndicatorsStep from "../../components/steps/unique-beneficiaries/UniqueIndicatorsStep";
 
 type Action = { type: "create" } | { type: "edit"; id: string } | { type: "clone"; id: string };
 
@@ -170,6 +171,13 @@ class ProjectWizardImpl extends React.Component<Props, State> {
                 component: MerSelectionStep,
                 validationKeys: ["dataElementsMER"],
                 help: helpTexts.merIndicators,
+            },
+            {
+                key: "unique-beneficiaries",
+                label: i18n.t("Select of Unique Indicators"),
+                component: UniqueIndicatorsStep,
+                validationKeys: ["uniqueIndicators"],
+                help: helpTexts.uniqueIndicators,
             },
             {
                 key: "sharing",

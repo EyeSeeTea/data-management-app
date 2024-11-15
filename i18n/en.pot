@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-08-20T12:07:28.358Z\n"
-"PO-Revision-Date: 2024-08-20T12:07:28.358Z\n"
+"POT-Creation-Date: 2024-11-13T15:09:53.588Z\n"
+"PO-Revision-Date: 2024-11-13T15:09:53.588Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -325,12 +325,54 @@ msgid ""
 "be added to this project"
 msgstr ""
 
+msgid "Edit"
+msgstr ""
+
+msgid "Start Month"
+msgstr ""
+
+msgid "End Month"
+msgstr ""
+
 msgid "Cancel Project creation?"
 msgstr ""
 
 msgid ""
 "You are about to exit the Project creation wizard. All your changes will be "
 "lost. Are you sure you want to proceed?"
+msgstr ""
+
+msgid "Cannot be blank: {{fieldName}}"
+msgstr ""
+
+msgid "{{value}} is not a valid value for {{fieldName}}"
+msgstr ""
+
+msgid "{{fieldName}} must be a positive number"
+msgstr ""
+
+msgid "Start date must be before end date"
+msgstr ""
+
+msgid "No unique indicators selected"
+msgstr ""
+
+msgid "Cannot delete a protected period"
+msgstr ""
+
+msgid "Cannot save indicators without comments for period: {{period}}"
+msgstr ""
+
+msgid "Period is equal to the predefined annual/semi-annual period"
+msgstr ""
+
+msgid "Cannot save a protected period"
+msgstr ""
+
+msgid "Already exist a period with the same months"
+msgstr ""
+
+msgid "Cannot save duplicate periods"
 msgstr ""
 
 msgid "Error saving dashboard"
@@ -520,6 +562,9 @@ msgstr ""
 msgid "Partner"
 msgstr ""
 
+msgid "Unique Indicators"
+msgstr ""
+
 msgid "Award Number should be a number of 5 digits"
 msgstr ""
 
@@ -684,6 +729,9 @@ msgstr ""
 msgid "MER"
 msgstr ""
 
+msgid "Unique Beneficiary"
+msgstr ""
+
 msgid "[SP Platform] Request for Data Review: {{-name}} ({{code}})"
 msgstr ""
 
@@ -834,6 +882,45 @@ msgstr ""
 msgid "Non-COVID-19"
 msgstr ""
 
+msgid "Country Project & Indicators"
+msgstr ""
+
+msgid "Select period"
+msgstr ""
+
+msgid "No projects found for selected period: {{period}}"
+msgstr ""
+
+msgid "Any changes will be lost. Are you sure you want to proceed?"
+msgstr ""
+
+msgid "Saving..."
+msgstr ""
+
+msgid "Loading projects and indicators..."
+msgstr ""
+
+msgid "Selected Activity Indicators"
+msgstr ""
+
+msgid "Unique Beneficiaries"
+msgstr ""
+
+msgid "Include?"
+msgstr ""
+
+msgid "Total Unique Served"
+msgstr ""
+
+msgid "Country Unique Beneficiaries"
+msgstr ""
+
+msgid "N/A"
+msgstr ""
+
+msgid "Country Projects & Indicators"
+msgstr ""
+
 msgid "Award Number Dashboard"
 msgstr ""
 
@@ -917,6 +1004,50 @@ msgid ""
 "Data Entry Section"
 msgstr ""
 
+msgid ""
+"Please review the following indicators  which have been updated since "
+"{{monthName}}"
+msgstr ""
+
+msgid "Project Indicators Validation"
+msgstr ""
+
+msgid "Select a Period"
+msgstr ""
+
+msgid "Unique in Project"
+msgstr ""
+
+msgid "Previous Value"
+msgstr ""
+
+msgid "Next Value"
+msgstr ""
+
+msgid "Editable New"
+msgstr ""
+
+msgid "Returning from previous Project"
+msgstr ""
+
+msgid "Comment is required"
+msgstr ""
+
+msgid "Saving Indicators..."
+msgstr ""
+
+msgid "Indicators saved"
+msgstr ""
+
+msgid "Loading Indicators..."
+msgstr ""
+
+msgid "Period not found"
+msgstr ""
+
+msgid "Value must be greater than or equal to zero"
+msgstr ""
+
 msgid "Cannot load project"
 msgstr ""
 
@@ -930,6 +1061,9 @@ msgid "Selection of Indicators"
 msgstr ""
 
 msgid "Selection of MER Indicators"
+msgstr ""
+
+msgid "Select of Unique Indicators"
 msgstr ""
 
 msgid "Username Access"
@@ -991,6 +1125,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Select indicators in each project that represent unique beneficiaries in "
+"the project"
+msgstr ""
+
+msgid ""
 "For activity indicators that include a response to COVID-19 (examples: "
 "COVID-19 messaging, COVID-19 specific healthcare worker trainings, etc.), "
 "please select \"yes\" under the COVID-19 column. In the future, more "
@@ -1024,6 +1163,9 @@ msgstr ""
 msgid "API Link"
 msgstr ""
 
+msgid "Manage Unique Beneficiaries Periods"
+msgstr ""
+
 msgid "Add Actual Values"
 msgstr ""
 
@@ -1037,9 +1179,6 @@ msgid "Add Target Values"
 msgstr ""
 
 msgid "Download Data"
-msgstr ""
-
-msgid "Edit"
 msgstr ""
 
 msgid "Clone"
@@ -1076,9 +1215,6 @@ msgid "Report saved"
 msgstr ""
 
 msgid "The report must be saved before it can be downloaded"
-msgstr ""
-
-msgid "Any changes will be lost. Are you sure you want to proceed?"
 msgstr ""
 
 msgid "Date"
@@ -1132,6 +1268,66 @@ msgid "Value must be zero or positive"
 msgstr ""
 
 msgid "You have reached the limit for this field"
+msgstr ""
+
+msgid "Saving Period..."
+msgstr ""
+
+msgid "Period saved successfully"
+msgstr ""
+
+msgid "Removing Period..."
+msgstr ""
+
+msgid "Period removed successfully"
+msgstr ""
+
+msgid "Unique Beneficiaries Periods"
+msgstr ""
+
+msgid "{{actionPeriod}} Period"
+msgstr ""
+
+msgid "Create"
+msgstr ""
+
+msgid "Are you sure you want to delete the period: {{period}}?"
+msgstr ""
+
+msgid "January"
+msgstr ""
+
+msgid "February"
+msgstr ""
+
+msgid "March"
+msgstr ""
+
+msgid "April"
+msgstr ""
+
+msgid "May"
+msgstr ""
+
+msgid "June"
+msgstr ""
+
+msgid "July"
+msgstr ""
+
+msgid "August"
+msgstr ""
+
+msgid "September"
+msgstr ""
+
+msgid "October"
+msgstr ""
+
+msgid "November"
+msgstr ""
+
+msgid "December"
 msgstr ""
 
 msgid "{{field}} cannot be blank"

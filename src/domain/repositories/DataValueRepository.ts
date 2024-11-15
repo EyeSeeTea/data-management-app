@@ -8,10 +8,12 @@ export interface DataValueRepository {
 }
 
 export interface GetDataValueOptions {
+    dataSetIds: Maybe<Id[]>;
     orgUnitIds: Id[];
     children: boolean;
     includeDeleted: boolean;
     startDate: string;
     endDate: string;
     dataElementsIds: Maybe<Id[]>;
+    logDataElements: boolean;
 }
