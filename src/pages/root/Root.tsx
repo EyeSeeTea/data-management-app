@@ -32,6 +32,14 @@ const Root = () => {
                             />
                         )}
                     />
+                    <Route
+                        path={generateUrl("projects.clone", idParam)}
+                        render={props => (
+                            <ProjectWizard
+                                action={{ type: "clone", id: props.match.params.id || "" }}
+                            />
+                        )}
+                    />
                     <Route path={generateUrl("report")} render={() => <MerReport />} />
                     <Route
                         path={generateUrl("actualValues", idParam)}

@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2023-12-05T11:01:02.938Z\n"
-"PO-Revision-Date: 2023-12-05T11:01:02.938Z\n"
+"POT-Creation-Date: 2024-08-20T12:07:28.358Z\n"
+"PO-Revision-Date: 2024-08-20T12:07:28.358Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -318,9 +318,6 @@ msgid "Before saving, please explain why these indicators have been removed"
 msgstr ""
 
 msgid "Checking Existing Data"
-msgstr ""
-
-msgid "Project created"
 msgstr ""
 
 msgid ""
@@ -720,6 +717,9 @@ msgid ""
 "{{message}}"
 msgstr ""
 
+msgid "Project created"
+msgstr ""
+
 msgid "Project '{{projectName}}' was {{action}} by {{user}} ({{username}})"
 msgstr ""
 
@@ -952,6 +952,9 @@ msgstr ""
 msgid "Edit project"
 msgstr ""
 
+msgid "Clone project"
+msgstr ""
+
 msgid "New project"
 msgstr ""
 
@@ -1037,6 +1040,9 @@ msgid "Download Data"
 msgstr ""
 
 msgid "Edit"
+msgstr ""
+
+msgid "Clone"
 msgstr ""
 
 msgid "User groups"
