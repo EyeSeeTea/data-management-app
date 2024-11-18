@@ -55,6 +55,7 @@ const actionsByRole: Record<Role, Action[]> = {
         "reopen",
         "attachFiles",
         "projectIndicators",
+        "clone",
     ],
     dataViewer: ["dashboard", "awardNumberDashboard", "downloadData", "projectIndicators"],
     merApprover: [
