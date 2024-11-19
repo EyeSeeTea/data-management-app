@@ -8,15 +8,16 @@ import { DATA_MANAGEMENT_NAMESPACE } from "../common";
 import { Id } from "../../domain/entities/Ref";
 import { D2ApiUbSettings } from "../common/D2ApiUbSettings";
 import { generateUid } from "d2/uid";
+import { Config } from "../../models/Config";
 
 export class UniquePeriodD2Repository implements UniquePeriodRepository {
     private dataStore: DataStore;
     private namespace = DATA_MANAGEMENT_NAMESPACE;
     private d2ApiUbSettings: D2ApiUbSettings;
 
-    constructor(private api: D2Api) {
+    constructor(private api: D2Api, config: Config) {
         this.dataStore = this.api.dataStore(this.namespace);
-        this.d2ApiUbSettings = new D2ApiUbSettings(this.api);
+        this.d2ApiUbSettings = new D2ApiUbSettings(this.api, config);
     }
 
     async getByProject(projectId: Id): Promise<UniqueBeneficiariesPeriod[]> {

@@ -51,8 +51,8 @@ export class SaveIndicatorsValidationUseCase {
         settings: UniqueBeneficiariesSettings
     ): IndicatorValidation[] {
         return indicatorsValidations.map(indicator => {
-            const indicatorExist = settings.indicatorsValidation.find(
-                item => item.period.id === indicator.period.id
+            const indicatorExist = settings.indicatorsValidation.find(item =>
+                item.checkPeriodAndYear(indicator.period.id, indicator.year)
             );
 
             const currentDate = new Date().toISOString();

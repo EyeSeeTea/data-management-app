@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-11-13T15:09:53.588Z\n"
-"PO-Revision-Date: 2024-11-13T15:09:53.588Z\n"
+"POT-Creation-Date: 2024-11-18T23:17:59.995Z\n"
+"PO-Revision-Date: 2024-11-18T23:17:59.995Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -888,6 +888,9 @@ msgstr ""
 msgid "Select period"
 msgstr ""
 
+msgid "Select Year"
+msgstr ""
+
 msgid "No projects found for selected period: {{period}}"
 msgstr ""
 
@@ -1012,7 +1015,7 @@ msgstr ""
 msgid "Project Indicators Validation"
 msgstr ""
 
-msgid "Select a Period"
+msgid "Select Period"
 msgstr ""
 
 msgid "Unique in Project"
@@ -1037,6 +1040,9 @@ msgid "Saving Indicators..."
 msgstr ""
 
 msgid "Indicators saved"
+msgstr ""
+
+msgid "Loading Project"
 msgstr ""
 
 msgid "Loading Indicators..."

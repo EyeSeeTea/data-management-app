@@ -1,5 +1,6 @@
 import _ from "lodash";
 import { ProjectForList } from "../../models/ProjectsList";
+import { getYearsFromProject } from "../../pages/project-indicators-validation/ProjectIndicatorsValidation";
 import { getId } from "../../utils/dhis2";
 import { DataElement } from "../entities/DataElement";
 import { IndicatorCalculation } from "../entities/IndicatorCalculation";
@@ -22,9 +23,9 @@ export class GetProjectsByCountryUseCase {
     ) {}
 
     async execute(options: GetCountryIndicatorsOptions): Promise<IndicatorsReportsResult> {
-        const [projects, settings, existingReports] = await Promise.all([
-            this.getProjectsByCountry(options.countryId),
-            this.getAllSettings(),
+        const projects = await this.getProjectsByCountry(options.countryId);
+        const [settings, existingReports] = await Promise.all([
+            this.getAllSettings(projects.map(project => project.id)),
             this.indicatorRepository.getByCountry(options.countryId),
         ]);
 
@@ -55,17 +56,33 @@ export class GetProjectsByCountryUseCase {
         dataElements: DataElement[]
     ): IndicatorReport[] {
         const uniquePeriods = this.getUniquePeriodsFromSettings(settings);
+        const allYears = _(projects)
+            .map(project => {
+                return getYearsFromProject(project.openingDate, project.closedDate);
+            })
+            .flatten()
+            .uniq()
+            .sort()
+            .value();
 
-        return uniquePeriods.map((period): IndicatorReport => {
+        const { periodsKeys, periodsByYears } = IndicatorValidation.groupPeriodsAndYears(
+            allYears,
+            uniquePeriods
+        );
+
+        return periodsKeys.map((periodYearKey): IndicatorReport => {
+            const { period, year } = periodsByYears[periodYearKey];
             const existingData = existingReports.find(
                 report =>
                     report.period.equalMonths(period.startDateMonth, period.endDateMonth) &&
+                    report.year === year &&
                     report.countryId === countryId
             );
 
             return existingData
                 ? existingData
                 : IndicatorReport.create({
+                      year,
                       countryId,
                       createdAt: "",
                       lastUpdatedAt: "",
@@ -134,11 +151,7 @@ export class GetProjectsByCountryUseCase {
                               };
                           });
 
-                return {
-                    id: project.id,
-                    project: project,
-                    indicators: projectIndicators,
-                };
+                return { id: project.id, project: project, indicators: projectIndicators };
             })
             .compact()
             .value();
@@ -191,8 +204,8 @@ export class GetProjectsByCountryUseCase {
         return this.projectRepository.getByCountries(countryId);
     }
 
-    private getAllSettings(): Promise<UniqueBeneficiariesSettings[]> {
-        return this.beneficiariesSettingsRepository.getAll();
+    private getAllSettings(projectsIds: Id[]): Promise<UniqueBeneficiariesSettings[]> {
+        return this.beneficiariesSettingsRepository.getAll({ projectsIds });
     }
 }
 

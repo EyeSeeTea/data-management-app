@@ -15,38 +15,36 @@ export type UseIndicatorValidationProps = {
     indicatorsValidation: IndicatorValidation[];
     onSubmit: (indicatorValidation: IndicatorValidation) => void;
     onUpdateIndicator: (indicator: IndicatorValidation) => void;
+    selectedPeriod: Maybe<UniqueBeneficiariesPeriod>;
 };
 
 export function useIndicatorValidation(props: UseIndicatorValidationProps) {
-    const { indicatorsValidation, onSubmit, onUpdateIndicator, periods } = props;
+    const { indicatorsValidation, onSubmit, onUpdateIndicator, periods, selectedPeriod } = props;
 
-    const [selectedPeriod, setSelectedPeriod] = React.useState<UniqueBeneficiariesPeriod>();
     const [selectedIndicator, setIndicatorValidation] = React.useState<IndicatorValidation>();
     const [dismissNotification, setDismissNotification] = React.useState(false);
     const snackbar = useSnackbar();
     const loadIndicatorValidation = React.useCallback(
-        (period: Maybe<string>) => {
+        (period: string, year: number) => {
             const uniquePeriod = periods.find(item => item.id === period);
             if (!uniquePeriod) {
                 snackbar.error(i18n.t("Period not found"));
                 return;
             }
 
-            const currentIndicatorValidation = indicatorsValidation.find(
-                indicator => indicator.period.id === period
+            const currentIndicatorValidation = indicatorsValidation.find(indicator =>
+                indicator.checkPeriodAndYear(uniquePeriod.id, Number(year))
             );
 
-            setSelectedPeriod(uniquePeriod);
             setDismissNotification(false);
             IndicatorValidation.build({
+                year: Number(year),
                 createdAt: currentIndicatorValidation?.createdAt || "",
                 lastUpdatedAt: currentIndicatorValidation?.lastUpdatedAt,
                 period: uniquePeriod,
                 indicatorsCalculation: currentIndicatorValidation?.indicatorsCalculation || [],
             }).match({
-                success: value => {
-                    setIndicatorValidation(value);
-                },
+                success: setIndicatorValidation,
                 error: err => {
                     const errorMessage = getErrors(err);
                     snackbar.error(errorMessage);

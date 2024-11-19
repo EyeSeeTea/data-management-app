@@ -14,28 +14,38 @@ import {
     IndicatorCalculationAttrs,
 } from "../../domain/entities/IndicatorCalculation";
 import { DATA_MANAGEMENT_NAMESPACE } from "../common";
+import { Config } from "../../models/Config";
+import { promiseMap } from "../../migrations/utils";
+import { ProjectCountry } from "../../domain/entities/IndicatorReport";
+import { D2ApiProject } from "./D2ApiProject";
 
 export class D2ApiUbSettings {
     private dataStore: DataStore;
+    private d2ApiProject: D2ApiProject;
     private namespace = DATA_MANAGEMENT_NAMESPACE;
 
-    constructor(private api: D2Api) {
+    constructor(private api: D2Api, private config: Config) {
         this.dataStore = this.api.dataStore(this.namespace);
+        this.d2ApiProject = new D2ApiProject(api, this.config);
     }
 
-    async getAll(): Promise<UniqueBeneficiariesSettings[]> {
-        return this.getAllSettings(1, []);
+    async getAll(options: { projectsIds: Maybe<Id[]> }): Promise<UniqueBeneficiariesSettings[]> {
+        return this.getAllSettings(1, [], options);
     }
 
     async get(projectId: Id): Promise<UniqueBeneficiariesSettings> {
+        const projects = await this.d2ApiProject.getByIds([projectId]);
+        const project = _(projects).first();
+        if (!project) throw new Error(`Project not found for id: ${projectId}`);
+
         const d2Response = await this.dataStore
-            .get<D2ProjectSettings>(this.buildKeyId(projectId))
+            .get<D2ProjectSettings>(this.buildKeyId(project.id))
             .getData();
 
-        return this.buildSettings(d2Response, projectId);
+        return this.buildSettings(d2Response, project);
     }
 
-    private buildSettings(d2Response: Maybe<D2ProjectSettings>, projectId: string) {
+    private buildSettings(d2Response: Maybe<D2ProjectSettings>, project: ProjectCountry) {
         const uniqueBeneficiaries = d2Response?.uniqueBeneficiaries;
         const periods = this.mergeDefaultPeriodsWithExisting(uniqueBeneficiaries?.periods);
 
@@ -45,10 +55,14 @@ export class D2ApiUbSettings {
         const hasIndicatorsValidation = indicatorsValidation.length > 0;
         const indicatorsToInclude = hasIndicatorsValidation
             ? this.buildExistingIndicatorsValidation(d2Response, periods)
-            : IndicatorValidation.buildIndicatorsValidationFromPeriods(periods, indicatorsIds);
+            : IndicatorValidation.buildIndicatorsValidationFromPeriods(
+                  periods,
+                  indicatorsIds,
+                  project
+              );
 
         return {
-            projectId: projectId,
+            projectId: project.id,
             periods,
             indicatorsIds: indicatorsIds,
             indicatorsValidation: indicatorsToInclude,
@@ -81,6 +95,7 @@ export class D2ApiUbSettings {
     ): D2IndicatorValidation[] {
         return settings.indicatorsValidation.map(indicatorValidation => {
             return {
+                year: indicatorValidation.year,
                 periodId: indicatorValidation.period.id,
                 createdAt: indicatorValidation.createdAt || currentDate,
                 lastUpdatedAt: currentDate,
@@ -104,20 +119,39 @@ export class D2ApiUbSettings {
 
     private async getAllSettings(
         page: number,
-        settings: UniqueBeneficiariesSettings[]
+        settings: UniqueBeneficiariesSettings[],
+        options: { projectsIds: Maybe<Id[]> }
     ): Promise<UniqueBeneficiariesSettings[]> {
         const response = await this.getEntriesPaginated(page);
-        const settingsFromEntries = this.convertEntriesToSettings(response.entries);
+        const filterByProjects = options.projectsIds
+            ? response.entries.filter(entry => {
+                  const projectId = entry.key.replace(this.getProjectKey(), "");
+                  return options.projectsIds?.includes(projectId);
+              })
+            : response.entries;
+
+        const settingsFromEntries = await this.convertEntriesToSettings(filterByProjects);
         const acumSettings = [...settings, ...settingsFromEntries];
         return response.entries.length === 0
             ? acumSettings
-            : this.getAllSettings(page + 1, acumSettings);
+            : this.getAllSettings(page + 1, acumSettings, options);
     }
 
-    private convertEntriesToSettings(entries: D2Entries[]): UniqueBeneficiariesSettings[] {
+    private async convertEntriesToSettings(
+        entries: D2Entries[]
+    ): Promise<UniqueBeneficiariesSettings[]> {
+        const projectsIds = entries.map(entry => entry.key.replace(this.getProjectKey(), ""));
+        const allProjects = await promiseMap(projectsIds, projectId =>
+            this.d2ApiProject.getByIds([projectId])
+        );
+
+        const projects = _(allProjects).flatten().value();
+
         return entries.map((d2Entry): UniqueBeneficiariesSettings => {
             const projectId = d2Entry.key.replace(this.getProjectKey(), "");
-            return this.buildSettings(d2Entry, projectId);
+            const project = projects.find(project => project.id === projectId);
+            if (!project) throw new Error(`Project not found for id: ${projectId}`);
+            return this.buildSettings(d2Entry, project);
         });
     }
 
@@ -144,6 +178,7 @@ export class D2ApiUbSettings {
                     createdAt: d2IndicatorValidation.createdAt,
                     lastUpdatedAt: d2IndicatorValidation.lastUpdatedAt,
                     period: period,
+                    year: d2IndicatorValidation.year,
                     indicatorsCalculation: d2IndicatorValidation.indicatorsCalculation.map(
                         d2IndicatorCalculation => {
                             return IndicatorCalculation.build({

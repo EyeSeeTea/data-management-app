@@ -9,6 +9,7 @@ import { ProjectD2Repository } from "./data/repositories/ProjectD2Repository";
 import { UniqueBeneficiariesSettingsD2Repository } from "./data/repositories/UniqueBeneficiariesSettingsD2Repository";
 import { UniquePeriodD2Repository } from "./data/repositories/UniquePeriodD2Repository";
 import { GetIndicatorsValidationUseCase } from "./domain/usecases/GetIndicatorsValidationUseCase";
+import { GetProjectByIdUseCase } from "./domain/usecases/GetProjectByIdUseCase";
 import { GetProjectsByCountryUseCase } from "./domain/usecases/GetProjectsByCountryUseCase";
 import { GetUniqueBeneficiariesSettingsUseCase } from "./domain/usecases/GetUniqueBeneficiariesSettingsUseCase";
 import { ImportDataElementsUseCase } from "./domain/usecases/ImportDataElementsUseCase";
@@ -20,7 +21,10 @@ import { Config } from "./models/Config";
 import { D2Api } from "./types/d2-api";
 
 export function getCompositionRoot(api: D2Api, config: Config) {
-    const uniqueBeneficiariesSettingsRepository = new UniqueBeneficiariesSettingsD2Repository(api);
+    const uniqueBeneficiariesSettingsRepository = new UniqueBeneficiariesSettingsD2Repository(
+        api,
+        config
+    );
     const dataValueRepository = new DataValueD2Repository(api);
     const dataElementRepository = new DataElementD2Repository(api, config);
     const importDataElementSpreadSheetRepository = new ImportDataElementSpreadSheetRepository(
@@ -32,7 +36,7 @@ export function getCompositionRoot(api: D2Api, config: Config) {
     const orgUnitRepository = new OrgUnitD2Repository(api);
     const projectRepository = new ProjectD2Repository(api, config);
     const indicatorReportRepository = new IndicatorReportD2Repository(api, config);
-    const periodRepository = new UniquePeriodD2Repository(api);
+    const periodRepository = new UniquePeriodD2Repository(api, config);
 
     return {
         dataElements: {
@@ -65,6 +69,7 @@ export function getCompositionRoot(api: D2Api, config: Config) {
             saveReports: new SaveIndicatorReportUseCase(indicatorReportRepository),
         },
         projects: {
+            getById: new GetProjectByIdUseCase(projectRepository),
             getByCountry: new GetProjectsByCountryUseCase(
                 projectRepository,
                 uniqueBeneficiariesSettingsRepository,
