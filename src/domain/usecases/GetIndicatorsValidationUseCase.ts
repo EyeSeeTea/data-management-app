@@ -1,9 +1,7 @@
-import _ from "lodash";
 import i18n from "../../locales";
 import { promiseMap } from "../../migrations/utils";
 import { Config } from "../../models/Config";
 import Project from "../../models/Project";
-import { getYearsFromProject } from "../../pages/project-indicators-validation/ProjectIndicatorsValidation";
 import { DataValue } from "../entities/DataValue";
 import { IndicatorCalculation } from "../entities/IndicatorCalculation";
 import { IndicatorValidation } from "../entities/IndicatorValidation";
@@ -74,25 +72,6 @@ export class GetIndicatorsValidationUseCase {
         });
 
         return indicatorsWithValues;
-    }
-
-    private getPeriodsAndYearsFromProject(project: Project, periods: UniqueBeneficiariesPeriod[]) {
-        const years = getYearsFromProject(
-            project.startDate?.toISOString() || "",
-            project.endDate?.toISOString() || ""
-        );
-        const periodsByYears = _(years)
-            .flatMap(year =>
-                periods.map(period => ({
-                    key: `${year}-${period.id}`,
-                    value: { period, year },
-                }))
-            )
-            .keyBy("key")
-            .mapValues("value")
-            .value();
-
-        return { years, periodsByYears };
     }
 
     private async setValuesToIndicators(

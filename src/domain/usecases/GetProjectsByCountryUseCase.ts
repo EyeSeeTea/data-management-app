@@ -1,12 +1,18 @@
 import _ from "lodash";
 import { ProjectForList } from "../../models/ProjectsList";
 import { getYearsFromProject } from "../../pages/project-indicators-validation/ProjectIndicatorsValidation";
+import { Maybe } from "../../types/utils";
 import { getId } from "../../utils/dhis2";
 import { DataElement } from "../entities/DataElement";
 import { IndicatorCalculation } from "../entities/IndicatorCalculation";
-import { IndicatorReport, ProjectIndicatorRow, ProjectRows } from "../entities/IndicatorReport";
+import {
+    IndicatorReport,
+    ProjectCountry,
+    ProjectIndicatorRow,
+    ProjectRows,
+} from "../entities/IndicatorReport";
 import { IndicatorValidation } from "../entities/IndicatorValidation";
-import { Id } from "../entities/Ref";
+import { Id, ISODateTimeString } from "../entities/Ref";
 import { UniqueBeneficiariesPeriod } from "../entities/UniqueBeneficiariesPeriod";
 import { UniqueBeneficiariesSettings } from "../entities/UniqueBeneficiariesSettings";
 import { DataElementRepository } from "../repositories/DataElementRepository";
@@ -80,16 +86,71 @@ export class GetProjectsByCountryUseCase {
             );
 
             return existingData
-                ? existingData
+                ? this.buildExistingReport(existingData, settings, period, year)
                 : IndicatorReport.create({
                       year,
                       countryId,
                       createdAt: "",
                       lastUpdatedAt: "",
                       period,
-                      projects: this.generateProjects(projects, settings, period, dataElements),
+                      projects: this.generateProjects(
+                          projects,
+                          settings,
+                          period,
+                          dataElements,
+                          year
+                      ),
                   });
         });
+    }
+
+    private buildExistingReport(
+        indicatorReport: IndicatorReport,
+        settings: UniqueBeneficiariesSettings[],
+        period: UniqueBeneficiariesPeriod,
+        year: number
+    ): IndicatorReport {
+        return IndicatorReport.create({
+            ...indicatorReport,
+            projects: _(indicatorReport.projects)
+                .map(projectIndicator => {
+                    const settingsProject = this.getSettingsProject(
+                        settings,
+                        projectIndicator.project.id
+                    );
+
+                    if (!settingsProject) return undefined;
+
+                    return {
+                        ...projectIndicator,
+                        indicators: projectIndicator.indicators.map(indicator => {
+                            return {
+                                ...indicator,
+                                include: false,
+                                periodNotAvailable: this.isProjectNotAvailable(
+                                    period,
+                                    settingsProject,
+                                    projectIndicator.project,
+                                    year
+                                ),
+                            };
+                        }),
+                    };
+                })
+                .compact()
+                .value(),
+        });
+    }
+
+    private getSettingsProject(
+        settings: UniqueBeneficiariesSettings[],
+        projectId: Id
+    ): Maybe<UniqueBeneficiariesSettings> {
+        const currentSettings = settings.find(setting => setting.projectId === projectId);
+
+        return !currentSettings?.indicatorsIds || currentSettings?.indicatorsIds.length === 0
+            ? undefined
+            : currentSettings;
     }
 
     private getUniquePeriodsFromSettings(
@@ -103,21 +164,20 @@ export class GetProjectsByCountryUseCase {
         projectsByPeriod: ProjectForList[],
         settings: UniqueBeneficiariesSettings[],
         period: UniqueBeneficiariesPeriod,
-        dataElements: DataElement[]
+        dataElements: DataElement[],
+        year: number
     ): ProjectRows[] {
         return _(projectsByPeriod)
             .map(project => {
-                const settingsProject = settings.find(setting => setting.projectId === project.id);
+                const settingsProject = this.getSettingsProject(settings, project.id);
+                if (!settingsProject) return undefined;
 
-                if (!settingsProject?.indicatorsIds || settingsProject.indicatorsIds.length === 0)
-                    return undefined;
-
-                const isCustomPeriod = period.type === "CUSTOM";
-                const periodExist = settingsProject?.periods.find(item =>
-                    period.equalMonths(item.startDateMonth, item.endDateMonth)
+                const notIndicatorsAvailable = this.isProjectNotAvailable(
+                    period,
+                    settingsProject,
+                    project,
+                    year
                 );
-
-                const notIndicatorsAvailable = isCustomPeriod && !periodExist;
 
                 const indicatorsCalculation = settingsProject?.indicatorsValidation
                     .find(item =>
@@ -155,6 +215,36 @@ export class GetProjectsByCountryUseCase {
             })
             .compact()
             .value();
+    }
+
+    private isProjectNotAvailable(
+        period: UniqueBeneficiariesPeriod,
+        settings: UniqueBeneficiariesSettings,
+        project: ProjectCountry,
+        year: number
+    ): boolean {
+        const isCustomPeriod = period.type === "CUSTOM";
+        const periodExist = settings.periods.find(item =>
+            period.equalMonths(item.startDateMonth, item.endDateMonth)
+        );
+
+        const projectIsInYear = this.checkProjectDateIsInYear(
+            project.openingDate,
+            project.closedDate,
+            year
+        );
+
+        return isCustomPeriod ? !periodExist || !projectIsInYear : false;
+    }
+
+    private checkProjectDateIsInYear(
+        startDate: ISODateTimeString,
+        endDate: ISODateTimeString,
+        year: number
+    ): boolean {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        return year >= start.getFullYear() && year <= end.getFullYear();
     }
 
     private async buildSettingsWithIndicators(

@@ -121,19 +121,19 @@ export const CountryIndicatorReport = React.memo(() => {
                 </Grid>
                 <Grid item>
                     <Dropdown
-                        items={mapItemsToDropdown(getAllPeriods(indicatorsReports))}
-                        onChange={updatePeriod}
-                        label={i18n.t("Select period")}
-                        value={selectedPeriod?.id}
+                        items={years}
+                        onChange={updateYear}
+                        label={i18n.t("Select Year")}
+                        value={year?.toString()}
                         hideEmpty
                     />
                 </Grid>
                 <Grid item>
                     <Dropdown
-                        items={years}
-                        onChange={updateYear}
-                        label={i18n.t("Select Year")}
-                        value={year?.toString()}
+                        items={mapItemsToDropdown(getAllPeriods(indicatorsReports))}
+                        onChange={updatePeriod}
+                        label={i18n.t("Select period")}
+                        value={selectedPeriod?.id}
                         hideEmpty
                     />
                 </Grid>
