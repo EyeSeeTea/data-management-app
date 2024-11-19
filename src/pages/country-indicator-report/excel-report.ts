@@ -12,24 +12,26 @@ type SpreadSheetOptions = {
     countryName: string;
     settings: UniqueBeneficiariesSettings[];
     period: UniqueBeneficiariesPeriod;
+    year: number;
 };
 
 export async function buildSpreadSheet(options: SpreadSheetOptions) {
-    const { indicatorReport, countryName } = options;
+    const { indicatorReport, countryName, year } = options;
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet(i18n.t("Country Projects & Indicators"));
     sheet.columns = generateColumns();
     generateRows(options, sheet);
-    return generateFileInBuffer(workbook, countryName, indicatorReport);
+    return generateFileInBuffer(workbook, countryName, indicatorReport, year);
 }
 
 async function generateFileInBuffer(
     workbook: ExcelJS.Workbook,
     countryName: string,
-    indicatorReport: IndicatorReport
+    indicatorReport: IndicatorReport,
+    year: number
 ) {
     const buffer = await workbook.xlsx.writeBuffer();
-    const filename = `${countryName.toLowerCase()}_${indicatorReport.period.name.toLowerCase()}_report.xlsx`;
+    const filename = `${countryName.toLowerCase()}_${indicatorReport.period.name.toLowerCase()}_${year}_report.xlsx`;
     return { buffer, filename };
 }
 

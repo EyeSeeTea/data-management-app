@@ -84,12 +84,13 @@ export const CountryIndicatorReport = React.memo(() => {
             : undefined;
 
     const downloadReport = () => {
-        if (indicatorReport && orgUnit && selectedPeriod) {
+        if (indicatorReport && orgUnit && selectedPeriod && year) {
             buildSpreadSheet({
                 indicatorReport,
                 countryName: orgUnit.displayName,
                 period: selectedPeriod,
                 settings,
+                year,
             }).then(downloadFile);
         }
     };
