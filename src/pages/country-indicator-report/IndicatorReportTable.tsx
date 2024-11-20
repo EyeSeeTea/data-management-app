@@ -115,13 +115,14 @@ const ProjectCell = (props: ProjectCellProps) => {
     const { period, rowSpan, row, settings } = props;
 
     const currentPeriod = getCurrentPeriodForProject(settings, row.project.id, period);
+    const periodName = `Period: ${currentPeriod?.name || getNotAvailableText()}`;
 
     return (
         <TableCell rowSpan={rowSpan}>
             {row.project.name} <br /> ({buildMonthYearFormatDate(row.project.openingDate)} -{" "}
             {buildMonthYearFormatDate(row.project.closedDate)})
             <br />
-            Period: {currentPeriod?.name || i18n.t("N/A")}
+            {row.periodNotAvailable ? getNotAvailableText() : periodName}
         </TableCell>
     );
 };
@@ -129,13 +130,13 @@ const ProjectCell = (props: ProjectCellProps) => {
 const TotalCell: RowComponent<GroupedRows> = props => {
     return (
         <TableCell rowSpan={props.rowSpan}>
-            {props.row.periodNotAvailable ? i18n.t("N/A") : props.row.total}
+            {props.row.periodNotAvailable ? getNotAvailableText() : props.row.total}
         </TableCell>
     );
 };
 
 const IndicatorCell = (props: IndicatorCellProps) => {
-    const notAvailableText = i18n.t("N/A");
+    const notAvailableText = getNotAvailableText();
     const isPeriodNotAvailable = props.row.periodNotAvailable;
 
     return (
@@ -194,4 +195,8 @@ export function getCurrentPeriodForProject(
         projectPeriod.equalMonths(period.startDateMonth, period.endDateMonth)
     );
     return currentPeriod;
+}
+
+function getNotAvailableText() {
+    return i18n.t("N/A");
 }

@@ -4,40 +4,20 @@ import { Config } from "../../models/Config";
 import Project from "../../models/Project";
 import { ProjectForList } from "../../models/ProjectsList";
 import { D2Api } from "../../types/d2-api";
+import { D2ApiProject } from "../common/D2ApiProject";
 
 export class ProjectD2Repository implements ProjectRepository {
-    constructor(private api: D2Api, private config: Config) {}
+    private d2ApiProject: D2ApiProject;
+
+    constructor(private api: D2Api, private config: Config) {
+        this.d2ApiProject = new D2ApiProject(api, config);
+    }
 
     async getById(id: Id): Promise<Project> {
         return Project.get(this.api, this.config, id);
     }
 
     async getByCountries(countryId: Id): Promise<ProjectForList[]> {
-        return this.getAllProjectsByCountry(countryId, 1, []);
-    }
-
-    private async getAllProjectsByCountry(
-        countryId: Id,
-        initialPage: number,
-        initialProjects: ProjectForList[]
-    ) {
-        const response = await this.getByCountry(countryId, initialPage);
-        const newProjects = [...initialProjects, ...response.objects];
-        if (response.pager.page >= response.pager.pageCount) {
-            return newProjects;
-        } else {
-            const projects = await this.getByCountry(countryId, initialPage + 1);
-            return projects.objects;
-        }
-    }
-
-    private getByCountry(countryId: Id, page: number) {
-        return Project.getList(
-            this.api,
-            this.config,
-            { countryIds: [countryId], onlyActive: true },
-            { field: "created", order: "desc" },
-            { page: page, pageSize: 50 }
-        );
+        return this.d2ApiProject.getAllProjectsByCountry(countryId, 1, []);
     }
 }

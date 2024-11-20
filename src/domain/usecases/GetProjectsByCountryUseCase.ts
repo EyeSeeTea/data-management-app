@@ -1,11 +1,18 @@
 import _ from "lodash";
 import { ProjectForList } from "../../models/ProjectsList";
+import { getYearsFromProject } from "../../pages/project-indicators-validation/ProjectIndicatorsValidation";
+import { Maybe } from "../../types/utils";
 import { getId } from "../../utils/dhis2";
 import { DataElement } from "../entities/DataElement";
 import { IndicatorCalculation } from "../entities/IndicatorCalculation";
-import { IndicatorReport, ProjectIndicatorRow, ProjectRows } from "../entities/IndicatorReport";
+import {
+    IndicatorReport,
+    ProjectCountry,
+    ProjectIndicatorRow,
+    ProjectRows,
+} from "../entities/IndicatorReport";
 import { IndicatorValidation } from "../entities/IndicatorValidation";
-import { Id } from "../entities/Ref";
+import { Id, ISODateTimeString } from "../entities/Ref";
 import { UniqueBeneficiariesPeriod } from "../entities/UniqueBeneficiariesPeriod";
 import { UniqueBeneficiariesSettings } from "../entities/UniqueBeneficiariesSettings";
 import { DataElementRepository } from "../repositories/DataElementRepository";
@@ -22,9 +29,9 @@ export class GetProjectsByCountryUseCase {
     ) {}
 
     async execute(options: GetCountryIndicatorsOptions): Promise<IndicatorsReportsResult> {
-        const [projects, settings, existingReports] = await Promise.all([
-            this.getProjectsByCountry(options.countryId),
-            this.getAllSettings(),
+        const projects = await this.getProjectsByCountry(options.countryId);
+        const [settings, existingReports] = await Promise.all([
+            this.getAllSettings(projects.map(project => project.id)),
             this.indicatorRepository.getByCountry(options.countryId),
         ]);
 
@@ -55,24 +62,56 @@ export class GetProjectsByCountryUseCase {
         dataElements: DataElement[]
     ): IndicatorReport[] {
         const uniquePeriods = this.getUniquePeriodsFromSettings(settings);
+        const allYears = _(projects)
+            .map(project => {
+                return getYearsFromProject(project.openingDate, project.closedDate);
+            })
+            .flatten()
+            .uniq()
+            .sort()
+            .value();
 
-        return uniquePeriods.map((period): IndicatorReport => {
+        const { periodsKeys, periodsByYears } = IndicatorValidation.groupPeriodsAndYears(
+            allYears,
+            uniquePeriods
+        );
+
+        return periodsKeys.map((periodYearKey): IndicatorReport => {
+            const { period, year } = periodsByYears[periodYearKey];
             const existingData = existingReports.find(
                 report =>
                     report.period.equalMonths(period.startDateMonth, period.endDateMonth) &&
+                    report.year === year &&
                     report.countryId === countryId
             );
 
-            return existingData
-                ? existingData
-                : IndicatorReport.create({
-                      countryId,
-                      createdAt: "",
-                      lastUpdatedAt: "",
-                      period,
-                      projects: this.generateProjects(projects, settings, period, dataElements),
-                  });
+            return IndicatorReport.create({
+                year,
+                countryId,
+                createdAt: existingData?.createdAt || "",
+                lastUpdatedAt: existingData?.lastUpdatedAt || "",
+                period,
+                projects: this.generateProjects(
+                    projects,
+                    settings,
+                    period,
+                    dataElements,
+                    year,
+                    existingData
+                ),
+            });
         });
+    }
+
+    private getSettingsProject(
+        settings: UniqueBeneficiariesSettings[],
+        projectId: Id
+    ): Maybe<UniqueBeneficiariesSettings> {
+        const currentSettings = settings.find(setting => setting.projectId === projectId);
+
+        return !currentSettings?.indicatorsIds || currentSettings?.indicatorsIds.length === 0
+            ? undefined
+            : currentSettings;
     }
 
     private getUniquePeriodsFromSettings(
@@ -86,30 +125,40 @@ export class GetProjectsByCountryUseCase {
         projectsByPeriod: ProjectForList[],
         settings: UniqueBeneficiariesSettings[],
         period: UniqueBeneficiariesPeriod,
-        dataElements: DataElement[]
+        dataElements: DataElement[],
+        year: number,
+        existingRecord: Maybe<IndicatorReport>
     ): ProjectRows[] {
         return _(projectsByPeriod)
             .map(project => {
-                const settingsProject = settings.find(setting => setting.projectId === project.id);
+                const existingProject = existingRecord?.projects.find(
+                    item => item.id === project.id
+                );
+                const settingsProject = this.getSettingsProject(settings, project.id);
+                if (!settingsProject) return undefined;
 
-                if (!settingsProject?.indicatorsIds || settingsProject.indicatorsIds.length === 0)
-                    return undefined;
-
-                const isCustomPeriod = period.type === "CUSTOM";
-                const periodExist = settingsProject?.periods.find(item =>
-                    period.equalMonths(item.startDateMonth, item.endDateMonth)
+                const notIndicatorsAvailable = this.isProjectNotAvailable(
+                    period,
+                    settingsProject,
+                    project,
+                    year
                 );
 
-                const notIndicatorsAvailable = isCustomPeriod && !periodExist;
-
                 const indicatorsCalculation = settingsProject?.indicatorsValidation
-                    .find(item =>
-                        period.equalMonths(item.period.startDateMonth, item.period.endDateMonth)
+                    .find(
+                        item =>
+                            period.equalMonths(
+                                item.period.startDateMonth,
+                                item.period.endDateMonth
+                            ) && item.year === year
                     )
                     ?.indicatorsCalculation.map((indicator): ProjectIndicatorRow => {
+                        const existingIndicator = existingProject?.indicators.find(
+                            item => item.indicatorId === indicator.id
+                        );
                         return {
                             periodNotAvailable: notIndicatorsAvailable,
-                            include: false,
+                            include: existingIndicator?.include || false,
                             indicatorCode: indicator.code || "",
                             indicatorName: indicator.name || "",
                             indicatorId: indicator.id,
@@ -124,24 +173,52 @@ export class GetProjectsByCountryUseCase {
                               const dataElementDetails = dataElements.find(
                                   dataElement => dataElement.id === indicatorId
                               );
+                              const existingIndicator = existingProject?.indicators.find(
+                                  item => item.indicatorId === indicatorId
+                              );
                               return {
                                   periodNotAvailable: notIndicatorsAvailable,
                                   indicatorId,
                                   indicatorCode: dataElementDetails?.code || "",
                                   indicatorName: dataElementDetails?.name || "",
                                   value: 0,
-                                  include: false,
+                                  include: existingIndicator?.include || false,
                               };
                           });
 
-                return {
-                    id: project.id,
-                    project: project,
-                    indicators: projectIndicators,
-                };
+                return { id: project.id, project: project, indicators: projectIndicators };
             })
             .compact()
             .value();
+    }
+
+    private isProjectNotAvailable(
+        period: UniqueBeneficiariesPeriod,
+        settings: UniqueBeneficiariesSettings,
+        project: ProjectCountry,
+        year: number
+    ): boolean {
+        const periodExist = settings.periods.find(item =>
+            period.equalMonths(item.startDateMonth, item.endDateMonth)
+        );
+
+        const projectIsInYear = this.checkProjectDateIsInYear(
+            project.openingDate,
+            project.closedDate,
+            year
+        );
+
+        return !periodExist || !projectIsInYear;
+    }
+
+    private checkProjectDateIsInYear(
+        startDate: ISODateTimeString,
+        endDate: ISODateTimeString,
+        year: number
+    ): boolean {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        return year >= start.getFullYear() && year <= end.getFullYear();
     }
 
     private async buildSettingsWithIndicators(
@@ -191,8 +268,8 @@ export class GetProjectsByCountryUseCase {
         return this.projectRepository.getByCountries(countryId);
     }
 
-    private getAllSettings(): Promise<UniqueBeneficiariesSettings[]> {
-        return this.beneficiariesSettingsRepository.getAll();
+    private getAllSettings(projectsIds: Id[]): Promise<UniqueBeneficiariesSettings[]> {
+        return this.beneficiariesSettingsRepository.getAll({ projectsIds });
     }
 }
 

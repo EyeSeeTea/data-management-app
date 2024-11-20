@@ -1,14 +1,18 @@
+import _ from "lodash";
+import { getYearsFromProject } from "../../pages/project-indicators-validation/ProjectIndicatorsValidation";
 import { Maybe } from "../../types/utils";
 import { Either } from "./generic/Either";
 import { ValidationError } from "./generic/Errors";
 import { Struct } from "./generic/Struct";
 import { validateRequired } from "./generic/Validations";
 import { IndicatorCalculation } from "./IndicatorCalculation";
+import { ProjectCountry } from "./IndicatorReport";
 import { Id, ISODateTimeString } from "./Ref";
 import { UniqueBeneficiariesPeriod } from "./UniqueBeneficiariesPeriod";
 
 export type IndicatorValidationAttrs = {
     period: UniqueBeneficiariesPeriod;
+    year: number;
     createdAt: ISODateTimeString;
     lastUpdatedAt: Maybe<ISODateTimeString>;
     indicatorsCalculation: IndicatorCalculation[];
@@ -45,13 +49,22 @@ export class IndicatorValidation extends Struct<IndicatorValidationAttrs>() {
 
     static buildIndicatorsValidationFromPeriods(
         periods: UniqueBeneficiariesPeriod[],
-        indicatorsIds: Id[]
+        indicatorsIds: Id[],
+        project: ProjectCountry
     ): IndicatorValidation[] {
-        return periods.map(period => {
+        const { periodsKeys, periodsByYears } = this.getPeriodsAndYearsFromDates(
+            project.openingDate,
+            project.closedDate,
+            periods
+        );
+
+        return periodsKeys.map(periodYearKey => {
+            const { period, year } = periodsByYears[periodYearKey];
             return IndicatorValidation.build({
                 createdAt: "",
                 lastUpdatedAt: "",
                 period,
+                year,
                 indicatorsCalculation: indicatorsIds.map(indicatorId => {
                     return IndicatorCalculation.build({
                         id: indicatorId,
@@ -65,5 +78,34 @@ export class IndicatorValidation extends Struct<IndicatorValidationAttrs>() {
                 }),
             }).get();
         });
+    }
+
+    checkPeriodAndYear(periodId: Id, year: number): boolean {
+        return this.period.id === periodId && this.year === year;
+    }
+
+    static getPeriodsAndYearsFromDates(
+        startDate: ISODateTimeString,
+        endDate: ISODateTimeString,
+        periods: UniqueBeneficiariesPeriod[]
+    ) {
+        const years = getYearsFromProject(startDate, endDate);
+        return this.groupPeriodsAndYears(years, periods);
+    }
+
+    static groupPeriodsAndYears(years: number[], periods: UniqueBeneficiariesPeriod[]) {
+        const periodsByYears = _(years)
+            .flatMap(year =>
+                periods.map(period => ({
+                    id: `${year}-${period.id}`,
+                    value: { period: period, year },
+                }))
+            )
+            .keyBy(item => item.id)
+            .mapValues(item => item.value)
+            .value();
+
+        const periodsKeys = Object.keys(periodsByYears);
+        return { periodsByYears, periodsKeys };
     }
 }

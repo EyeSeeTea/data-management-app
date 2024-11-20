@@ -1,5 +1,12 @@
+import _ from "lodash";
 import React from "react";
-import { ConfirmationDialog, Dropdown, useLoading, useSnackbar } from "@eyeseetea/d2-ui-components";
+import {
+    ConfirmationDialog,
+    Dropdown,
+    useLoading,
+    useSnackbar,
+    DropdownItem,
+} from "@eyeseetea/d2-ui-components";
 import { Button, Grid, Typography } from "@material-ui/core";
 
 import UserOrgUnits, { OrganisationUnit } from "../../components/org-units/UserOrgUnits";
@@ -16,10 +23,12 @@ import { buildSpreadSheet } from "./excel-report";
 import { downloadFile } from "../../utils/download";
 import { useConfirmChanges } from "../report/MerReport";
 import { UniqueBeneficiariesSettings } from "../../domain/entities/UniqueBeneficiariesSettings";
+import { getYearsFromProject } from "../project-indicators-validation/ProjectIndicatorsValidation";
 
 export const CountryIndicatorReport = React.memo(() => {
     const goTo = useGoTo();
     const [orgUnit, setOrgUnit] = React.useState<OrganisationUnit>();
+    const [year, setYear] = React.useState<number>();
     const [selectedPeriod, setSelectedPeriod] = React.useState<UniqueBeneficiariesPeriod>();
     const { confirmIfUnsavedChanges, proceedWarning, runProceedAction, wasReportModifiedSet } =
         useConfirmChanges();
@@ -49,32 +58,39 @@ export const CountryIndicatorReport = React.memo(() => {
         }
     };
 
+    const updateYear = (year: Maybe<string>) => {
+        if (year) setYear(Number(year));
+    };
+
     const updateReport = React.useCallback(
         (value: boolean, row: GroupedRows) => {
-            if (!selectedPeriod) return;
+            if (!selectedPeriod || !year) return;
 
             const updatedIndicators = indicatorsReports.map(indicatorReport => {
-                if (indicatorReport.period.id !== selectedPeriod.id) return indicatorReport;
+                if (!indicatorReport.checkPeriodAndYear(selectedPeriod.id, year))
+                    return indicatorReport;
 
                 return indicatorReport.updateProjectIndicators(row.project.id, row.id, value);
             });
             setIndicatorsReports(updatedIndicators);
             wasReportModifiedSet(true);
         },
-        [indicatorsReports, selectedPeriod, setIndicatorsReports, wasReportModifiedSet]
+        [indicatorsReports, selectedPeriod, setIndicatorsReports, wasReportModifiedSet, year]
     );
 
-    const indicatorReport = indicatorsReports.find(
-        report => report.period.id === selectedPeriod?.id
-    );
+    const indicatorReport =
+        year && selectedPeriod
+            ? indicatorsReports.find(report => report.checkPeriodAndYear(selectedPeriod.id, year))
+            : undefined;
 
     const downloadReport = () => {
-        if (indicatorReport && orgUnit && selectedPeriod) {
+        if (indicatorReport && orgUnit && selectedPeriod && year) {
             buildSpreadSheet({
                 indicatorReport,
                 countryName: orgUnit.displayName,
                 period: selectedPeriod,
                 settings,
+                year,
             }).then(downloadFile);
         }
     };
@@ -87,6 +103,8 @@ export const CountryIndicatorReport = React.memo(() => {
 
     const reportHasProjects = indicatorReport && indicatorReport.projects.length > 0;
     const titlePage = i18n.t("Country Project & Indicators");
+
+    const years = mapYearsToItems(indicatorsReports);
 
     return (
         <section>
@@ -102,16 +120,25 @@ export const CountryIndicatorReport = React.memo(() => {
                         height={200}
                     />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item>
+                    <Dropdown
+                        items={years}
+                        onChange={updateYear}
+                        label={i18n.t("Select Year")}
+                        value={year?.toString()}
+                        hideEmpty
+                    />
+                </Grid>
+                <Grid item>
                     <Dropdown
                         items={mapItemsToDropdown(getAllPeriods(indicatorsReports))}
-                        onChange={period => updatePeriod(period)}
+                        onChange={updatePeriod}
                         label={i18n.t("Select period")}
                         value={selectedPeriod?.id}
                         hideEmpty
                     />
                 </Grid>
-                {reportHasProjects && selectedPeriod && (
+                {reportHasProjects && selectedPeriod && year && (
                     <>
                         <Grid item xs={12}>
                             <IndicatorReportTable
@@ -147,7 +174,7 @@ export const CountryIndicatorReport = React.memo(() => {
                         </Grid>
                     </>
                 )}
-                {selectedPeriod && !reportHasProjects && (
+                {selectedPeriod && year && !reportHasProjects && (
                     <Typography>
                         {i18n.t("No projects found for selected period: {{period}}", {
                             nsSeparator: false,
@@ -176,8 +203,28 @@ export const CountryIndicatorReport = React.memo(() => {
 
 CountryIndicatorReport.displayName = "CountryIndicatorReport";
 
+function getUniqueYearsFromProjects(indicatorsReports: IndicatorReport[]): number[] {
+    return _(indicatorsReports)
+        .flatMap(report =>
+            report.projects.map(project => {
+                return getYearsFromProject(project.project.openingDate, project.project.closedDate);
+            })
+        )
+        .flatten()
+        .uniq()
+        .value();
+}
+
+function mapYearsToItems(indicatorsReports: IndicatorReport[]): DropdownItem[] {
+    const years = getUniqueYearsFromProjects(indicatorsReports);
+    return years.map(year => ({ text: year.toString(), value: year.toString() }));
+}
+
 function getAllPeriods(indicatorsReports: IndicatorReport[]): UniqueBeneficiariesPeriod[] {
-    return indicatorsReports.flatMap(setting => setting.period);
+    return _(indicatorsReports)
+        .flatMap(setting => setting.period)
+        .uniqBy(period => period.name)
+        .value();
 }
 
 function mapItemsToDropdown(periods: UniqueBeneficiariesPeriod[]) {

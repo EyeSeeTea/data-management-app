@@ -13,26 +13,35 @@ import { UniqueBeneficiariesSettings } from "../../domain/entities/UniqueBenefic
 import { IndicatorNotification } from "./IndicatorNotification";
 import { ISODateTimeString } from "../../domain/entities/Ref";
 import { useIndicatorValidation } from "./hooks";
+import { UniqueBeneficiariesPeriod } from "../../domain/entities/UniqueBeneficiariesPeriod";
 
 export type IndicatorValidationFormProps = {
     indicatorsValidation: IndicatorValidation[];
     onSubmit: (indicatorValidation: IndicatorValidation) => void;
     onUpdateIndicator: (indicator: IndicatorValidation) => void;
     settings: UniqueBeneficiariesSettings;
+    years: number[];
 };
 
 export const IndicatorValidationForm = React.memo((props: IndicatorValidationFormProps) => {
-    const { indicatorsValidation, onSubmit, settings, onUpdateIndicator } = props;
+    const { indicatorsValidation, onSubmit, settings, onUpdateIndicator, years } = props;
     const { periods } = settings;
+    const [selectedYear, setSelectedYear] = React.useState<number>();
+    const [selectedPeriod, setSelectedPeriod] = React.useState<UniqueBeneficiariesPeriod>();
     const {
         dismissNotification,
         selectedIndicator,
-        selectedPeriod,
         loadIndicatorValidation,
         saveIndicatorValidation,
         setDismissNotification,
         updateIndicatorsValidationRow,
-    } = useIndicatorValidation({ indicatorsValidation, onSubmit, periods, onUpdateIndicator });
+    } = useIndicatorValidation({
+        indicatorsValidation,
+        onSubmit,
+        periods,
+        onUpdateIndicator,
+        selectedPeriod,
+    });
 
     const history = useHistory();
     const classes = useStyles();
@@ -56,6 +65,30 @@ export const IndicatorValidationForm = React.memo((props: IndicatorValidationFor
         IndicatorCalculation.getTotal(indicator)
     );
 
+    const mapsYearsToItems = years.map(year => ({
+        value: year.toString(),
+        text: year.toString(),
+    }));
+
+    const updateYear = React.useCallback(
+        (value: Maybe<string>) => {
+            if (value) setSelectedYear(Number(value));
+            if (selectedPeriod) loadIndicatorValidation(selectedPeriod.id, Number(value));
+        },
+        [loadIndicatorValidation, selectedPeriod]
+    );
+
+    const updatePeriod = React.useCallback(
+        (value: Maybe<string>) => {
+            const period = periods.find(period => period.id === value);
+            if (period && selectedYear) {
+                setSelectedPeriod(period);
+                loadIndicatorValidation(period.id, Number(selectedYear));
+            }
+        },
+        [loadIndicatorValidation, periods, selectedYear]
+    );
+
     return (
         <div>
             <PageHeader
@@ -66,11 +99,21 @@ export const IndicatorValidationForm = React.memo((props: IndicatorValidationFor
             <form onSubmit={saveIndicatorValidation}>
                 <Dropdown
                     hideEmpty
-                    items={mapPeriodsToItems}
-                    label={i18n.t("Select a Period")}
-                    onChange={loadIndicatorValidation}
-                    value={selectedPeriod?.id || ""}
+                    items={mapsYearsToItems}
+                    label={i18n.t("Select Year")}
+                    onChange={updateYear}
+                    value={selectedYear?.toString()}
                 />
+
+                {selectedYear && (
+                    <Dropdown
+                        hideEmpty
+                        items={mapPeriodsToItems}
+                        label={i18n.t("Select Period")}
+                        onChange={updatePeriod}
+                        value={selectedPeriod?.id || ""}
+                    />
+                )}
 
                 {selectedIndicator && (
                     <Grid container>

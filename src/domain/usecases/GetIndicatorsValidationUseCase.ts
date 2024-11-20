@@ -51,15 +51,23 @@ export class GetIndicatorsValidationUseCase {
         const dataSetId = project.dataSets?.actual.id;
         if (!dataSetId) throw new Error(`Actual dataSet not found for project: ${project.name}`);
 
+        const { periodsKeys, periodsByYears } = IndicatorValidation.getPeriodsAndYearsFromDates(
+            project.startDate?.toISOString() || "",
+            project.endDate?.toISOString() || "",
+            settings.periods
+        );
+
         const indicatorsDetails = project.uniqueIndicators.get({ onlySelected: true });
 
-        const indicatorsWithValues = await promiseMap(settings.periods, period => {
+        const indicatorsWithValues = await promiseMap(periodsKeys, periodYearKey => {
+            const { period, year } = periodsByYears[periodYearKey];
             return this.setValuesToIndicators(
                 period,
                 dataSetId,
                 project.id,
                 settings,
-                indicatorsDetails
+                indicatorsDetails,
+                year
             );
         });
 
@@ -71,13 +79,14 @@ export class GetIndicatorsValidationUseCase {
         dataSetId: Id,
         projectId: Id,
         settings: UniqueBeneficiariesSettings,
-        indicatorsDetails: Array<{ id: Id; name: string; code: Code }>
+        indicatorsDetails: Array<{ id: Id; name: string; code: Code }>,
+        year: number
     ): Promise<IndicatorValidation> {
-        const dateRange = this.getDatesRange(period);
+        const dateRange = this.getDatesRange(period, year);
         const dataValues = await this.getDataValues(dataSetId, projectId, settings, dateRange);
         const actualDataValues = this.getOnlyActualDataValues(dataValues);
-        const indicatorCalculation = settings.indicatorsValidation.find(
-            item => item.period.id === period.id
+        const indicatorCalculation = settings.indicatorsValidation.find(item =>
+            item.checkPeriodAndYear(period.id, year)
         );
 
         const indicatorCalculations = settings.indicatorsIds.map(indicatorId => {
@@ -100,6 +109,7 @@ export class GetIndicatorsValidationUseCase {
             lastUpdatedAt: indicatorCalculation?.lastUpdatedAt,
             period: period,
             indicatorsCalculation: indicatorCalculations,
+            year: year,
         }).get();
     }
 
@@ -122,9 +132,9 @@ export class GetIndicatorsValidationUseCase {
         });
     }
 
-    private getDatesRange(period: UniqueBeneficiariesPeriod): DateRange {
-        const startDate = this.getMonthDay(period.startDateMonth, "first");
-        const endDate = this.getMonthDay(period.endDateMonth, "last");
+    private getDatesRange(period: UniqueBeneficiariesPeriod, year: number): DateRange {
+        const startDate = this.getMonthDay(period.startDateMonth, "first", year);
+        const endDate = this.getMonthDay(period.endDateMonth, "last", year);
         return { startDate, endDate };
     }
 
@@ -134,14 +144,12 @@ export class GetIndicatorsValidationUseCase {
         );
     }
 
-    private getMonthDay(month: number, option: "first" | "last"): Date {
+    private getMonthDay(month: number, option: "first" | "last", year: number): Date {
         if (month < 1 || month > 12) {
             throw new Error(`Invalid month number: ${month}`);
         }
-        const currentYear = new Date().getFullYear();
-        return option === "first"
-            ? new Date(currentYear, month - 1, 1)
-            : new Date(currentYear, month, 0);
+
+        return option === "first" ? new Date(year, month - 1, 1) : new Date(year, month, 0);
     }
 }
 

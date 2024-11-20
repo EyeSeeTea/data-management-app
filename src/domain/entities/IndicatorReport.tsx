@@ -10,6 +10,7 @@ export type IndicatorReportAttrs = {
     createdAt: ISODateTimeString;
     lastUpdatedAt: ISODateTimeString;
     projects: ProjectRows[];
+    year: number;
 };
 
 export type IndicatorReportToSave = Omit<IndicatorReportAttrs, "createdAt" | "lastUpdatedAt">;
@@ -44,6 +45,10 @@ export class IndicatorReport extends Struct<IndicatorReportAttrs>() {
                 : project;
         });
         return this._update({ projects: newProjects });
+    }
+
+    checkPeriodAndYear(periodId: Id, year: number): boolean {
+        return this.period.id === periodId && this.year === year;
     }
 
     private updateIndicators(
