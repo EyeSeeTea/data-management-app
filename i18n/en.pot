@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-11-20T14:50:17.120Z\n"
-"PO-Revision-Date: 2024-11-20T14:50:17.120Z\n"
+"POT-Creation-Date: 2024-11-20T15:06:33.223Z\n"
+"PO-Revision-Date: 2024-11-20T15:06:33.223Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -1093,6 +1093,14 @@ msgid "Clone project"
 msgstr ""
 
 msgid "New project"
+msgstr ""
+
+msgid ""
+"Please review all prefilled information including Project numbers and dates "
+"which MUST be updated."
+msgstr ""
+
+msgid "OK"
 msgstr ""
 
 msgid ""

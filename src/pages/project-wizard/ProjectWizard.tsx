@@ -1,7 +1,7 @@
 import React from "react";
 import { useLocation } from "react-router";
 import _ from "lodash";
-import { Wizard, useSnackbar } from "@eyeseetea/d2-ui-components";
+import { Wizard, useSnackbar, ConfirmationDialog } from "@eyeseetea/d2-ui-components";
 import { LinearProgress } from "@material-ui/core";
 import { Location } from "history";
 
@@ -57,6 +57,7 @@ interface State {
     project: Project | undefined;
     dialogOpen: boolean;
     isUpdated: boolean;
+    showCloneWarning: boolean;
 }
 
 interface Step {
@@ -74,6 +75,7 @@ class ProjectWizardImpl extends React.Component<Props, State> {
         project: undefined,
         dialogOpen: false,
         isUpdated: false,
+        showCloneWarning: true,
     };
 
     async componentDidMount() {
@@ -252,7 +254,7 @@ class ProjectWizardImpl extends React.Component<Props, State> {
     };
 
     render() {
-        const { project, dialogOpen } = this.state;
+        const { project, dialogOpen, showCloneWarning } = this.state;
         const { api, location, action } = this.props;
         if (project) Object.assign(window, { project, Project });
 
@@ -285,6 +287,17 @@ class ProjectWizardImpl extends React.Component<Props, State> {
                     title={`${title}: ${project ? project.name : i18n.t("Loading...")}`}
                     onBackClick={this.cancelSave}
                 />
+
+                <ConfirmationDialog
+                    open={action.type === "clone" && Boolean(project) && showCloneWarning}
+                    title={`${title}: ${project ? project.name : ""}`}
+                    description={i18n.t(
+                        "Please review all prefilled information including Project numbers and dates which MUST be updated."
+                    )}
+                    saveText={i18n.t("OK")}
+                    onSave={() => this.setState({ showCloneWarning: false })}
+                />
+
                 {project ? (
                     <Wizard
                         steps={steps}
