@@ -151,7 +151,7 @@ class ProjectWizardImpl extends React.Component<Props, State> {
             },
             {
                 key: "indicators",
-                label: i18n.t("Selection of Indicators"),
+                label: i18n.t("Indicators"),
                 component: DataElementsSelectionStep,
                 validationKeys: ["dataElementsSelection"],
                 help: helpTexts.indicators,
@@ -167,14 +167,14 @@ class ProjectWizardImpl extends React.Component<Props, State> {
                 : null,
             {
                 key: "mer-indicators",
-                label: i18n.t("Selection of MER Indicators"),
+                label: i18n.t("MER Indicators"),
                 component: MerSelectionStep,
                 validationKeys: ["dataElementsMER"],
                 help: helpTexts.merIndicators,
             },
             {
                 key: "unique-beneficiaries",
-                label: i18n.t("Select of Unique Indicators"),
+                label: i18n.t("Unique Indicators"),
                 component: UniqueIndicatorsStep,
                 validationKeys: ["uniqueIndicators"],
                 help: helpTexts.uniqueIndicators,
