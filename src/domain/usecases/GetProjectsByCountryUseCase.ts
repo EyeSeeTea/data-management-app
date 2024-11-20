@@ -85,60 +85,21 @@ export class GetProjectsByCountryUseCase {
                     report.countryId === countryId
             );
 
-            return existingData
-                ? this.buildExistingReport(existingData, settings, period, year)
-                : IndicatorReport.create({
-                      year,
-                      countryId,
-                      createdAt: "",
-                      lastUpdatedAt: "",
-                      period,
-                      projects: this.generateProjects(
-                          projects,
-                          settings,
-                          period,
-                          dataElements,
-                          year
-                      ),
-                  });
-        });
-    }
-
-    private buildExistingReport(
-        indicatorReport: IndicatorReport,
-        settings: UniqueBeneficiariesSettings[],
-        period: UniqueBeneficiariesPeriod,
-        year: number
-    ): IndicatorReport {
-        return IndicatorReport.create({
-            ...indicatorReport,
-            projects: _(indicatorReport.projects)
-                .map(projectIndicator => {
-                    const settingsProject = this.getSettingsProject(
-                        settings,
-                        projectIndicator.project.id
-                    );
-
-                    if (!settingsProject) return undefined;
-
-                    return {
-                        ...projectIndicator,
-                        indicators: projectIndicator.indicators.map(indicator => {
-                            return {
-                                ...indicator,
-                                include: false,
-                                periodNotAvailable: this.isProjectNotAvailable(
-                                    period,
-                                    settingsProject,
-                                    projectIndicator.project,
-                                    year
-                                ),
-                            };
-                        }),
-                    };
-                })
-                .compact()
-                .value(),
+            return IndicatorReport.create({
+                year,
+                countryId,
+                createdAt: existingData?.createdAt || "",
+                lastUpdatedAt: existingData?.lastUpdatedAt || "",
+                period,
+                projects: this.generateProjects(
+                    projects,
+                    settings,
+                    period,
+                    dataElements,
+                    year,
+                    existingData
+                ),
+            });
         });
     }
 
@@ -165,10 +126,14 @@ export class GetProjectsByCountryUseCase {
         settings: UniqueBeneficiariesSettings[],
         period: UniqueBeneficiariesPeriod,
         dataElements: DataElement[],
-        year: number
+        year: number,
+        existingRecord: Maybe<IndicatorReport>
     ): ProjectRows[] {
         return _(projectsByPeriod)
             .map(project => {
+                const existingProject = existingRecord?.projects.find(
+                    item => item.id === project.id
+                );
                 const settingsProject = this.getSettingsProject(settings, project.id);
                 if (!settingsProject) return undefined;
 
@@ -180,13 +145,20 @@ export class GetProjectsByCountryUseCase {
                 );
 
                 const indicatorsCalculation = settingsProject?.indicatorsValidation
-                    .find(item =>
-                        period.equalMonths(item.period.startDateMonth, item.period.endDateMonth)
+                    .find(
+                        item =>
+                            period.equalMonths(
+                                item.period.startDateMonth,
+                                item.period.endDateMonth
+                            ) && item.year === year
                     )
                     ?.indicatorsCalculation.map((indicator): ProjectIndicatorRow => {
+                        const existingIndicator = existingProject?.indicators.find(
+                            item => item.indicatorId === indicator.id
+                        );
                         return {
                             periodNotAvailable: notIndicatorsAvailable,
-                            include: false,
+                            include: existingIndicator?.include || false,
                             indicatorCode: indicator.code || "",
                             indicatorName: indicator.name || "",
                             indicatorId: indicator.id,
@@ -201,13 +173,16 @@ export class GetProjectsByCountryUseCase {
                               const dataElementDetails = dataElements.find(
                                   dataElement => dataElement.id === indicatorId
                               );
+                              const existingIndicator = existingProject?.indicators.find(
+                                  item => item.indicatorId === indicatorId
+                              );
                               return {
                                   periodNotAvailable: notIndicatorsAvailable,
                                   indicatorId,
                                   indicatorCode: dataElementDetails?.code || "",
                                   indicatorName: dataElementDetails?.name || "",
                                   value: 0,
-                                  include: false,
+                                  include: existingIndicator?.include || false,
                               };
                           });
 
@@ -223,7 +198,6 @@ export class GetProjectsByCountryUseCase {
         project: ProjectCountry,
         year: number
     ): boolean {
-        const isCustomPeriod = period.type === "CUSTOM";
         const periodExist = settings.periods.find(item =>
             period.equalMonths(item.startDateMonth, item.endDateMonth)
         );
@@ -234,7 +208,7 @@ export class GetProjectsByCountryUseCase {
             year
         );
 
-        return isCustomPeriod ? !periodExist || !projectIsInYear : false;
+        return !periodExist || !projectIsInYear;
     }
 
     private checkProjectDateIsInYear(
