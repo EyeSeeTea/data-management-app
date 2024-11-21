@@ -29,6 +29,7 @@ import { ProjectInfo } from "./ProjectInfo";
 import { isTest } from "../utils/testing";
 import { MAX_SIZE_PROJECT_IN_MB, ProjectDocument } from "./ProjectDocument";
 import { promiseMap } from "../migrations/utils";
+import { ISODateTimeString } from "../domain/entities/Ref";
 
 /*
 Project model.
@@ -805,6 +806,16 @@ export function getPeriodsData(dataSet: DataSet) {
     }
 
     return { periodIds, currentPeriodId };
+}
+
+export function checkProjectDateIsInYear(
+    startDate: ISODateTimeString,
+    endDate: ISODateTimeString,
+    year: number
+): boolean {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    return year >= start.getFullYear() && year <= end.getFullYear();
 }
 
 export type DataElementInfo = {

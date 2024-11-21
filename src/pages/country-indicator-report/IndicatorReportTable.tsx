@@ -18,17 +18,18 @@ import TableBodyGrouped from "../report/TableBodyGrouped";
 import { buildMonthYearFormatDate } from "../../utils/date";
 import { UniqueBeneficiariesPeriod } from "../../domain/entities/UniqueBeneficiariesPeriod";
 import { UniqueBeneficiariesSettings } from "../../domain/entities/UniqueBeneficiariesSettings";
-import { Maybe } from "../../types/utils";
+import { checkProjectDateIsInYear } from "../../models/Project";
 
 type IndicatorReportTableProps = {
     period: UniqueBeneficiariesPeriod;
     settings: UniqueBeneficiariesSettings[];
     report: IndicatorReportAttrs;
     onRowChange: (value: boolean, row: GroupedRows) => void;
+    year: number;
 };
 
 export const IndicatorReportTable = React.memo((props: IndicatorReportTableProps) => {
-    const { onRowChange, period, report, settings } = props;
+    const { onRowChange, period, report, settings, year } = props;
     const groupers: Grouper<GroupedRows>[] = React.useMemo(() => {
         return [
             {
@@ -60,7 +61,7 @@ export const IndicatorReportTable = React.memo((props: IndicatorReportTableProps
         ];
     }, [onRowChange, period, settings]);
 
-    const indicatorsRows = generateRows(report);
+    const indicatorsRows = generateRows(report, year);
 
     return (
         <Paper>
@@ -169,28 +170,30 @@ type ProjectCellProps = {
     settings: UniqueBeneficiariesSettings[];
 };
 
-function generateRows(report: IndicatorReportAttrs): GroupedRows[] {
+function generateRows(report: IndicatorReportAttrs, year: number): GroupedRows[] {
     return report.projects.flatMap(project => {
         const sumIndicators = _(project.indicators)
             .filter(indicator => indicator.include)
             .sumBy(indicator => indicator.value || 0);
-        const allIndicators = _(project.indicators)
-            .map((indicator): Maybe<GroupedRows> => {
-                if (indicator.periodNotAvailable) return undefined;
-                return {
-                    id: indicator.indicatorId,
-                    code: indicator.indicatorCode || "",
-                    name: indicator.indicatorName,
-                    value: indicator.value || 0,
-                    include: indicator.include,
-                    total: sumIndicators,
-                    project: project.project,
-                    periodNotAvailable: indicator.periodNotAvailable,
-                };
-            })
-            .compact()
-            .value();
-        return allIndicators.length ? allIndicators : [];
+
+        if (
+            !checkProjectDateIsInYear(project.project.openingDate, project.project.closedDate, year)
+        )
+            return [];
+
+        const allIndicators = project.indicators.map((indicator): GroupedRows => {
+            return {
+                id: indicator.indicatorId,
+                code: indicator.indicatorCode || "",
+                name: indicator.indicatorName,
+                value: indicator.value || 0,
+                include: indicator.include,
+                total: sumIndicators,
+                project: project.project,
+                periodNotAvailable: indicator.periodNotAvailable,
+            };
+        });
+        return allIndicators;
     });
 }
 

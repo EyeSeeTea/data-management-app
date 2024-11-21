@@ -146,6 +146,7 @@ export const CountryIndicatorReport = React.memo(() => {
                                 onRowChange={updateReport}
                                 period={selectedPeriod}
                                 settings={settings}
+                                year={year}
                             />
                         </Grid>
                         <Grid item>
