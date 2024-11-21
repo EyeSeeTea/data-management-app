@@ -18,6 +18,7 @@ import TableBodyGrouped from "../report/TableBodyGrouped";
 import { buildMonthYearFormatDate } from "../../utils/date";
 import { UniqueBeneficiariesPeriod } from "../../domain/entities/UniqueBeneficiariesPeriod";
 import { UniqueBeneficiariesSettings } from "../../domain/entities/UniqueBeneficiariesSettings";
+import { Maybe } from "../../types/utils";
 
 type IndicatorReportTableProps = {
     period: UniqueBeneficiariesPeriod;
@@ -59,24 +60,7 @@ export const IndicatorReportTable = React.memo((props: IndicatorReportTableProps
         ];
     }, [onRowChange, period, settings]);
 
-    const indicatorsRows = report.projects.flatMap(project => {
-        const sumIndicators = _(project.indicators)
-            .filter(indicator => indicator.include)
-            .sumBy(indicator => indicator.value || 0);
-        const allIndicators = project.indicators.map((indicator): GroupedRows => {
-            return {
-                id: indicator.indicatorId,
-                code: indicator.indicatorCode || "",
-                name: indicator.indicatorName,
-                value: indicator.value || 0,
-                include: indicator.include,
-                total: sumIndicators,
-                project: project.project,
-                periodNotAvailable: indicator.periodNotAvailable,
-            };
-        });
-        return allIndicators;
-    });
+    const indicatorsRows = generateRows(report);
 
     return (
         <Paper>
@@ -184,6 +168,31 @@ type ProjectCellProps = {
     rowSpan: number | undefined;
     settings: UniqueBeneficiariesSettings[];
 };
+
+function generateRows(report: IndicatorReportAttrs): GroupedRows[] {
+    return report.projects.flatMap(project => {
+        const sumIndicators = _(project.indicators)
+            .filter(indicator => indicator.include)
+            .sumBy(indicator => indicator.value || 0);
+        const allIndicators = _(project.indicators)
+            .map((indicator): Maybe<GroupedRows> => {
+                if (indicator.periodNotAvailable) return undefined;
+                return {
+                    id: indicator.indicatorId,
+                    code: indicator.indicatorCode || "",
+                    name: indicator.indicatorName,
+                    value: indicator.value || 0,
+                    include: indicator.include,
+                    total: sumIndicators,
+                    project: project.project,
+                    periodNotAvailable: indicator.periodNotAvailable,
+                };
+            })
+            .compact()
+            .value();
+        return allIndicators.length ? allIndicators : [];
+    });
+}
 
 export function getCurrentPeriodForProject(
     settings: UniqueBeneficiariesSettings[],
