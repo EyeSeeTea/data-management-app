@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { checkProjectDateIsInYear } from "../../models/Project";
 import { ProjectForList } from "../../models/ProjectsList";
 import { getYearsFromProject } from "../../pages/project-indicators-validation/ProjectIndicatorsValidation";
 import { Maybe } from "../../types/utils";
@@ -12,7 +13,7 @@ import {
     ProjectRows,
 } from "../entities/IndicatorReport";
 import { IndicatorValidation } from "../entities/IndicatorValidation";
-import { Id, ISODateTimeString } from "../entities/Ref";
+import { Id } from "../entities/Ref";
 import { UniqueBeneficiariesPeriod } from "../entities/UniqueBeneficiariesPeriod";
 import { UniqueBeneficiariesSettings } from "../entities/UniqueBeneficiariesSettings";
 import { DataElementRepository } from "../repositories/DataElementRepository";
@@ -202,23 +203,13 @@ export class GetProjectsByCountryUseCase {
             period.equalMonths(item.startDateMonth, item.endDateMonth)
         );
 
-        const projectIsInYear = this.checkProjectDateIsInYear(
+        const projectIsInYear = checkProjectDateIsInYear(
             project.openingDate,
             project.closedDate,
             year
         );
 
         return !periodExist || !projectIsInYear;
-    }
-
-    private checkProjectDateIsInYear(
-        startDate: ISODateTimeString,
-        endDate: ISODateTimeString,
-        year: number
-    ): boolean {
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        return year >= start.getFullYear() && year <= end.getFullYear();
     }
 
     private async buildSettingsWithIndicators(
