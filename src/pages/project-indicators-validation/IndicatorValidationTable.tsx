@@ -1,6 +1,6 @@
 import React from "react";
 import { TextField, Tooltip, Typography } from "@material-ui/core";
-import { ObjectsTable, TableConfig, useObjectsTable } from "@eyeseetea/d2-ui-components";
+import { ObjectsTable, TableConfig } from "@eyeseetea/d2-ui-components";
 
 import {
     IndicatorCalculation,
@@ -16,7 +16,7 @@ export type IndicatorValidationTableProps = {
 
 type IndicatorCalculationColumns = IndicatorCalculationAttrs & { total: number };
 
-export const IndicatorValidationTable = (props: IndicatorValidationTableProps) => {
+export const IndicatorValidationTable = React.memo((props: IndicatorValidationTableProps) => {
     const { data, onRowChange } = props;
 
     const previousValueLabel = i18n.t("Previous Value");
@@ -32,7 +32,9 @@ export const IndicatorValidationTable = (props: IndicatorValidationTableProps) =
                     sortable: false,
                     getValue(row) {
                         const hasChanged = IndicatorCalculation.hasChanged(row);
-                        const tooltipTitle = `${previousValueLabel}: ${row.previousValue} -> ${nextValueLabel}: ${row.nextValue}`;
+                        const tooltipTitle = `${previousValueLabel}: ${
+                            row.previousValue ?? i18n.t("Blank")
+                        } -> ${nextValueLabel}: ${row.nextValue}`;
                         return (
                             <Tooltip title={hasChanged ? tooltipTitle : ""}>
                                 <Typography color={hasChanged ? "secondary" : "initial"}>
@@ -122,18 +124,19 @@ export const IndicatorValidationTable = (props: IndicatorValidationTableProps) =
         };
     }, [data, nextValueLabel, previousValueLabel, onRowChange]);
 
-    const tableConfig = useObjectsTable<IndicatorCalculationColumns>(
-        config,
-        React.useCallback(() => {
-            return Promise.resolve({
-                objects: mapCalculationToTableRows(data),
-                pager: { page: 1, pageCount: 1, total: data.length, pageSize: data.length },
-            });
-        }, [data])
-    );
+    const rows = mapCalculationToTableRows(data);
 
-    return <ObjectsTable {...tableConfig} onChangeSearch={undefined} />;
-};
+    return (
+        <ObjectsTable
+            columns={config.columns}
+            actions={config.actions}
+            sorting={config.initialSorting}
+            paginationOptions={config.paginationOptions}
+            rows={rows}
+            onChangeSearch={undefined}
+        />
+    );
+});
 
 function mapCalculationToTableRows(data: IndicatorCalculation[]): IndicatorCalculationColumns[] {
     return data.map(item => ({

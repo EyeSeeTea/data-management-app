@@ -55,7 +55,7 @@ export class D2ApiProject {
         return Project.getList(
             this.api,
             this.config,
-            { countryIds: [countryId], onlyActive: true },
+            { countryIds: [countryId] },
             { field: "created", order: "desc" },
             { page: page, pageSize: 50 }
         );
