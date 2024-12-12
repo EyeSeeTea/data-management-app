@@ -218,7 +218,10 @@ function getUniqueYearsFromProjects(indicatorsReports: IndicatorReport[]): numbe
 
 function mapYearsToItems(indicatorsReports: IndicatorReport[]): DropdownItem[] {
     const years = getUniqueYearsFromProjects(indicatorsReports);
-    return years.map(year => ({ text: year.toString(), value: year.toString() }));
+    return _(years)
+        .map(year => ({ text: year.toString(), value: year.toString() }))
+        .orderBy(item => item.text, "desc")
+        .value();
 }
 
 function getAllPeriods(indicatorsReports: IndicatorReport[]): UniqueBeneficiariesPeriod[] {
