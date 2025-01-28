@@ -192,7 +192,7 @@ async function getMetadata(api: D2Api, condition: Condition): Promise<DashboardS
             return {
                 ...d2DataSet,
                 // TODO: Further research on "ghosts users"
-                // there're some references to unexisting users in some dataSets
+                // there're some references to non-existing users in some dataSets
                 // userAccesses is returning ids of users that don't exist but without displayName.
                 // As a temporal fix we're filtering out those users.
                 userAccesses: d2DataSet.userAccesses.filter(userAccess => userAccess.displayName),
