@@ -28,6 +28,8 @@ import { getIds } from "../utils/dhis2";
 import { ProjectInfo } from "./ProjectInfo";
 import { isTest } from "../utils/testing";
 import { MAX_SIZE_PROJECT_IN_MB, ProjectDocument } from "./ProjectDocument";
+import { promiseMap } from "../migrations/utils";
+import { ISODateTimeString } from "../domain/entities/Ref";
 
 /*
 Project model.
@@ -102,6 +104,7 @@ export interface ProjectData {
     parentOrgUnit: OrganisationUnit | undefined;
     dataElementsSelection: DataElementsSet;
     dataElementsMER: DataElementsSet;
+    uniqueIndicators: DataElementsSet;
     disaggregation: Disaggregation;
     dataSets: { actual: DataSet; target: DataSet } | undefined;
     dashboard: Partial<Dashboards>;
@@ -185,6 +188,7 @@ const validationKeys = [
     "dataElementsSelection" as const,
     "dataElementsMER" as const,
     "endDateAfterStartDate" as const,
+    "uniqueIndicators" as const,
 ];
 
 export type ProjectField = keyof ProjectData;
@@ -237,6 +241,7 @@ class Project {
         documents: i18n.t("Documents"),
         isDartApplicable: i18n.t("DART"),
         partner: i18n.t("Partner"),
+        uniqueIndicators: i18n.t("Unique Indicators"),
     };
 
     static getFieldName(field: ProjectField): string {
@@ -400,9 +405,17 @@ class Project {
     }
 
     public getSectorsInfo(): SectorsInfo {
-        const { dataElementsSelection, dataElementsMER, sectors } = this;
+        const {
+            dataElementsSelection,
+            dataElementsMER,
+            sectors,
+            uniqueIndicators: uniqueBeneficiaries,
+        } = this;
         const dataElementsBySectorMapping = new ProjectDb(this).getDataElementsBySectorMapping();
         const selectedMER = new Set(dataElementsMER.get({ onlySelected: true }).map(de => de.id));
+        const selectedBeneficiaries = new Set(
+            uniqueBeneficiaries.get({ onlySelected: true }).map(de => de.id)
+        );
 
         return sectors.map(sector => {
             const getOptions = { onlySelected: true, includePaired: true, sectorId: sector.id };
@@ -410,6 +423,7 @@ class Project {
             const dataElementsInfo = dataElements.map(dataElement => ({
                 dataElement,
                 isMER: selectedMER.has(dataElement.id),
+                isUniqueBeneficiary: selectedBeneficiaries.has(dataElement.id),
                 isCovid19: this.disaggregation.isCovid19(dataElement.id),
                 usedInDataSetSection: dataElementsBySectorMapping[dataElement.id] === sector.id,
             }));
@@ -461,6 +475,12 @@ class Project {
             groupPaired: false,
             superSet: dataElementsSelection,
         });
+
+        const uniqueIndicators = DataElementsSet.build(config, {
+            groupPaired: false,
+            superSet: dataElementsSelection,
+        });
+
         const projectData = {
             ...defaultProjectData,
             id: generateUid(),
@@ -471,6 +491,7 @@ class Project {
             initialData: undefined,
             isDartApplicable: false,
             partner: false,
+            uniqueIndicators: uniqueIndicators,
         };
         return new Project(api, config, projectData);
     }
@@ -538,7 +559,7 @@ class Project {
     }
 
     updateDataElementsSelection(sectorId: string, dataElementIds: string[]) {
-        const { dataElementsSelection, dataElementsMER, sectors } = this.data;
+        const { dataElementsSelection, dataElementsMER, sectors, uniqueIndicators } = this.data;
         const res = dataElementsSelection.updateSelectedWithRelations({ sectorId, dataElementIds });
         const { dataElements: dataElementsUpdate, selectionInfo } = res;
 
@@ -557,6 +578,7 @@ class Project {
             sectors: newSectors,
             dataElementsSelection: dataElementsUpdate,
             dataElementsMER: dataElementsMER.updateSuperSet(dataElementsUpdate),
+            uniqueIndicators: uniqueIndicators.updateSuperSet(dataElementsUpdate),
         });
         return { selectionInfo, project: newProject };
     }
@@ -565,6 +587,15 @@ class Project {
         const { dataElementsMER } = this.data;
         const newDataElementsMER = dataElementsMER.updateSelected({ [sectorId]: dataElementIds });
         const newProject = this.setObj({ dataElementsMER: newDataElementsMER });
+        return { selectionInfo: {}, project: newProject };
+    }
+
+    updateUniqueBeneficiariesSelection(sectorId: string, dataElementIds: string[]) {
+        const { uniqueIndicators: uniqueBeneficiaries } = this.data;
+        const newDataElementsSelected = uniqueBeneficiaries.updateSelected({
+            [sectorId]: dataElementIds,
+        });
+        const newProject = this.setObj({ uniqueIndicators: newDataElementsSelected });
         return { selectionInfo: {}, project: newProject };
     }
 
@@ -666,6 +697,33 @@ class Project {
             .compact()
             .join("-");
     }
+
+    static async clone(api: D2Api, config: Config, id: Id): Promise<Project> {
+        const existingProject = await Project.get(api, config, id);
+        const clonedDocuments = await promiseMap(existingProject.documents, async document => {
+            if (!document.id) throw new Error("Document id is missing");
+            const fileResourceBlob = await api.files.get(document.id).getData();
+            return ProjectDocument.create({
+                ...document,
+                id: "",
+                url: undefined,
+                sharing: undefined,
+                blob: fileResourceBlob,
+            });
+        });
+
+        const projectToClone = Project.create(api, config).set("initialData", {
+            ...existingProject.data,
+            documents: clonedDocuments,
+        });
+        return projectToClone.setObj({
+            ...existingProject.data,
+            id: generateUid(),
+            orgUnit: undefined,
+            dataSets: undefined,
+            created: undefined,
+        });
+    }
 }
 
 interface Project extends ProjectData {}
@@ -750,9 +808,20 @@ export function getPeriodsData(dataSet: DataSet) {
     return { periodIds, currentPeriodId };
 }
 
+export function checkProjectDateIsInYear(
+    startDate: ISODateTimeString,
+    endDate: ISODateTimeString,
+    year: number
+): boolean {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    return year >= start.getFullYear() && year <= end.getFullYear();
+}
+
 export type DataElementInfo = {
     dataElement: DataElement;
     isMER: boolean;
+    isUniqueBeneficiary: boolean;
     isCovid19: boolean;
     usedInDataSetSection: boolean;
 };
@@ -768,3 +837,5 @@ export type ProjectBasic = Pick<
 >;
 
 export default Project;
+
+export type ProjectAction = "create" | "edit" | "clone";

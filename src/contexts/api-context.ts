@@ -3,6 +3,7 @@ import React, { useContext } from "react";
 import { D2Api } from "../types/d2-api";
 import User from "../models/user";
 import { AppConfig } from "../components/app/AppConfig";
+import { CompositionRoot } from "../CompositionRoot";
 
 export interface AppContext {
     api: D2Api;
@@ -13,6 +14,7 @@ export interface AppContext {
     isDev: boolean;
     isTest: boolean;
     dhis2Url: string;
+    compositionRoot: CompositionRoot;
 }
 
 export type CurrentUser = AppContext["currentUser"];

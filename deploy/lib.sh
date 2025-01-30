@@ -2,10 +2,6 @@
 script_dir="$(dirname "$(readlink -f "${BASH_SOURCE[0]:-$0}")")"
 source "$script_dir/auth.sh"
 
-export image_pro="docker.eyeseetea.com/eyeseetea/dhis2-data:2.36.11.1-sp-ip-pro"
-export image_dev="docker.eyeseetea.com/samaritans/dhis2-data:2.36.11.1-sp-ip-dev"
-export image_training="docker.eyeseetea.com/samaritans/dhis2-data:2.36.11.1-sp-ip-training"
-
 debug() {
     echo "$@" >&2
 }
@@ -20,7 +16,7 @@ run() {
     local command=$2
     shift 2
 
-    debug "Copy deploy folder"
+    debug "Copy deploy folder to $host"
     rsync -a . "$host":deploy/
     debug "Run: $command $*"
     ssh "$host" "cd deploy &&" "$command" "$@"
@@ -30,7 +26,7 @@ wait_for_dhis2_server() {
     local url=$url
     local port
     port=$(echo "$url" | grep -o ':[[:digit:]]*$' | cut -d: -f2)
-    echo "Wait for server: port=$port"
+    debug "Wait for server: port=$port"
 
     while ! curl -sS -f "http://localhost:$port"; do
         sleep 10

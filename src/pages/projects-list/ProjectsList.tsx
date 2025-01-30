@@ -89,6 +89,10 @@ const ProjectsList: React.FC = () => {
     const canCreateProjects = currentUser.can("create");
     const goToNewProject = React.useCallback(() => goTo("projects.new"), [goTo]);
     const newProjectPageHandler = canCreateProjects ? goToNewProject : undefined;
+    const goToCountryIndicatorReport = React.useCallback(
+        () => goTo("countryIndicatorsReport"),
+        [goTo]
+    );
 
     const onAttachModalClose = () => {
         setActionSelected(undefined);
@@ -117,20 +121,23 @@ const ProjectsList: React.FC = () => {
                     }
                 />
 
-                {canAccessReports && (
-                    <ActionButton
-                        label={i18n.t("Monthly Report")}
-                        onClick={goToMerReports}
-                        style={styles.merReports}
-                    />
-                )}
+                <section style={styles.actionsStyles}>
+                    {canAccessReports && (
+                        <ActionButton label={i18n.t("Monthly Report")} onClick={goToMerReports} />
+                    )}
 
-                {newProjectPageHandler && (
+                    {newProjectPageHandler && (
+                        <ActionButton
+                            label={i18n.t("Create Project")}
+                            onClick={newProjectPageHandler}
+                        />
+                    )}
+
                     <ActionButton
-                        label={i18n.t("Create Project")}
-                        onClick={newProjectPageHandler}
+                        label={i18n.t("Unique Beneficiaries")}
+                        onClick={goToCountryIndicatorReport}
                     />
-                )}
+                </section>
 
                 <ListSelector view="projects" onChange={onViewChange} />
             </ObjectsListStyled>
@@ -138,8 +145,8 @@ const ProjectsList: React.FC = () => {
     );
 };
 
-const styles = {
-    merReports: { marginLeft: 30, marginRight: 20 },
+const styles: Record<string, React.CSSProperties> = {
+    actionsStyles: { display: "flex", gap: "1em" },
 };
 
 const ObjectsListStyled = styled(ObjectsList)`

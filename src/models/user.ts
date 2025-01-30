@@ -14,10 +14,13 @@ export type Action =
     | "countryDashboard"
     | "downloadData"
     | "edit"
+    | "clone"
     | "dataApproval"
     | "reopen"
     | "delete"
-    | "attachFiles";
+    | "attachFiles"
+    | "periods"
+    | "projectIndicators";
 
 const actionsByRole: Record<Role, Action[]> = {
     admin: [
@@ -29,11 +32,14 @@ const actionsByRole: Record<Role, Action[]> = {
         "countryDashboard",
         "downloadData",
         "edit",
+        "clone",
         "delete",
         "dataApproval",
         "accessMER",
         "reopen",
         "attachFiles",
+        "periods",
+        "projectIndicators",
     ],
     dataReviewer: [
         "create",
@@ -48,14 +54,17 @@ const actionsByRole: Record<Role, Action[]> = {
         "accessMER",
         "reopen",
         "attachFiles",
+        "projectIndicators",
+        "clone",
     ],
-    dataViewer: ["dashboard", "awardNumberDashboard", "downloadData"],
+    dataViewer: ["dashboard", "awardNumberDashboard", "downloadData", "projectIndicators"],
     merApprover: [
         "dashboard",
         "countryDashboard",
         "awardNumberDashboard",
         "downloadData",
         "accessMER",
+        "projectIndicators",
     ],
     dataEntry: [
         "targetValues",
@@ -64,6 +73,7 @@ const actionsByRole: Record<Role, Action[]> = {
         "awardNumberDashboard",
         "downloadData",
         "attachFiles",
+        "projectIndicators",
     ],
 };
 

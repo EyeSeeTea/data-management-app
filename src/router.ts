@@ -6,6 +6,7 @@ const routes = {
     projects: () => "/",
     "projects.new": () => `/projects/new`,
     "projects.edit": ({ id }: { id: string }) => `/projects/edit/${id}`,
+    "projects.clone": ({ id }: { id: string }) => `/projects/clone/${id}`,
     report: () => "/report",
     actualValues: ({ id }: { id: string }) => `/actual-values/${id}`,
     targetValues: ({ id }: { id: string }) => `/target-values/${id}`,
@@ -14,6 +15,9 @@ const routes = {
     countryDashboard: ({ id }: { id: string }) => `/country-dashboard/${id}`,
     dataApproval: dataApproval,
     countries: () => `/countries`,
+    uniqueBeneficiariesPeriods: ({ id }: { id: string }) => `/unique-beneficiaries-periods/${id}`,
+    projectIndicatorsValidation: ({ id }: { id: string }) => `/project-indicators-validation/${id}`,
+    countryIndicatorsReport: () => "/country-indicators-report",
 };
 
 type Routes = typeof routes;

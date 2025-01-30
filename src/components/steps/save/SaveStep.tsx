@@ -123,11 +123,12 @@ const NodeList: React.FC<{ nodes: ProjectInfoNode[] }> = props => {
 
     return (
         <ul>
-            {nodes.map(node => {
+            {nodes.map((node, index) => {
                 switch (node.type) {
                     case "field":
                         return (
                             <LiEntry
+                                key={index}
                                 label={node.name}
                                 value={node.value}
                                 prevValue={node.prevValue}
@@ -137,6 +138,7 @@ const NodeList: React.FC<{ nodes: ProjectInfoNode[] }> = props => {
                     case "value":
                         return (
                             <LiEntry
+                                key={index}
                                 label={undefined}
                                 value={node.value}
                                 prevValue={node.prevValue}
@@ -145,7 +147,12 @@ const NodeList: React.FC<{ nodes: ProjectInfoNode[] }> = props => {
                         );
                     case "section":
                         return (
-                            <LiEntry label={node.title} value={undefined} action={node.action}>
+                            <LiEntry
+                                key={index}
+                                label={node.title}
+                                value={undefined}
+                                action={node.action}
+                            >
                                 <NodeList nodes={node.children} />
                             </LiEntry>
                         );
@@ -201,8 +208,7 @@ function useSave(project: Project, action: StepProps["action"]) {
             if (response && response.status === "OK") {
                 const notificator = new ProjectNotification(api, projectSaved, currentUser, isTest);
                 notificator.notifyOnProjectSave(action);
-                const baseMsg =
-                    action === "create" ? i18n.t("Project created") : i18n.t("Project updated");
+                const baseMsg = ProjectNotification.buildBaseMessage(action);
                 const msg = `${baseMsg}: ${projectSaved.name}`;
                 history.push(generateUrl("projects"));
                 if (isDev) saveDataValues(api, projectSaved);

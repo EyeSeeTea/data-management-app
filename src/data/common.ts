@@ -20,3 +20,5 @@ export function getExistingAndNewDataElements(dataElements: DataElement[]) {
 
     return { existingDataElements, existingDataElementsKeys, newDataElements, newDataElementsKeys };
 }
+
+export const DATA_MANAGEMENT_NAMESPACE = "data-management-app";

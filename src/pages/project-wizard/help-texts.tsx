@@ -35,6 +35,9 @@ export const helpTexts = {
          - Up to three sectors and three indicators per sectors.`,
         { nsSeparator: false }
     ),
+    uniqueIndicators: i18n.t(
+        "Select indicators in each project that represent unique beneficiaries in the project"
+    ),
     disaggregation: i18n.t(
         `For activity indicators that include a response to COVID-19 (examples: COVID-19 messaging, COVID-19 specific healthcare worker trainings, etc.), please select "yes" under the COVID-19 column. In the future, more disaggregations (in addition to new, returning, gender, and COVID-19) will be available.`,
         { nsSeparator: false }

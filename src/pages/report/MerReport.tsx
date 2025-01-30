@@ -37,8 +37,13 @@ const MerReportComponent: React.FC = () => {
     const classes = useStyles();
     const snackbar = useSnackbar();
     const initial = isDev ? getDevMerReport() : { date: null, orgUnit: null };
-    const [proceedWarning, setProceedWarning] = useState<ProceedWarning>({ type: "hidden" });
-    const [wasReportModified, wasReportModifiedSet] = useState(false);
+    const {
+        confirmIfUnsavedChanges,
+        proceedWarning,
+        runProceedAction,
+        wasReportModified,
+        wasReportModifiedSet,
+    } = useConfirmChanges();
     const datePickerState = useBoolean(false);
     const [date, setDate] = useState(initial.date);
     const [orgUnit, setOrgUnit] = useState(initial.orgUnit);
@@ -57,12 +62,15 @@ const MerReportComponent: React.FC = () => {
                 MerReport.create(api, config, selectData).then(setMerReportBase)
             );
         }
-    }, [api, config, snackbar, date, orgUnit]);
+    }, [api, config, snackbar, date, orgUnit, wasReportModifiedSet]);
 
-    const setMerReport = React.useCallback((report: MerReport) => {
-        setMerReportBase(report);
-        wasReportModifiedSet(true);
-    }, []);
+    const setMerReport = React.useCallback(
+        (report: MerReport) => {
+            setMerReportBase(report);
+            wasReportModifiedSet(true);
+        },
+        [wasReportModifiedSet]
+    );
 
     const onChange = React.useCallback(
         <Field extends keyof MerReportData>(field: Field, val: MerReportData[Field]) => {
@@ -94,25 +102,6 @@ const MerReportComponent: React.FC = () => {
         }
         if (merReport) run(merReport);
     }, [merReport, snackbar, wasReportModifiedSet, loading]);
-
-    const confirmIfUnsavedChanges = React.useCallback(
-        (action: () => void) => {
-            if (wasReportModified) {
-                setProceedWarning({ type: "visible", action });
-            } else {
-                action();
-            }
-        },
-        [wasReportModified, setProceedWarning]
-    );
-
-    const runProceedAction = React.useCallback(
-        (action: () => void) => {
-            setProceedWarning({ type: "hidden" });
-            action();
-        },
-        [setProceedWarning]
-    );
 
     const setDateAndClosePicker = React.useCallback(
         (date: Moment) => {
@@ -290,3 +279,35 @@ function useRedirectToProjectsPageIfUserHasNoAccess() {
 }
 
 export default React.memo(MerReportComponent);
+
+export function useConfirmChanges() {
+    const [proceedWarning, setProceedWarning] = React.useState<ProceedWarning>({ type: "hidden" });
+    const [wasReportModified, wasReportModifiedSet] = React.useState(false);
+
+    const confirmIfUnsavedChanges = React.useCallback(
+        (action: () => void) => {
+            if (wasReportModified) {
+                setProceedWarning({ type: "visible", action });
+            } else {
+                action();
+            }
+        },
+        [wasReportModified, setProceedWarning]
+    );
+
+    const runProceedAction = React.useCallback(
+        (action: () => void) => {
+            setProceedWarning({ type: "hidden" });
+            action();
+        },
+        [setProceedWarning]
+    );
+
+    return {
+        confirmIfUnsavedChanges,
+        proceedWarning,
+        runProceedAction,
+        wasReportModified,
+        wasReportModifiedSet,
+    };
+}

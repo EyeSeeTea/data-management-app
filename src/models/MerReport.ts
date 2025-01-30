@@ -92,6 +92,7 @@ interface OrgUnit {
 }
 
 export interface ProjectInfo {
+    uniqueBeneficiaries: { indicatorsIds: Id[] };
     merDataElementIds: string[];
     documents: string[];
 }

@@ -300,7 +300,6 @@ export default class DataElementsSet {
         const { indicatorType, peopleOrBenefit, external } = options;
         const dataElementsBySector = this.data.dataElementsBySector;
         const sectorsIds = sectorId ? [sectorId] : _.keys(dataElementsBySector);
-
         return _.flatMap(sectorsIds, sectorId => {
             const dataElements1: DataElement[] = _(dataElementsBySector).get(sectorId, []);
             if (_.isEqual(options, {})) return dataElements1;

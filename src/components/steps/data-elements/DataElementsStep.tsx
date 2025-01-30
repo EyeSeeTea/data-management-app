@@ -5,14 +5,16 @@ import { Id } from "../../../types/d2-api";
 import DataElementsSet, { ProjectSelection } from "../../../models/dataElementsSet";
 import SectionsSidebar from "../../sections-sidebar/SectionsSidebar";
 import { useSectionsSidebar } from "../../sections-sidebar/sections-sidebar-hooks";
+import { Filter } from "./DataElementsFilters";
 
 export interface DataElementsStepProps extends StepProps {
     onSelect(sectorId: Id, dataElementIds: Id[]): ProjectSelection;
     dataElementsSet: DataElementsSet;
+    initialFilters?: Filter;
 }
 
 const DataElementsStep: React.FC<DataElementsStepProps> = props => {
-    const { onChange, project, dataElementsSet, onSelect } = props;
+    const { onChange, project, dataElementsSet, onSelect, initialFilters } = props;
     const { items, sectorId, setSector, onSectorsMatchChange } = useSectionsSidebar(project);
 
     const onSelectionChange = React.useCallback(
@@ -36,6 +38,7 @@ const DataElementsStep: React.FC<DataElementsStepProps> = props => {
                 sectorId={sectorId}
                 onSelectionChange={onSelectionChange}
                 columns={initialColumns}
+                initialFilters={initialFilters}
             />
         </SectionsSidebar>
     );
