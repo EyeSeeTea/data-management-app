@@ -1,4 +1,4 @@
-import { D2Api, D2UserAuthorityGroup } from "../../types/d2-api";
+import { D2Api, D2UserRole } from "../../types/d2-api";
 import { Debug, Migration } from "../types";
 import { getUid } from "../../utils/dhis2";
 import { post } from "./common";
@@ -11,7 +11,7 @@ class AddRoleMerApproverMigration {
     }
 
     async createUserRole() {
-        const role: Partial<D2UserAuthorityGroup> = {
+        const role: Partial<D2UserRole> = {
             id: getUid("userRole", "mer-approver"),
             name: "MER Approver",
             authorities: [
