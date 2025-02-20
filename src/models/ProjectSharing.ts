@@ -1,7 +1,7 @@
 import { OrganisationUnit } from "./Project";
 import _ from "lodash";
 import { Config } from "./Config";
-import { D2DataSetSchema, Ref } from "../types/d2-api";
+import { Ref } from "../types/d2-api";
 import {
     Sharing,
     EntityAccess,
@@ -149,11 +149,9 @@ export default class ProjectSharing {
     }
 }
 
-type D2DataSetAccess = D2DataSetSchema["fields"]["access"] & {
-    data?: { read: boolean; write: boolean }; // Currently not in d2-api, add manually
-};
-
-export function hasCurrentUserFullAccessToDataSet(shareable: { access: D2DataSetAccess }): boolean {
+export function hasCurrentUserFullAccessToDataSet(shareable: {
+    access: { read: boolean; write: boolean; data: { read: boolean; write: boolean } };
+}): boolean {
     const { access } = shareable;
     const metadataAccess = access.read && access.write;
     const dataAccess = access.data ? access.data.read && access.data.write : true;

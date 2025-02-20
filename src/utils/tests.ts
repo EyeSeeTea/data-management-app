@@ -26,7 +26,7 @@ export function logUnknownRequest(mockAdapter: MockAdapter) {
         if (data) {
             const dataObj = JSON.parse(data);
             // There may be multiple handlers for a method+URL, guess the most probable object
-            const expectedData = _(mock.handlers[method])
+            const expectedData = _(mock.handlers[method as Method] || [])
                 .map(([handlerUrl, handlerData]) => (handlerUrl === url ? handlerData : null))
                 .compact()
                 .sortBy(handlerData =>
