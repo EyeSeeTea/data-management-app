@@ -73,7 +73,8 @@ export class ExportDataElementJsonRepository implements ExportDataElementReposit
             dataElementGroupsIds,
             dataElementGroups,
             dataElements,
-            { post: false }
+            { post: false },
+            this.config
         );
 
         if (existingIndicators.indicators.length > 0) {

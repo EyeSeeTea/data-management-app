@@ -60,7 +60,8 @@ export class DataElementD2Repository implements DataElementRepository {
             dataElementGroupsIds,
             dataElementGroups,
             dataElements,
-            options
+            options,
+            this.config
         );
 
         await this.d2Indicator.save(
@@ -92,7 +93,7 @@ export class DataElementD2Repository implements DataElementRepository {
             .getData();
 
         if (options.post) {
-            console.info("dataElements removed: ", response.stats);
+            console.info("dataElements removed: ", response);
         }
     }
 }

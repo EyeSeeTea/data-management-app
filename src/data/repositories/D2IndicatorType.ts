@@ -5,7 +5,7 @@ import { IndicatorType } from "../../domain/entities/IndicatorType";
 import { getId } from "../../utils/dhis2";
 import { promiseMap } from "../../migrations/utils";
 import { Id, Ref } from "../../domain/entities/Ref";
-import { getImportModeFromOptions, SaveOptions } from "../SaveOptions";
+import { getImportModeFromOptions, SaveOptions, skipValidation } from "../SaveOptions";
 
 export class D2IndicatorType {
     constructor(private api: D2Api) {}
@@ -60,14 +60,16 @@ export class D2IndicatorType {
                     };
                 });
 
+                const importMode = getImportModeFromOptions(options.post);
+
                 const d2Response = await this.api.metadata
                     .post(
                         { indicatorGroups: postIndicatorsGroups },
-                        { importMode: getImportModeFromOptions(options.post) }
+                        { importMode, skipValidation: skipValidation(importMode) }
                     )
                     .getData();
                 if (options.post) {
-                    console.info("indicatorGroups", d2Response.stats);
+                    console.info("indicatorGroups", d2Response);
                 }
                 return postIndicatorsGroups;
             }

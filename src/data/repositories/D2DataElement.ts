@@ -15,7 +15,7 @@ import {
 } from "../../types/d2-api";
 import { Maybe } from "../../types/utils";
 import { getId } from "../../utils/dhis2";
-import { getImportModeFromOptions, SaveOptions } from "../SaveOptions";
+import { getImportModeFromOptions, SaveOptions, skipValidation } from "../SaveOptions";
 import { indicatorTypes, peopleOrBenefitList } from "../../models/dataElementsSet";
 import { IndicatorType } from "../../domain/entities/IndicatorType";
 import { D2Indicator, D2IndicatorFields } from "./D2Indicator";
@@ -126,15 +126,21 @@ export class D2DataElement {
                 }
             );
 
+            const importMode = getImportModeFromOptions(options.post);
+
             const d2Response = await this.api.metadata
                 .post(
                     { dataElements: postDataElements },
-                    { importMode: getImportModeFromOptions(options.post) }
+                    { importMode, skipValidation: skipValidation(importMode) }
                 )
-                .getData();
+                .getData()
+                .catch(error => {
+                    console.log("error", error);
+                    throw Error(`Error importing dataElements: ${dataElementIds}`);
+                });
 
             if (options.post) {
-                console.info("dataElements", d2Response.stats);
+                console.info("dataElements", d2Response);
             }
             return postDataElements;
         });

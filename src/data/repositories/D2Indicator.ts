@@ -55,7 +55,7 @@ export class D2Indicator {
                     )
                     .getData();
                 if (options.post) {
-                    console.info("indicators", d2Response.stats);
+                    console.info("indicators", d2Response);
                 }
                 return postIndicators;
             }
