@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { create } from "zustand";
 //@ts-ignore
 import { HeaderBar } from "@dhis2/ui";
 import { MuiThemeProvider } from "@material-ui/core/styles";
@@ -27,6 +28,7 @@ import { appConfig } from "../../app-config";
 import { isTest } from "../../utils/testing";
 import i18n from "../../locales";
 import { getCompositionRoot } from "../../CompositionRoot";
+import ExitWizardButton from "../wizard/ExitWizardButton";
 
 const settingsQuery = { userSettings: { resource: "/userSettings" } };
 
@@ -35,6 +37,20 @@ interface AppProps {
     d2: object;
     dhis2Url: string;
 }
+
+export type ProjectState = {
+    openExitDialog: boolean;
+    disableLogoNav: boolean;
+    updateLogoNav: (value: boolean) => void;
+    updateExitDialog: (value: boolean) => void;
+};
+
+export const useProjectStore = create<ProjectState>(set => ({
+    openExitDialog: false,
+    disableLogoNav: false,
+    updateLogoNav: (value: boolean) => set({ disableLogoNav: value }),
+    updateExitDialog: (value: boolean) => set({ openExitDialog: value }),
+}));
 
 const App: React.FC<AppProps> = props => {
     const { api, d2, dhis2Url } = props;
@@ -46,6 +62,9 @@ const App: React.FC<AppProps> = props => {
     const migrations = useMigrations(api, appConfig.appKey);
     const [loadError, setLoadError] = useState<string>();
     const [username, setUsername] = useState("");
+    const disableLogoNav = useProjectStore(state => state.disableLogoNav);
+    const exitDialog = useProjectStore(state => state.openExitDialog);
+    const updateExitDialog = useProjectStore(state => state.updateExitDialog);
 
     useEffect(() => {
         const run = async () => {
@@ -75,6 +94,13 @@ const App: React.FC<AppProps> = props => {
             run().catch(err => setLoadError(err.message));
         }
     }, [api, d2, data, isDev, dhis2Url, migrations]);
+
+    const headerClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        if (disableLogoNav) {
+            event.preventDefault();
+            updateExitDialog(true);
+        }
+    };
 
     if (loadError) {
         return <div>Cannot load app: {loadError}</div>;
@@ -107,7 +133,14 @@ const App: React.FC<AppProps> = props => {
                     <OldMuiThemeProvider muiTheme={muiThemeLegacy}>
                         <LoadingProvider>
                             <SnackbarProvider>
-                                <HeaderBar appName={"Data Management"} />
+                                <ExitWizardButton
+                                    isOpen={exitDialog}
+                                    onConfirm={() => (window.location.href = api.baseUrl)}
+                                    onCancel={() => updateExitDialog(false)}
+                                />
+                                <div onClick={headerClick}>
+                                    <HeaderBar appName={"Data Management"} />
+                                </div>
 
                                 <div id="app" className="content">
                                     <ApiContext.Provider value={appContext}>
