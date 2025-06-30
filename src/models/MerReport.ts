@@ -488,10 +488,11 @@ function getAchieved(
     targetAchieved: DataValue,
     actualAchieved: DataValue
 ): DataElementInfo["achieved"] {
-    function getPercentAndDiff(
-        type: keyof DataValue
-    ): { difference: number; percentage: number } | null {
-        if (!targetAchieved[type]) return null;
+    function getPercentAndDiff(type: keyof DataValue): {
+        difference: Maybe<number>;
+        percentage: Maybe<number>;
+    } {
+        if (!targetAchieved[type]) return { difference: null, percentage: null };
         return {
             difference: actualAchieved[type] - targetAchieved[type],
             percentage: (100 * actualAchieved[type]) / targetAchieved[type],
@@ -505,10 +506,8 @@ function getAchieved(
     return _.transform(
         { approved, unapproved, all },
         (acc, value, key: keyof DataValue) => {
-            if (value) {
-                acc.difference[key] = value.difference;
-                acc.percentage[key] = value.percentage;
-            }
+            acc.difference[key] = value?.difference;
+            acc.percentage[key] = value?.percentage;
         },
         { difference: {}, percentage: {} } as DataElementInfo["achieved"]
     );
