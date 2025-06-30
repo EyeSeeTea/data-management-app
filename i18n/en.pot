@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-12-11T14:02:52.077Z\n"
-"PO-Revision-Date: 2024-12-11T14:02:52.077Z\n"
+"POT-Creation-Date: 2025-06-30T12:02:15.958Z\n"
+"PO-Revision-Date: 2025-06-30T12:02:15.958Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -473,6 +473,11 @@ msgstr ""
 
 msgid ""
 "Actual\r\n"
+"to date"
+msgstr ""
+
+msgid ""
+"Achieved\r\n"
 "to date"
 msgstr ""
 
@@ -1262,6 +1267,9 @@ msgid "Target to date"
 msgstr ""
 
 msgid "Actual to date"
+msgstr ""
+
+msgid "Achieved to date"
 msgstr ""
 
 msgid "Achieved to date %"

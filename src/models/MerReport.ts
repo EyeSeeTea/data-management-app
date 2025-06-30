@@ -1,5 +1,5 @@
 import { Disaggregation } from "./Disaggregation";
-import { GetItemType, Maybe } from "./../types/utils";
+import { GetItemType, Maybe } from "../types/utils";
 import moment, { Moment } from "moment";
 import _ from "lodash";
 import { Id, Ref, D2Api, DataStore } from "../types/d2-api";
@@ -134,7 +134,10 @@ export interface DataElementInfo {
     actual: DataValue;
     targetAchieved: DataValue;
     actualAchieved: DataValue;
-    achieved: MaybeDataValue;
+    achieved: {
+        difference: MaybeDataValue;
+        percentage: MaybeDataValue;
+    };
     comment: string;
     isCovid19: boolean;
 }
@@ -485,17 +488,30 @@ function getAchieved(
     targetAchieved: DataValue,
     actualAchieved: DataValue
 ): DataElementInfo["achieved"] {
-    const achievedApproved = targetAchieved.approved
-        ? (100 * actualAchieved.approved) / targetAchieved.approved
-        : null;
+    function getPercentAndDiff(
+        type: keyof DataValue
+    ): { difference: number; percentage: number } | null {
+        if (!targetAchieved[type]) return null;
+        return {
+            difference: actualAchieved[type] - targetAchieved[type],
+            percentage: (100 * actualAchieved[type]) / targetAchieved[type],
+        };
+    }
 
-    const achievedAll = targetAchieved.all ? (100 * actualAchieved.all) / targetAchieved.all : null;
+    const approved = getPercentAndDiff("approved");
+    const unapproved = getPercentAndDiff("unapproved");
+    const all = getPercentAndDiff("all");
 
-    const achievedUnapproved = targetAchieved.unapproved
-        ? (100 * actualAchieved.unapproved) / targetAchieved.unapproved
-        : null;
-
-    return { all: achievedAll, approved: achievedApproved, unapproved: achievedUnapproved };
+    return _.transform(
+        { approved, unapproved, all },
+        (acc, value, key: keyof DataValue) => {
+            if (value) {
+                acc.difference[key] = value.difference;
+                acc.percentage[key] = value.percentage;
+            }
+        },
+        { difference: {}, percentage: {} } as DataElementInfo["achieved"]
+    );
 }
 
 async function getOrgUnitsForProjects(api: D2Api, projects: Ref[]): Promise<OrgUnit[]> {

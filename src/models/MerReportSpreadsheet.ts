@@ -18,6 +18,7 @@ interface ValueBase {
     alignment?: Partial<Alignment>;
     height?: number;
     colspan?: number;
+    numFmt?: string;
 }
 
 interface NumberValue extends ValueBase {
@@ -138,7 +139,8 @@ class MerReportSpreadsheet {
                 float(de.actual.approved),
                 float(de.targetAchieved.approved),
                 float(de.actualAchieved.approved),
-                float(de.achieved.approved),
+                float(de.achieved.difference.approved, { numFmt: "###;(###0)" }),
+                float(de.achieved.percentage.approved),
                 text(de.comment),
             ];
         });
@@ -153,6 +155,7 @@ class MerReportSpreadsheet {
             header(i18n.t("Actual"), { width: 12, isNumber: true, center: true }),
             header(i18n.t("Target\r\nto date"), { width: 12, isNumber: true, center: true }),
             header(i18n.t("Actual\r\nto date"), { width: 12, isNumber: true, center: true }),
+            header(i18n.t("Achieved\r\nto date"), { width: 12, isNumber: true, center: true }),
             header(i18n.t("Achieved\r\nto date (%)"), {
                 width: 12,
                 isNumber: true,
@@ -305,6 +308,10 @@ function applyStyles(sheet: Worksheet, rows: Row[], options: { hasColumns: boole
 
             if (cell.font) {
                 sheetCell.font = cell.font;
+            }
+
+            if (cell.numFmt) {
+                sheetCell.numFmt = cell.numFmt;
             }
 
             sheetCell.font = { ...defaultFont, ...sheetCell.font };
