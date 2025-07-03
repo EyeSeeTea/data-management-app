@@ -5,8 +5,9 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-06-30T12:02:15.958Z\n"
-"PO-Revision-Date: 2025-06-30T12:02:15.958Z\n"
+"POT-Creation-Date: 2025-07-03T03:15:54.574Z\n"
+"PO-Revision-Date: 2025-07-03T03:15:54.574Z\n"
+
 
 msgid "Validating Project"
 msgstr ""
@@ -890,6 +891,9 @@ msgstr ""
 msgid "Country Project & Indicators"
 msgstr ""
 
+msgid "Any changes will be lost. Are you sure you want to proceed?"
+msgstr ""
+
 msgid "Select Year"
 msgstr ""
 
@@ -897,9 +901,6 @@ msgid "Select period"
 msgstr ""
 
 msgid "No projects found for selected period: {{period}}"
-msgstr ""
-
-msgid "Any changes will be lost. Are you sure you want to proceed?"
 msgstr ""
 
 msgid "Saving..."

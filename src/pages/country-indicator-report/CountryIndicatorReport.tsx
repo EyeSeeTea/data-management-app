@@ -24,12 +24,17 @@ import { downloadFile } from "../../utils/download";
 import { useConfirmChanges } from "../report/MerReport";
 import { UniqueBeneficiariesSettings } from "../../domain/entities/UniqueBeneficiariesSettings";
 import { getYearsFromProject } from "../project-indicators-validation/ProjectIndicatorsValidation";
+import { useProjectStore } from "../../components/app/App";
 
 export const CountryIndicatorReport = React.memo(() => {
+    const titlePage = i18n.t("Country Project & Indicators");
+    const descriptionPage = i18n.t("Any changes will be lost. Are you sure you want to proceed?");
+
     const goTo = useGoTo();
     const [orgUnit, setOrgUnit] = React.useState<OrganisationUnit>();
     const [year, setYear] = React.useState<number>();
     const [selectedPeriod, setSelectedPeriod] = React.useState<UniqueBeneficiariesPeriod>();
+    const updateLogoNav = useProjectStore(state => state.updateLogoNav);
     const { confirmIfUnsavedChanges, proceedWarning, runProceedAction, wasReportModifiedSet } =
         useConfirmChanges();
     const { indicatorsReports, settings, setIndicatorsReports } = useGetIndicatorsReport({
@@ -74,8 +79,18 @@ export const CountryIndicatorReport = React.memo(() => {
             });
             setIndicatorsReports(updatedIndicators);
             wasReportModifiedSet(true);
+            updateLogoNav({ title: titlePage, description: descriptionPage, state: true });
         },
-        [indicatorsReports, selectedPeriod, setIndicatorsReports, wasReportModifiedSet, year]
+        [
+            indicatorsReports,
+            selectedPeriod,
+            setIndicatorsReports,
+            wasReportModifiedSet,
+            year,
+            updateLogoNav,
+            descriptionPage,
+            titlePage,
+        ]
     );
 
     const indicatorReport =
@@ -102,7 +117,6 @@ export const CountryIndicatorReport = React.memo(() => {
     }, [confirmIfUnsavedChanges, goTo]);
 
     const reportHasProjects = indicatorReport && indicatorReport.projects.length > 0;
-    const titlePage = i18n.t("Country Project & Indicators");
 
     const years = mapYearsToItems(indicatorsReports);
 
@@ -188,12 +202,13 @@ export const CountryIndicatorReport = React.memo(() => {
             {proceedWarning.type === "visible" && (
                 <ConfirmationDialog
                     isOpen
-                    onSave={() => runProceedAction(proceedWarning.action)}
+                    onSave={() => {
+                        runProceedAction(proceedWarning.action);
+                        updateLogoNav(undefined);
+                    }}
                     onCancel={() => runProceedAction(() => {})}
                     title={titlePage}
-                    description={i18n.t(
-                        "Any changes will be lost. Are you sure you want to proceed?"
-                    )}
+                    description={descriptionPage}
                     saveText={i18n.t("Yes")}
                     cancelText={i18n.t("No")}
                 />
@@ -242,6 +257,7 @@ export function useSaveIndicatorReport(props: UseSaveCountryReportProps) {
     const { countryId, indicatorsReports: reports, wasReportModifiedSet } = props;
     const snackbar = useSnackbar();
     const loading = useLoading();
+    const updateLogoNav = useProjectStore(state => state.updateLogoNav);
 
     const saveIndicatorReport = React.useCallback(() => {
         if (!countryId) return;
@@ -256,9 +272,18 @@ export function useSaveIndicatorReport(props: UseSaveCountryReportProps) {
             })
             .finally(() => {
                 wasReportModifiedSet(false);
+                updateLogoNav(undefined);
                 loading.hide();
             });
-    }, [compositionRoot, loading, snackbar, countryId, reports, wasReportModifiedSet]);
+    }, [
+        compositionRoot,
+        loading,
+        snackbar,
+        countryId,
+        reports,
+        wasReportModifiedSet,
+        updateLogoNav,
+    ]);
 
     return saveIndicatorReport;
 }
@@ -271,6 +296,7 @@ export function useGetIndicatorsReport(props: {
     const { compositionRoot } = useAppContext();
     const snackbar = useSnackbar();
     const loading = useLoading();
+    const updateLogoNav = useProjectStore(state => state.updateLogoNav);
 
     const [indicatorsReports, setIndicatorsReports] = React.useState<IndicatorReport[]>([]);
     const [settings, setSettings] = React.useState<UniqueBeneficiariesSettings[]>([]);
@@ -288,8 +314,9 @@ export function useGetIndicatorsReport(props: {
             .finally(() => {
                 loading.hide();
                 wasReportModifiedSet(false);
+                updateLogoNav(undefined);
             });
-    }, [compositionRoot, countryId, loading, snackbar, wasReportModifiedSet]);
+    }, [compositionRoot, countryId, loading, snackbar, wasReportModifiedSet, updateLogoNav]);
 
     return { indicatorsReports, settings, setIndicatorsReports };
 }
