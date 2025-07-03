@@ -8,9 +8,11 @@ class ExitWizardButton extends React.Component {
         isOpen: PropTypes.bool,
         onConfirm: PropTypes.func.isRequired,
         onCancel: PropTypes.func.isRequired,
+        title: PropTypes.string,
+        description: PropTypes.string,
     };
     render() {
-        const { isOpen, onCancel, onConfirm } = this.props;
+        const { title, description, isOpen, onCancel, onConfirm } = this.props;
 
         if (!isOpen) return null;
 
@@ -19,10 +21,13 @@ class ExitWizardButton extends React.Component {
                 isOpen={true}
                 onSave={onConfirm}
                 onCancel={onCancel}
-                title={i18n.t("Cancel Project creation?")}
-                description={i18n.t(
-                    "You are about to exit the Project creation wizard. All your changes will be lost. Are you sure you want to proceed?"
-                )}
+                title={title || i18n.t("Cancel Project creation?")}
+                description={
+                    description ||
+                    i18n.t(
+                        "You are about to exit the Project creation wizard. All your changes will be lost. Are you sure you want to proceed?"
+                    )
+                }
                 saveText={i18n.t("Yes")}
                 cancelText={i18n.t("No")}
             />

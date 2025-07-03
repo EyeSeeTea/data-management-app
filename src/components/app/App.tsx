@@ -29,6 +29,7 @@ import { isTest } from "../../utils/testing";
 import i18n from "../../locales";
 import { getCompositionRoot } from "../../CompositionRoot";
 import ExitWizardButton from "../wizard/ExitWizardButton";
+import { Maybe } from "../../types/utils";
 
 const settingsQuery = { userSettings: { resource: "/userSettings" } };
 
@@ -38,17 +39,23 @@ interface AppProps {
     dhis2Url: string;
 }
 
+export type DisableLogoNav = {
+    title: string;
+    description: string;
+    state: boolean;
+};
+
 export type ProjectState = {
     openExitDialog: boolean;
-    disableLogoNav: boolean;
-    updateLogoNav: (value: boolean) => void;
+    disableLogoNav: Maybe<DisableLogoNav>;
+    updateLogoNav: (value: Maybe<DisableLogoNav>) => void;
     updateExitDialog: (value: boolean) => void;
 };
 
 export const useProjectStore = create<ProjectState>(set => ({
     openExitDialog: false,
-    disableLogoNav: false,
-    updateLogoNav: (value: boolean) => set({ disableLogoNav: value }),
+    disableLogoNav: undefined,
+    updateLogoNav: (value: Maybe<DisableLogoNav>) => set({ disableLogoNav: value }),
     updateExitDialog: (value: boolean) => set({ openExitDialog: value }),
 }));
 
@@ -96,7 +103,7 @@ const App: React.FC<AppProps> = props => {
     }, [api, d2, data, isDev, dhis2Url, migrations]);
 
     const headerClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        if (disableLogoNav) {
+        if (disableLogoNav?.state) {
             event.preventDefault();
             updateExitDialog(true);
         }
@@ -137,6 +144,8 @@ const App: React.FC<AppProps> = props => {
                                     isOpen={exitDialog}
                                     onConfirm={() => (window.location.href = api.baseUrl)}
                                     onCancel={() => updateExitDialog(false)}
+                                    title={disableLogoNav?.title}
+                                    description={disableLogoNav?.description}
                                 />
                                 <div onClick={headerClick}>
                                     <HeaderBar appName={"Data Management"} />

@@ -27,6 +27,7 @@ import ExecutiveSummaries from "../../components/report/ExecutiveSummaries";
 import { useGoTo, generateUrl } from "../../router";
 import { useAppHistory } from "../../utils/use-app-history";
 import { ErrorMessage } from "./ErrorMessage";
+import { useProjectStore } from "../../components/app/App";
 
 type ProceedWarning = { type: "hidden" } | { type: "visible"; action: () => void };
 
@@ -37,6 +38,8 @@ const MerReportComponent: React.FC = () => {
     const classes = useStyles();
     const snackbar = useSnackbar();
     const initial = isDev ? getDevMerReport() : { date: null, orgUnit: null };
+    const title = i18n.t("Monthly Executive Reports");
+    const description = i18n.t("Any changes will be lost. Are you sure you want to proceed?");
     const {
         confirmIfUnsavedChanges,
         proceedWarning,
@@ -48,7 +51,7 @@ const MerReportComponent: React.FC = () => {
     const [date, setDate] = useState(initial.date);
     const [orgUnit, setOrgUnit] = useState(initial.orgUnit);
     const [merReport, setMerReportBase] = useState<Maybe<MerReport>>(null);
-    const title = i18n.t("Monthly Executive Reports");
+    const updateLogoNav = useProjectStore(state => state.updateLogoNav);
     const loading = useLoading();
 
     useRedirectToProjectsPageIfUserHasNoAccess();
@@ -57,19 +60,21 @@ const MerReportComponent: React.FC = () => {
         if (date && orgUnit) {
             setMerReportBase(undefined);
             wasReportModifiedSet(false);
+            updateLogoNav(undefined);
             const selectData = { date, organisationUnit: orgUnit };
             withSnackbarOnError(snackbar, () =>
                 MerReport.create(api, config, selectData).then(setMerReportBase)
             );
         }
-    }, [api, config, snackbar, date, orgUnit, wasReportModifiedSet]);
+    }, [api, config, snackbar, date, orgUnit, wasReportModifiedSet, updateLogoNav]);
 
     const setMerReport = React.useCallback(
         (report: MerReport) => {
             setMerReportBase(report);
             wasReportModifiedSet(true);
+            updateLogoNav({ description, title, state: true });
         },
-        [wasReportModifiedSet]
+        [wasReportModifiedSet, updateLogoNav, description, title]
     );
 
     const onChange = React.useCallback(
@@ -123,12 +128,13 @@ const MerReportComponent: React.FC = () => {
             {proceedWarning.type === "visible" && (
                 <ConfirmationDialog
                     isOpen={true}
-                    onSave={() => runProceedAction(proceedWarning.action)}
+                    onSave={() => {
+                        runProceedAction(proceedWarning.action);
+                        updateLogoNav(undefined);
+                    }}
                     onCancel={() => runProceedAction(() => {})}
                     title={title}
-                    description={i18n.t(
-                        "Any changes will be lost. Are you sure you want to proceed?"
-                    )}
+                    description={description}
                     saveText={i18n.t("Yes")}
                     cancelText={i18n.t("No")}
                 />

@@ -28,7 +28,7 @@ import { useAppHistory } from "../../utils/use-app-history";
 import { Maybe } from "../../types/utils";
 import { AttachFilesStep } from "../../components/steps/attach-files/AttachFilesStep";
 import UniqueIndicatorsStep from "../../components/steps/unique-beneficiaries/UniqueIndicatorsStep";
-import { useProjectStore } from "../../components/app/App";
+import { DisableLogoNav, useProjectStore } from "../../components/app/App";
 
 type Action = { type: "create" } | { type: "edit"; id: string } | { type: "clone"; id: string };
 
@@ -52,7 +52,7 @@ interface Props {
     snackbar: any;
     action: Action;
     isDev: boolean;
-    updateLogoNav: (value: boolean) => void;
+    updateLogoNav: (value: Maybe<DisableLogoNav>) => void;
 }
 
 interface State {
@@ -92,7 +92,7 @@ class ProjectWizardImpl extends React.Component<Props, State> {
     }
 
     componentWillUnmount(): void {
-        this.props.updateLogoNav(false);
+        this.props.updateLogoNav(undefined);
     }
 
     getInitialProjectData = async () => {
@@ -238,7 +238,7 @@ class ProjectWizardImpl extends React.Component<Props, State> {
     onChange = (step: Step) => async (project: Project) => {
         const errors = await getValidationMessages(project, step.validationKeysLive || []);
         this.setState({ project, isUpdated: true });
-        this.props.updateLogoNav(true);
+        this.props.updateLogoNav({ description: "", title: "", state: true });
 
         if (!_(errors).isEmpty()) {
             this.props.snackbar.error(errors.join("\n"));
