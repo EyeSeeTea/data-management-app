@@ -8,6 +8,7 @@ msgstr ""
 "POT-Creation-Date: 2025-07-03T03:15:54.574Z\n"
 "PO-Revision-Date: 2025-07-03T03:15:54.574Z\n"
 
+
 msgid "Validating Project"
 msgstr ""
 
@@ -473,6 +474,11 @@ msgstr ""
 
 msgid ""
 "Actual\r\n"
+"to date"
+msgstr ""
+
+msgid ""
+"Achieved\r\n"
 "to date"
 msgstr ""
 
@@ -1262,6 +1268,9 @@ msgid "Target to date"
 msgstr ""
 
 msgid "Actual to date"
+msgstr ""
+
+msgid "Achieved to date"
 msgstr ""
 
 msgid "Achieved to date %"
