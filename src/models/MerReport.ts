@@ -1,5 +1,5 @@
 import { Disaggregation } from "./Disaggregation";
-import { GetItemType, Maybe } from "./../types/utils";
+import { GetItemType, Maybe } from "../types/utils";
 import moment, { Moment } from "moment";
 import _ from "lodash";
 import { Id, Ref, D2Api, DataStore } from "../types/d2-api";
@@ -134,7 +134,10 @@ export interface DataElementInfo {
     actual: DataValue;
     targetAchieved: DataValue;
     actualAchieved: DataValue;
-    achieved: MaybeDataValue;
+    achieved: {
+        difference: MaybeDataValue;
+        percentage: MaybeDataValue;
+    };
     comment: string;
     isCovid19: boolean;
 }
@@ -485,17 +488,33 @@ function getAchieved(
     targetAchieved: DataValue,
     actualAchieved: DataValue
 ): DataElementInfo["achieved"] {
-    const achievedApproved = targetAchieved.approved
-        ? (100 * actualAchieved.approved) / targetAchieved.approved
-        : null;
+    function getPercentAndDiff(type: keyof DataValue): {
+        difference: Maybe<number>;
+        percentage: Maybe<number>;
+    } {
+        if (!targetAchieved[type]) return { difference: null, percentage: null };
+        return {
+            difference: actualAchieved[type] - targetAchieved[type],
+            percentage: (100 * actualAchieved[type]) / targetAchieved[type],
+        };
+    }
 
-    const achievedAll = targetAchieved.all ? (100 * actualAchieved.all) / targetAchieved.all : null;
+    const approved = getPercentAndDiff("approved");
+    const unapproved = getPercentAndDiff("unapproved");
+    const all = getPercentAndDiff("all");
 
-    const achievedUnapproved = targetAchieved.unapproved
-        ? (100 * actualAchieved.unapproved) / targetAchieved.unapproved
-        : null;
-
-    return { all: achievedAll, approved: achievedApproved, unapproved: achievedUnapproved };
+    return {
+        difference: {
+            all: all.difference,
+            approved: approved.difference,
+            unapproved: unapproved.difference,
+        },
+        percentage: {
+            all: all.percentage,
+            approved: approved.percentage,
+            unapproved: unapproved.percentage,
+        },
+    };
 }
 
 async function getOrgUnitsForProjects(api: D2Api, projects: Ref[]): Promise<OrgUnit[]> {
