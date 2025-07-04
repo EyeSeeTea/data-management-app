@@ -5,9 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-07-03T03:15:54.574Z\n"
-"PO-Revision-Date: 2025-07-03T03:15:54.574Z\n"
-
+"POT-Creation-Date: 2025-07-04T19:00:11.481Z\n"
+"PO-Revision-Date: 2025-07-04T19:00:11.481Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -1282,6 +1281,12 @@ msgstr ""
 msgid ""
 "A = Approved (data that has been validated and approved) / U = Unapproved "
 "(data that has been entered but has not yet been approved)"
+msgstr ""
+
+msgid "Click here to access the Data Approval page and unapproved data"
+msgstr ""
+
+msgid "Searching latest unapproved period..."
 msgstr ""
 
 msgid "Sector"

@@ -124,6 +124,8 @@ describe("MerReport", () => {
                     prefix: "",
                     locations: [],
                     dateInfo: "Nov 2019 - Mar 2020",
+                    startDate: "2019-11-01T00:00:00",
+                    endDate: "2020-03-31T23:59:59",
                     dataElements: [
                         {
                             id: "WS8XV4WWPE7",
@@ -163,6 +165,8 @@ describe("MerReport", () => {
                 },
                 {
                     id: "SKuiiu7Vbwv",
+                    endDate: "2020-03-31T23:59:59",
+                    startDate: "2019-11-01T00:00:00",
                     name: "0Test1-48852",
                     prefix: "",
                     locations: [

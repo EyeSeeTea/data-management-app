@@ -1,12 +1,25 @@
 import React from "react";
 import _ from "lodash";
-import { Table, TableRow, TableHead, TableCell, Paper } from "@material-ui/core";
+import {
+    Table,
+    TableRow,
+    TableHead,
+    TableCell,
+    Paper,
+    Tooltip,
+    Button,
+    Typography,
+} from "@material-ui/core";
 
 import MerReport, { DataElementInfo, ProjectForMer, DataElementMER } from "../../models/MerReport";
 import i18n from "../../locales";
 import TableBodyGrouped from "./TableBodyGrouped";
 import { Grouper, RowComponent } from "./rich-rows-utils";
 import DataElementCells from "./DataElementCells";
+import Project from "../../models/Project";
+import { useAppContext } from "../../contexts/api-context";
+import { useGoTo } from "../../router";
+import { ProjectStatus } from "../../domain/entities/ProjectStatus";
 
 interface ReportDataTableProps {
     merReport: MerReport;
@@ -113,14 +126,69 @@ const ProjectCell: RowComponent<DataElementMER> = props => {
     const { row: dataElementMER, rowSpan } = props;
     const { project } = dataElementMER;
 
+    const { loading, goToApprovalPage } = useGoToApprovalPage({ project });
+
     return (
         <TableCell rowSpan={rowSpan}>
-            {project.prefix} - {project.name}
+            {project.prefix} -
+            <Tooltip
+                title={i18n.t("Click here to access the Data Approval page and unapproved data")}
+            >
+                <Button href="#" onClick={goToApprovalPage} color="primary" disabled={loading}>
+                    <Typography variant="body2">
+                        {loading ? i18n.t("Searching latest unapproved period...") : project.name}
+                    </Typography>
+                </Button>
+            </Tooltip>
             <br />
             <i>{project.dateInfo}</i>
         </TableCell>
     );
 };
+
+export function useGoToApprovalPage(props: { project: ProjectForMer }) {
+    const { compositionRoot } = useAppContext();
+    const { project } = props;
+    const period = Project.getPreviousPeriod(project.startDate, project.endDate);
+    const [loading, setLoading] = React.useState(false);
+    const goTo = useGoTo();
+    const dataSetType = "actual";
+
+    const goToApprovalPage = React.useCallback(
+        (event: React.MouseEvent) => {
+            event.preventDefault();
+            setLoading(true);
+            compositionRoot.projectStatus.getBy
+                .execute({ projectId: project.id, dataSetType: dataSetType })
+                .then(statuses => {
+                    const unapprovedPeriod = ProjectStatus.getLastUnapprovedPeriod(
+                        statuses,
+                        period
+                    );
+
+                    goTo("dataApproval", {
+                        id: project.id,
+                        period: String(unapprovedPeriod) || period,
+                        dataSetType: dataSetType,
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching project status:", error);
+                    goTo("dataApproval", {
+                        id: project.id,
+                        period: period,
+                        dataSetType: dataSetType,
+                    });
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        },
+        [compositionRoot, goTo, period, project]
+    );
+
+    return { loading, goToApprovalPage };
+}
 
 function shouldKeepView(prevProps: ReportDataTableProps, nextProps: ReportDataTableProps): boolean {
     return prevProps.merReport.data.projectsData === nextProps.merReport.data.projectsData;

@@ -147,6 +147,8 @@ export interface ProjectForMer {
     code: string;
     prefix: string;
     dateInfo: string;
+    startDate: string;
+    endDate: string;
     name: string;
     dataElements: DataElementInfo[];
     locations: Array<{ id: Id; name: string }>;
@@ -454,6 +456,8 @@ class MerReport {
                 prefix: orgUnit.code?.split("-")[0] || "",
                 locations: locations.map(({ id, displayName }) => ({ id, name: displayName })),
                 dateInfo: `${formatDate(project.openingDate)} - ${formatDate(project.closedDate)}`,
+                startDate: project.openingDate,
+                endDate: project.closedDate,
                 dataElements: _.compact(dataElementIds.map(getDataElementInfo)),
             };
 

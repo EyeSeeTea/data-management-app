@@ -1,3 +1,4 @@
+import { ProjectStatusD2Repository } from "./data/ProjectStatusD2Repository";
 import { DataElementD2Repository } from "./data/repositories/DataElementD2Repository";
 import { DataValueD2Repository } from "./data/repositories/DataValueD2Repository";
 import { IndicatorReportD2Repository } from "./data/repositories/IndicatorReportD2Repository";
@@ -7,6 +8,7 @@ import { UniquePeriodD2Repository } from "./data/repositories/UniquePeriodD2Repo
 import { GetIndicatorsValidationUseCase } from "./domain/usecases/GetIndicatorsValidationUseCase";
 import { GetProjectByIdUseCase } from "./domain/usecases/GetProjectByIdUseCase";
 import { GetProjectsByCountryUseCase } from "./domain/usecases/GetProjectsByCountryUseCase";
+import { GetProjectStatusesUseCase } from "./domain/usecases/GetProjectStatusesUseCase";
 import { GetUniqueBeneficiariesSettingsUseCase } from "./domain/usecases/GetUniqueBeneficiariesSettingsUseCase";
 import { RemoveUniqueBeneficiariesPeriodUseCase } from "./domain/usecases/RemoveUniqueBeneficiariesPeriodUseCase";
 import { SaveIndicatorReportUseCase } from "./domain/usecases/SaveIndicatorReportUseCase";
@@ -26,6 +28,7 @@ export function getCompositionRoot(api: D2Api, config: Config) {
     const projectRepository = new ProjectD2Repository(api, config);
     const indicatorReportRepository = new IndicatorReportD2Repository(api, config);
     const periodRepository = new UniquePeriodD2Repository(api, config);
+    const projectStatusRepository = new ProjectStatusD2Repository(api, config);
 
     return {
         uniqueBeneficiaries: {
@@ -55,6 +58,9 @@ export function getCompositionRoot(api: D2Api, config: Config) {
                 dataElementRepository,
                 indicatorReportRepository
             ),
+        },
+        projectStatus: {
+            getBy: new GetProjectStatusesUseCase(projectStatusRepository),
         },
     };
 }
