@@ -132,7 +132,9 @@ const ProjectCell: RowComponent<DataElementMER> = props => {
         <TableCell rowSpan={rowSpan}>
             {project.prefix} -
             <Tooltip
-                title={i18n.t("Click here to access the Data Approval page and unapproved data")}
+                title={i18n.t(
+                    "Click here to access the Data Approval page and approve unapproved data"
+                )}
             >
                 <Button href="#" onClick={goToApprovalPage} color="primary" disabled={loading}>
                     <Typography variant="body2">
