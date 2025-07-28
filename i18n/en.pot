@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-07-04T19:06:48.026Z\n"
-"PO-Revision-Date: 2025-07-04T19:06:48.026Z\n"
+"POT-Creation-Date: 2025-07-28T13:01:33.302Z\n"
+"PO-Revision-Date: 2025-07-28T13:01:33.302Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -1236,6 +1236,9 @@ msgstr ""
 msgid "The report must be saved before it can be downloaded"
 msgstr ""
 
+msgid "Last Analytics Execution"
+msgstr ""
+
 msgid "Date"
 msgstr ""
 
@@ -1283,10 +1286,9 @@ msgid ""
 "(data that has been entered but has not yet been approved)"
 msgstr ""
 
-msgid "Click here to access the Data Approval page and approve unapproved data"
-msgstr ""
-
-msgid "Searching latest unapproved period..."
+msgid ""
+"The data for the selected month in this project is currently unapproved. "
+"Click here to review and approve it on the Data Approval page"
 msgstr ""
 
 msgid "Sector"
