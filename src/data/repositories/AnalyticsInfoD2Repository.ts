@@ -8,10 +8,7 @@ export class AnalyticsInfoD2Repository implements AnalyticsInfoRepository {
 
     async get(): Promise<AnalyticsInfo> {
         const response = await this.api.models.jobConfigurations
-            .get({
-                filter: { name: { eq: "Analytics" } },
-                fields: { nextExecutionTime: true, lastExecutedStatus: true, lastExecuted: true },
-            })
+            .get({ filter: { name: { eq: "Analytics" } }, fields: { lastExecuted: true } })
             .getData();
 
         const systemResponse = await this.api.system.info.getData();
