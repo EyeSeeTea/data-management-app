@@ -4414,6 +4414,11 @@
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.168.tgz#fe24632e79b7ade3f132891afff86caa5e5ce008"
   integrity sha512-oVfRvqHV/V6D1yifJbVRU3TMp8OT6o6BG+U9MkwuJ3U8/CsDHvalRpsxBqivn71ztOFZBTfJMvETbqHiaNSj7Q==
 
+"@types/luxon@^3.6.2":
+  version "3.6.2"
+  resolved "https://registry.yarnpkg.com/@types/luxon/-/luxon-3.6.2.tgz#be6536931801f437eafcb9c0f6d6781f72308041"
+  integrity sha512-R/BdP7OxEMc44l2Ex5lSXHoIXTB2JLNa3y2QISIbr58U/YcsffyQrYW//hZSdrfxrjRZj3GcUoxMPGdO8gSYuw==
+
 "@types/md5@2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@types/md5/-/md5-2.2.1.tgz#0e2d65d8f6cc91aafbc9be5a4c08fee9250406ce"
@@ -12580,6 +12585,11 @@ lru-cache@^6.0.0:
   integrity sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==
   dependencies:
     yallist "^4.0.0"
+
+luxon@^3.7.1:
+  version "3.7.1"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-3.7.1.tgz#9bd09aa84a56afb00c57ea78a8ec5bd16eb24ec0"
+  integrity sha512-RkRWjA926cTvz5rAb1BqyWkKbbjzCGchDUIKMCUvNi17j6f6j8uHGDV82Aqcqtzd+icoYpELmG3ksgGiFNNcNg==
 
 lz-string@^1.5.0:
   version "1.5.0"
