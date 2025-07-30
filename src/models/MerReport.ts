@@ -155,7 +155,7 @@ export interface ProjectForMer {
     name: string;
     dataElements: DataElementInfo[];
     locations: Array<{ id: Id; name: string }>;
-    approvalStatus: Maybe<ProjectStatus>;
+    approvalStatus: Maybe<MerProjectStatus>;
 }
 
 export type ProjectsData = ProjectForMer[];
@@ -462,7 +462,7 @@ class MerReport {
                 startDate: project.openingDate,
                 endDate: project.closedDate,
                 dataElements: _.compact(dataElementIds.map(getDataElementInfo)),
-                approvalStatus: undefined,
+                approvalStatus: { actual: undefined, target: undefined },
             };
 
             return projectForMer;
@@ -470,14 +470,7 @@ class MerReport {
 
         const currentPeriod = date.format("YYYYMM");
 
-        const projectStatus = await this.getProjectStatusByPeriod(
-            currentPeriod,
-            config,
-            _.compact(projectsData),
-            api
-        );
-
-        return this.setStatusToProjects(projectsData, projectStatus);
+        return this.getProjectStatusByPeriod(currentPeriod, config, _.compact(projectsData), api);
     }
 
     getData(): DataElementMER[] {
@@ -505,52 +498,54 @@ class MerReport {
         config: Config,
         projects: ProjectForMer[],
         api: D2Api
-    ): Promise<ProjectStatus[]> {
-        const categoryOption = config.categoryOptions.actual;
+    ): Promise<ProjectForMer[]> {
+        const coActual = config.categoryOptions.actual;
+        const coTarget = config.categoryOptions.target;
 
-        const aoc = categoryOption.categoryOptionCombos[0];
+        const aocActual = coActual.categoryOptionCombos[0];
+        const aocTarget = coTarget.categoryOptionCombos[0];
         const path = "/dataApprovals";
 
-        const projectStatus = await promiseMap(projects, async project => {
+        const projectsWithApprovalStatus = await promiseMap(projects, async project => {
             if (!project) return;
 
             const params = {
                 wf: config.dataApprovalWorkflows.project.id,
                 pe: period,
                 ou: project.id,
-                aoc: aoc.id,
+                aoc: aocActual.id,
             };
 
-            const approvalProject = await api.get<D2DataApprovals>(path, params).getData();
+            const [approvalActual, approvalTarget] = await Promise.all([
+                api.get<D2DataApprovals>(path, params).getData(),
+                api.get<D2DataApprovals>(path, { ...params, aoc: aocTarget.id }).getData(),
+            ]);
 
-            if (!approvalProject) return;
+            if (!approvalActual && !approvalTarget)
+                return { ...project, approvalStatus: undefined };
 
-            return ProjectStatus.create({
-                status: approvalProject.state.includes("UNAPPRO") ? "unapproved" : "approved",
-                period: period,
-                projectId: project.id,
-            });
+            return {
+                ...project,
+                approvalStatus: {
+                    actual: ProjectStatus.create({
+                        period,
+                        projectId: project.id,
+                        status: this.getProjectStatus(approvalActual.state),
+                    }),
+                    target: ProjectStatus.create({
+                        period,
+                        projectId: project.id,
+                        status: this.getProjectStatus(approvalTarget.state),
+                    }),
+                },
+            };
         });
 
-        return _.compact(projectStatus);
+        return _.compact(projectsWithApprovalStatus);
     }
 
-    private static setStatusToProjects(
-        projects: Maybe<ProjectForMer>[],
-        projectStatus: ProjectStatus[]
-    ): ProjectForMer[] {
-        return _(projects)
-            .map(project => {
-                if (!project) return undefined;
-
-                const projectStatusForProject = projectStatus.find(
-                    status => status?.projectId === project.id
-                );
-
-                return { ...project, approvalStatus: projectStatusForProject };
-            })
-            .compact()
-            .value();
+    private static getProjectStatus(status: WORKFLOW_STATE): ProjectStatus["status"] {
+        return status.includes("UNAPPRO") ? "unapproved" : "approved";
     }
 }
 
@@ -899,3 +894,8 @@ type WORKFLOW_STATE =
     | "APPROVED_ELSEWHERE"
     | "ACCEPTED_HERE"
     | "ACCEPTED_ELSEWHERE";
+
+export type MerProjectStatus = {
+    target: Maybe<ProjectStatus>;
+    actual: Maybe<ProjectStatus>;
+};

@@ -8,14 +8,20 @@ import {
     Paper,
     Tooltip,
     Typography,
+    Button,
 } from "@material-ui/core";
 
-import MerReport, { DataElementInfo, ProjectForMer, DataElementMER } from "../../models/MerReport";
+import MerReport, {
+    DataElementInfo,
+    ProjectForMer,
+    DataElementMER,
+    MerProjectStatus,
+} from "../../models/MerReport";
 import i18n from "../../locales";
 import TableBodyGrouped from "./TableBodyGrouped";
 import { Grouper, RowComponent } from "./rich-rows-utils";
 import DataElementCells from "./DataElementCells";
-import { Link } from "react-router-dom";
+import { Maybe } from "../../types/utils";
 
 interface ReportDataTableProps {
     merReport: MerReport;
@@ -122,20 +128,40 @@ const ProjectCell: RowComponent<DataElementMER> = props => {
     const { row: dataElementMER, rowSpan } = props;
     const { project } = dataElementMER;
 
+    const goToApprovalPage = (status: Maybe<MerProjectStatus>) => {
+        if (!status) return;
+
+        if (status.actual?.isUnapproved) {
+            const period = status.actual.period;
+            const url = `/#/data-approval/${project.id}/actual/${period}`;
+            window.open(url, "_blank");
+        }
+
+        setTimeout(() => {
+            if (status.target?.isUnapproved) {
+                const period = status.target.period;
+                const url = `/#/data-approval/${project.id}/target/${period}`;
+                window.open(url, "_blank");
+            }
+        }, 100);
+    };
+
     return (
         <TableCell rowSpan={rowSpan}>
             {project.prefix} -
-            {project.approvalStatus?.status === "unapproved" ? (
+            {project.approvalStatus?.actual?.isUnapproved ||
+            project.approvalStatus?.target?.isUnapproved ? (
                 <Tooltip
                     title={i18n.t(
-                        "The data for the selected month in this project is currently unapproved. Click here to review and approve it on the Data Approval page"
+                        "The <Target / Actual / Target and Actual> data for the selected month in this project is currently unapproved. Click here to review and approve it on the Data Approval page (opens in a new tab)."
                     )}
                 >
-                    <Link
-                        to={`/data-approval/${project.approvalStatus.projectId}/actual/${project.approvalStatus.period}`}
+                    <Button
+                        onClick={() => goToApprovalPage(project.approvalStatus)}
+                        color="primary"
                     >
                         <Typography variant="body2">{project.name}</Typography>
-                    </Link>
+                    </Button>
                 </Tooltip>
             ) : (
                 <Typography variant="body2">{project.name}</Typography>

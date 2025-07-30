@@ -7,20 +7,17 @@ export class AnalyticsInfoD2Repository implements AnalyticsInfoRepository {
     constructor(private api: D2Api) {}
 
     async get(): Promise<AnalyticsInfo> {
-        const response = await this.api.models.jobConfigurations
-            .get({ filter: { name: { eq: "Analytics" } }, fields: { lastExecuted: true } })
-            .getData();
-
         const systemResponse = await this.api.system.info.getData();
 
-        const analyticsData = response.objects[0];
-        if (!analyticsData) {
-            throw new Error("Analytics job configuration not found");
+        const analyticsDate = systemResponse.lastAnalyticsTableSuccess?.toString();
+        if (!analyticsDate) {
+            throw new Error("Analytics date not found");
         }
 
-        const executionDateServer = DateTime.fromISO(analyticsData.lastExecuted, {
+        const executionDateServer = DateTime.fromISO(analyticsDate, {
             zone: systemResponse.serverTimeZoneId,
         });
+
         if (!executionDateServer) {
             throw new Error("Last execution date not found in analytics job configuration");
         }

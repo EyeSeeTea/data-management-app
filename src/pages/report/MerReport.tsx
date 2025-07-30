@@ -335,7 +335,7 @@ export function useConfirmChanges() {
 }
 
 const AnalyticsInfoText = styled.p`
-    position: fixed;
+    position: absolute;
     right: 1em;
     top: 80px;
     font-size: 0.8em;

@@ -10,6 +10,10 @@ type ProjectStatusAttrs = {
 };
 
 export class ProjectStatus extends Struct<ProjectStatusAttrs>() {
+    get isUnapproved(): boolean {
+        return this.status === "unapproved";
+    }
+
     static getLastUnapprovedPeriod(statuses: ProjectStatus[], period: Period): Period {
         const previousPeriods = statuses
             .filter(status => status.status === "unapproved")
