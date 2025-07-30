@@ -6,22 +6,16 @@ import {
     TableHead,
     TableCell,
     Paper,
-    Tooltip,
     Typography,
     Button,
 } from "@material-ui/core";
 
-import MerReport, {
-    DataElementInfo,
-    ProjectForMer,
-    DataElementMER,
-    MerProjectStatus,
-} from "../../models/MerReport";
+import MerReport, { DataElementInfo, ProjectForMer, DataElementMER } from "../../models/MerReport";
 import i18n from "../../locales";
 import TableBodyGrouped from "./TableBodyGrouped";
 import { Grouper, RowComponent } from "./rich-rows-utils";
 import DataElementCells from "./DataElementCells";
-import { Maybe } from "../../types/utils";
+import { DataApprovalDialog } from "./DataApprovalDialog";
 
 interface ReportDataTableProps {
     merReport: MerReport;
@@ -127,47 +121,34 @@ const LocationCell: RowComponent<DataElementMER> = props => {
 const ProjectCell: RowComponent<DataElementMER> = props => {
     const { row: dataElementMER, rowSpan } = props;
     const { project } = dataElementMER;
-
-    const goToApprovalPage = (status: Maybe<MerProjectStatus>) => {
-        if (!status) return;
-
-        if (status.actual?.isUnapproved) {
-            const period = status.actual.period;
-            const url = `/#/data-approval/${project.id}/actual/${period}`;
-            window.open(url, "_blank");
-        }
-
-        setTimeout(() => {
-            if (status.target?.isUnapproved) {
-                const period = status.target.period;
-                const url = `/#/data-approval/${project.id}/target/${period}`;
-                window.open(url, "_blank");
-            }
-        }, 100);
-    };
+    const [openApprovalDialog, setOpenApprovalDialog] = React.useState(false);
 
     return (
         <TableCell rowSpan={rowSpan}>
             {project.prefix} -
             {project.approvalStatus?.actual?.isUnapproved ||
             project.approvalStatus?.target?.isUnapproved ? (
-                <Tooltip
-                    title={i18n.t(
-                        "The <Target / Actual / Target and Actual> data for the selected month in this project is currently unapproved. Click here to review and approve it on the Data Approval page (opens in a new tab)."
-                    )}
+                <Button
+                    variant="text"
+                    onClick={() => setOpenApprovalDialog(true)}
+                    color="primary"
+                    className="data-approval-button-mer"
                 >
-                    <Button
-                        onClick={() => goToApprovalPage(project.approvalStatus)}
-                        color="primary"
-                    >
-                        <Typography variant="body2">{project.name}</Typography>
-                    </Button>
-                </Tooltip>
+                    <Typography style={{ textTransform: "capitalize" }} variant="body2">
+                        {project.name}
+                    </Typography>
+                </Button>
             ) : (
                 <Typography variant="body2">{project.name}</Typography>
             )}
             <br />
             <i>{project.dateInfo}</i>
+            <DataApprovalDialog
+                project={project}
+                open={openApprovalDialog}
+                approvalStatus={project.approvalStatus}
+                onClose={() => setOpenApprovalDialog(false)}
+            />
         </TableCell>
     );
 };
