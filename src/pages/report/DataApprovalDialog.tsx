@@ -36,7 +36,7 @@ export const DataApprovalDialog = (props: DataApprovalDialogProps) => {
             <DialogContent>
                 <DialogContentText>
                     {i18n.t(
-                        "The {{status}} data for the selected month in this project is currently unapproved. Click here to review and approve it on the Data Approval page (opens in a new tab).",
+                        "The {{status}} data for the selected month in this project is currently unapproved.",
                         { status: statusSummaryText }
                     )}
                 </DialogContentText>
@@ -86,9 +86,12 @@ export const DataApprovalLinkText = (props: DataApprovalLinkTextProps) => {
             >
                 {i18n.t("here")}
             </Link>{" "}
-            {i18n.t("to review and approve the {{approvalTypeText}} data for this project.", {
-                approvalTypeText: approvalTypeText,
-            })}
+            {i18n.t(
+                "to review {{approvalTypeText}} data and approve it on the Data Approval page (opens in a new tab).",
+                {
+                    approvalTypeText: approvalTypeText,
+                }
+            )}
         </DialogContentText>
     );
 };
