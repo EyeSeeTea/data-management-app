@@ -1,12 +1,21 @@
 import React from "react";
 import _ from "lodash";
-import { Table, TableRow, TableHead, TableCell, Paper } from "@material-ui/core";
+import {
+    Table,
+    TableRow,
+    TableHead,
+    TableCell,
+    Paper,
+    Typography,
+    Button,
+} from "@material-ui/core";
 
 import MerReport, { DataElementInfo, ProjectForMer, DataElementMER } from "../../models/MerReport";
 import i18n from "../../locales";
 import TableBodyGrouped from "./TableBodyGrouped";
 import { Grouper, RowComponent } from "./rich-rows-utils";
 import DataElementCells from "./DataElementCells";
+import { DataApprovalDialog } from "./DataApprovalDialog";
 
 interface ReportDataTableProps {
     merReport: MerReport;
@@ -112,12 +121,34 @@ const LocationCell: RowComponent<DataElementMER> = props => {
 const ProjectCell: RowComponent<DataElementMER> = props => {
     const { row: dataElementMER, rowSpan } = props;
     const { project } = dataElementMER;
+    const [openApprovalDialog, setOpenApprovalDialog] = React.useState(false);
 
     return (
         <TableCell rowSpan={rowSpan}>
-            {project.prefix} - {project.name}
+            {project.prefix} -
+            {project.approvalStatus?.actual?.isUnapproved ||
+            project.approvalStatus?.target?.isUnapproved ? (
+                <Button
+                    variant="text"
+                    onClick={() => setOpenApprovalDialog(true)}
+                    color="primary"
+                    className="data-approval-button-mer"
+                >
+                    <Typography style={{ textTransform: "capitalize" }} variant="body2">
+                        {project.name}
+                    </Typography>
+                </Button>
+            ) : (
+                <Typography variant="body2">{project.name}</Typography>
+            )}
             <br />
             <i>{project.dateInfo}</i>
+            <DataApprovalDialog
+                project={project}
+                open={openApprovalDialog}
+                approvalStatus={project.approvalStatus}
+                onClose={() => setOpenApprovalDialog(false)}
+            />
         </TableCell>
     );
 };

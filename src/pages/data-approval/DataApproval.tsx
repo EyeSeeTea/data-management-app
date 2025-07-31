@@ -61,15 +61,10 @@ const DataApproval: React.FC = () => {
             project.endDate &&
             (!projectDataSetType || !projectPeriod)
         ) {
-            const projectStartDate = project.startDate.format(monthFormat);
-            const projectEndDate = project.endDate.format(monthFormat);
-            const previousMonth = moment().subtract(1, "month").format(monthFormat);
-            const period =
-                previousMonth > projectEndDate
-                    ? projectEndDate
-                    : previousMonth < projectStartDate
-                    ? projectStartDate
-                    : previousMonth;
+            const period = Project.getPreviousPeriod(
+                project.startDate.toISOString(),
+                project.endDate.toISOString()
+            );
             goTo("dataApproval", { id: projectId, dataSetType: "actual", period: period });
         }
     }, [goTo, project, projectDataSetType, projectId, projectPeriod]);

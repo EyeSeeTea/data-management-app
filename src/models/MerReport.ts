@@ -11,6 +11,9 @@ import { toISOString, getMonthsRange } from "../utils/date";
 import i18n from "../locales";
 import { DataElementBase } from "./dataElementsSet";
 import ProjectsList, { ProjectForList } from "./ProjectsList";
+import { promiseMap } from "../migrations/utils";
+import { Period } from "./Period";
+import { ProjectStatus } from "../domain/entities/ProjectStatus";
 
 export const staffKeys = [
     "nationalStaff" as const,
@@ -147,9 +150,12 @@ export interface ProjectForMer {
     code: string;
     prefix: string;
     dateInfo: string;
+    startDate: string;
+    endDate: string;
     name: string;
     dataElements: DataElementInfo[];
     locations: Array<{ id: Id; name: string }>;
+    approvalStatus: Maybe<MerProjectStatus>;
 }
 
 export type ProjectsData = ProjectForMer[];
@@ -361,7 +367,6 @@ class MerReport {
     ): Promise<ProjectsData> {
         const orgUnits = await getOrgUnitsForProjects(api, projects);
         const disaggregationsByProject = await getDisaggregationsByProject(api, config, orgUnits);
-
         if (_.isEmpty(orgUnits)) return [];
 
         const projectInfoByOrgUnitId = await getProjectInfoByOrgUnitId(api, orgUnits);
@@ -454,13 +459,18 @@ class MerReport {
                 prefix: orgUnit.code?.split("-")[0] || "",
                 locations: locations.map(({ id, displayName }) => ({ id, name: displayName })),
                 dateInfo: `${formatDate(project.openingDate)} - ${formatDate(project.closedDate)}`,
+                startDate: project.openingDate,
+                endDate: project.closedDate,
                 dataElements: _.compact(dataElementIds.map(getDataElementInfo)),
+                approvalStatus: { actual: undefined, target: undefined },
             };
 
             return projectForMer;
         });
 
-        return _.compact(projectsData);
+        const currentPeriod = date.format("YYYYMM");
+
+        return this.getProjectStatusByPeriod(currentPeriod, config, _.compact(projectsData), api);
     }
 
     getData(): DataElementMER[] {
@@ -481,6 +491,61 @@ class MerReport {
             item => item.project.id,
             item => item.name,
         ]);
+    }
+
+    private static async getProjectStatusByPeriod(
+        period: Period,
+        config: Config,
+        projects: ProjectForMer[],
+        api: D2Api
+    ): Promise<ProjectForMer[]> {
+        const coActual = config.categoryOptions.actual;
+        const coTarget = config.categoryOptions.target;
+
+        const aocActual = coActual.categoryOptionCombos[0];
+        const aocTarget = coTarget.categoryOptionCombos[0];
+        const path = "/dataApprovals";
+
+        const projectsWithApprovalStatus = await promiseMap(projects, async project => {
+            if (!project) return;
+
+            const params = {
+                wf: config.dataApprovalWorkflows.project.id,
+                pe: period,
+                ou: project.id,
+                aoc: aocActual.id,
+            };
+
+            const [approvalActual, approvalTarget] = await Promise.all([
+                api.get<D2DataApprovals>(path, params).getData(),
+                api.get<D2DataApprovals>(path, { ...params, aoc: aocTarget.id }).getData(),
+            ]);
+
+            if (!approvalActual && !approvalTarget)
+                return { ...project, approvalStatus: undefined };
+
+            return {
+                ...project,
+                approvalStatus: {
+                    actual: ProjectStatus.create({
+                        period,
+                        projectId: project.id,
+                        status: this.getProjectStatus(approvalActual.state),
+                    }),
+                    target: ProjectStatus.create({
+                        period,
+                        projectId: project.id,
+                        status: this.getProjectStatus(approvalTarget.state),
+                    }),
+                },
+            };
+        });
+
+        return _.compact(projectsWithApprovalStatus);
+    }
+
+    private static getProjectStatus(status: WORKFLOW_STATE): ProjectStatus["status"] {
+        return status.includes("UNAPPRO") ? "unapproved" : "approved";
     }
 }
 
@@ -813,3 +878,24 @@ async function getDisaggregationsByProject(
 }
 
 export default MerReport;
+
+type D2DataApprovals = {
+    pe: Period;
+    ou: Id;
+    state: WORKFLOW_STATE;
+};
+
+type WORKFLOW_STATE =
+    | "UNAPPROVABLE"
+    | "UNAPPROVED_WAITING"
+    | "UNAPPROVED_ELSEWHERE"
+    | "UNAPPROVED_READY"
+    | "APPROVED_HERE"
+    | "APPROVED_ELSEWHERE"
+    | "ACCEPTED_HERE"
+    | "ACCEPTED_ELSEWHERE";
+
+export type MerProjectStatus = {
+    target: Maybe<ProjectStatus>;
+    actual: Maybe<ProjectStatus>;
+};

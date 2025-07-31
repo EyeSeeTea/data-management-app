@@ -5,9 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-07-03T03:15:54.574Z\n"
-"PO-Revision-Date: 2025-07-03T03:15:54.574Z\n"
-
+"POT-Creation-Date: 2025-07-31T12:05:02.514Z\n"
+"PO-Revision-Date: 2025-07-31T12:05:02.514Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -1213,6 +1212,25 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
+msgid ""
+"The {{status}} data for the selected month in this project is currently "
+"unapproved."
+msgstr ""
+
+msgid "Click"
+msgstr ""
+
+msgid "here"
+msgstr ""
+
+msgid ""
+"to review {{approvalTypeText}} data and approve it on the Data Approval "
+"page (opens in a new tab)."
+msgstr ""
+
+msgid "Target and Actual"
+msgstr ""
+
 msgid "[COVID-19]"
 msgstr ""
 
@@ -1235,6 +1253,9 @@ msgid "Report saved"
 msgstr ""
 
 msgid "The report must be saved before it can be downloaded"
+msgstr ""
+
+msgid "Last Analytics Execution"
 msgstr ""
 
 msgid "Date"

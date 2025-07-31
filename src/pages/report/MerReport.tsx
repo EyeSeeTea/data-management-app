@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import styled from "styled-components";
 import { makeStyles } from "@material-ui/core/styles";
 import { Paper, Button, LinearProgress } from "@material-ui/core";
 import {
@@ -7,7 +8,7 @@ import {
     ConfirmationDialog,
     useLoading,
 } from "@eyeseetea/d2-ui-components";
-import { Moment } from "moment";
+import moment, { Moment } from "moment";
 
 import MerReport, { MerReportData } from "../../models/MerReport";
 import { useAppContext } from "../../contexts/api-context";
@@ -28,11 +29,12 @@ import { useGoTo, generateUrl } from "../../router";
 import { useAppHistory } from "../../utils/use-app-history";
 import { ErrorMessage } from "./ErrorMessage";
 import { useProjectStore } from "../../components/app/App";
+import { AnalyticsInfo } from "../../domain/entities/AnalyticsInfo";
 
 type ProceedWarning = { type: "hidden" } | { type: "visible"; action: () => void };
 
 const MerReportComponent: React.FC = () => {
-    const { api, config, isDev } = useAppContext();
+    const { api, config, isDev, compositionRoot } = useAppContext();
     const translations = getTranslations();
     const appHistory = useAppHistory(generateUrl("projects"));
     const classes = useStyles();
@@ -53,6 +55,7 @@ const MerReportComponent: React.FC = () => {
     const [merReport, setMerReportBase] = useState<Maybe<MerReport>>(null);
     const updateLogoNav = useProjectStore(state => state.updateLogoNav);
     const loading = useLoading();
+    const [analyticsInfo, setAnalyticsInfo] = React.useState<AnalyticsInfo>();
 
     useRedirectToProjectsPageIfUserHasNoAccess();
 
@@ -67,6 +70,10 @@ const MerReportComponent: React.FC = () => {
             );
         }
     }, [api, config, snackbar, date, orgUnit, wasReportModifiedSet, updateLogoNav]);
+
+    React.useEffect(() => {
+        compositionRoot.analyticsInfo.get.execute().then(setAnalyticsInfo);
+    }, [compositionRoot]);
 
     const setMerReport = React.useCallback(
         (report: MerReport) => {
@@ -145,6 +152,15 @@ const MerReportComponent: React.FC = () => {
                 help={translations.help}
                 onBackClick={() => confirmIfUnsavedChanges(appHistory.goBack)}
             />
+
+            {analyticsInfo && (
+                <AnalyticsInfoText>
+                    {i18n.t("Last Analytics Execution")}:{" "}
+                    <strong>
+                        {moment(analyticsInfo.lastExecutionDate).format("YYYY-MM-DD HH:mm:ss")}
+                    </strong>
+                </AnalyticsInfoText>
+            )}
 
             <Paper style={{ marginBottom: 20 }}>
                 <DatePicker
@@ -317,3 +333,11 @@ export function useConfirmChanges() {
         wasReportModifiedSet,
     };
 }
+
+const AnalyticsInfoText = styled.p`
+    position: absolute;
+    right: 1em;
+    top: 80px;
+    font-size: 0.8em;
+    margin: 0;
+`;
