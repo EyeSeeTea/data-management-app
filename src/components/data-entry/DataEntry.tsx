@@ -10,6 +10,7 @@ import i18n from "../../locales";
 import { ValidationDialog } from "./ValidationDialog";
 import { useValidation } from "./validation-hooks";
 import { DataSetOpenInfo } from "../../models/ProjectDataSet";
+import { HeaderLogoBlocker } from "../header-block/HeaderBlock";
 
 const showControls = false;
 
@@ -22,6 +23,7 @@ interface DataEntryProps {
     dataSet: DataSet;
     attributes: Attributes;
     onValidateFnChange(validateFn: ValidateFn): void;
+    goBack: () => void;
 }
 
 export type ValidateFn = { execute: () => Promise<boolean> };
@@ -154,7 +156,7 @@ const getDataEntryForm = async (
 };
 
 const DataEntry = (props: DataEntryProps) => {
-    const { orgUnitId, dataSet, attributes, dataSetType, onValidateFnChange } = props;
+    const { goBack, orgUnitId, dataSet, attributes, dataSetType, onValidateFnChange } = props;
     const { api, config, dhis2Url: baseUrl } = useAppContext();
     const [project, setProject] = useState<Project>(props.project);
     const [iframeKey, setIframeKey] = useState(new Date());
@@ -262,6 +264,17 @@ const DataEntry = (props: DataEntryProps) => {
                     onClose={validation.clear}
                 />
             )}
+
+            <HeaderLogoBlocker
+                isActive={Boolean(period && dataSetInfo?.isOpen)}
+                onCancelClick={async () => {
+                    if (await validate({ showValidation: false })) {
+                        window.location.href = baseUrl;
+                    } else {
+                        goBack();
+                    }
+                }}
+            />
 
             <div style={styles.selector}>
                 {!state.dropdownHasValues && <Spinner isLoading={state.loading} />}

@@ -66,6 +66,7 @@ const DataValues: React.FC<DataValuesProps> = ({ type }) => {
                     dataSet={data.dataSet}
                     attributes={attributes}
                     onValidateFnChange={setValidateFn}
+                    goBack={goBack}
                 />
             )}
             {error && <p>{error}</p>}
