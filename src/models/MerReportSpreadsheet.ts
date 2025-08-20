@@ -155,8 +155,12 @@ class MerReportSpreadsheet {
             header(i18n.t("Actual"), { width: 12, isNumber: true, center: true }),
             header(i18n.t("Target\r\nto date"), { width: 12, isNumber: true, center: true }),
             header(i18n.t("Actual\r\nto date"), { width: 12, isNumber: true, center: true }),
-            header(i18n.t("Achieved\r\nto date"), { width: 12, isNumber: true, center: true }),
-            header(i18n.t("Achieved\r\nto date (%)"), {
+            header(i18n.t("Actual-Target Diff.\r\nTo Date"), {
+                width: 12,
+                isNumber: true,
+                center: true,
+            }),
+            header(i18n.t("Actual-Target Diff.\r\nTo Date (%)"), {
                 width: 12,
                 isNumber: true,
                 numberFormat: "integer",

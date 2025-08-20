@@ -74,8 +74,8 @@ const ReportDataTable: React.FC<ReportDataTableProps> = props => {
                         <Cell width={3} name={i18n.t("Actual")} data />
                         <Cell width={4} name={i18n.t("Target to date")} data />
                         <Cell width={4} name={i18n.t("Actual to date")} data />
-                        <Cell width={5} name={i18n.t("Achieved to date")} data />
-                        <Cell width={5} name={i18n.t("Achieved to date %")} data />
+                        <Cell width={5} name={i18n.t("Actual-Target Diff. To Date")} data />
+                        <Cell width={5} name={i18n.t("Actual-Target Diff. To Date %")} data />
                         <Cell width={30} name={i18n.t("Comment")} />
                     </TableRow>
                 </TableHead>
