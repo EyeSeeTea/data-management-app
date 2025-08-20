@@ -478,7 +478,7 @@ msgstr ""
 
 msgid ""
 "Actual-Target Diff.\r\n"
-"To Date"
+"to date"
 msgstr ""
 
 msgid ""
