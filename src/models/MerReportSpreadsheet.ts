@@ -160,7 +160,7 @@ class MerReportSpreadsheet {
                 isNumber: true,
                 center: true,
             }),
-            header(i18n.t("Actual-Target Diff.\r\nTo Date (%)"), {
+            header(i18n.t("Achieved\r\nto date (%)"), {
                 width: 12,
                 isNumber: true,
                 numberFormat: "integer",
