@@ -78,15 +78,20 @@ export function useSnackbarOnError(onError: Callback) {
     };
 }
 
-export function usePageExitConfirmation(showPromptFn: () => Promise<boolean>) {
+export function usePageExitConfirmation(
+    showPromptFn: () => Promise<boolean>,
+    disableValidation: boolean
+) {
     const confirmPageExit = React.useCallback(
         async (ev: BeforeUnloadEvent) => {
-            if (await showPromptFn()) {
-                ev.preventDefault();
-                ev.returnValue = "";
+            if (!disableValidation) {
+                if (await showPromptFn()) {
+                    ev.preventDefault();
+                    ev.returnValue = "";
+                }
             }
         },
-        [showPromptFn]
+        [showPromptFn, disableValidation]
     );
 
     React.useEffect(() => {

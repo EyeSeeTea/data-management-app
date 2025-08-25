@@ -3,9 +3,11 @@ import React from "react";
 interface HeaderLogoBlockerProps {
     isActive: boolean;
     onCancelClick?: () => void;
+    onActivated?: () => void;
 }
 
 export const HeaderLogoBlocker: React.FC<HeaderLogoBlockerProps> = ({
+    onActivated,
     isActive,
     onCancelClick,
 }) => {
@@ -22,12 +24,13 @@ export const HeaderLogoBlocker: React.FC<HeaderLogoBlockerProps> = ({
 
         if (isActive) {
             element.addEventListener("click", cancelClick);
+            if (onActivated) onActivated();
         }
 
         return () => {
             element.removeEventListener("click", cancelClick);
         };
-    }, [isActive, onCancelClick]);
+    }, [isActive, onActivated, onCancelClick]);
 
     return null;
 };

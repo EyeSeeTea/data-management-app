@@ -161,6 +161,7 @@ const DataEntry = (props: DataEntryProps) => {
     const [project, setProject] = useState<Project>(props.project);
     const [iframeKey, setIframeKey] = useState(new Date());
     const [isDataSetOpen, setDataSetOpen] = useState<boolean | undefined>(undefined);
+    const [disableValidation, setDisableValidation] = React.useState(false);
     const { periodIds, currentPeriodId } = React.useMemo(() => getPeriodsData(dataSet), [dataSet]);
     const iframeRef = React.useRef<HTMLIFrameElement>(null);
     const iFrameSrc = `${baseUrl}/dhis-web-dataentry/index.action`;
@@ -220,6 +221,7 @@ const DataEntry = (props: DataEntryProps) => {
         options: validationOptions,
         iframeKey,
         isValidationEnabled: isValidationEnabled,
+        disableValidation: disableValidation,
     });
 
     useEffect(() => {
@@ -267,6 +269,7 @@ const DataEntry = (props: DataEntryProps) => {
 
             <HeaderLogoBlocker
                 isActive={Boolean(period && dataSetInfo?.isOpen)}
+                onActivated={() => setDisableValidation(true)}
                 onCancelClick={async () => {
                     if (await validate({ showValidation: false })) {
                         window.location.href = baseUrl;

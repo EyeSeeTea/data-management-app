@@ -28,6 +28,7 @@ export function useValidation(hookOptions: {
     options: Options;
     iframeKey: object;
     isValidationEnabled: boolean;
+    disableValidation: boolean;
 }): UseValidationResponse {
     const {
         iframeRef,
@@ -37,6 +38,7 @@ export function useValidation(hookOptions: {
         options = {},
         iframeKey,
         isValidationEnabled,
+        disableValidation,
     } = hookOptions;
     const { api, config } = useAppContext();
     const [validator, setValidator] = React.useState<Validator | undefined>();
@@ -113,7 +115,7 @@ export function useValidation(hookOptions: {
         [validate]
     );
 
-    usePageExitConfirmation(showPromptFn);
+    usePageExitConfirmation(showPromptFn, disableValidation);
 
     useDhis2EntryEvents(iframeRef, onMessage, options, iframeKey);
 
