@@ -28,6 +28,7 @@ import { useAppHistory } from "../../utils/use-app-history";
 import { Maybe } from "../../types/utils";
 import { AttachFilesStep } from "../../components/steps/attach-files/AttachFilesStep";
 import UniqueIndicatorsStep from "../../components/steps/unique-beneficiaries/UniqueIndicatorsStep";
+import { DisableLogoNav, useProjectStore } from "../../components/app/App";
 
 type Action = { type: "create" } | { type: "edit"; id: string } | { type: "clone"; id: string };
 
@@ -51,6 +52,7 @@ interface Props {
     snackbar: any;
     action: Action;
     isDev: boolean;
+    updateLogoNav: (value: Maybe<DisableLogoNav>) => void;
 }
 
 interface State {
@@ -87,6 +89,10 @@ class ProjectWizardImpl extends React.Component<Props, State> {
             this.props.snackbar.error(i18n.t("Cannot load project") + `: ${err.message || err}`);
             this.props.goBack();
         }
+    }
+
+    componentWillUnmount(): void {
+        this.props.updateLogoNav(undefined);
     }
 
     getInitialProjectData = async () => {
@@ -232,6 +238,7 @@ class ProjectWizardImpl extends React.Component<Props, State> {
     onChange = (step: Step) => async (project: Project) => {
         const errors = await getValidationMessages(project, step.validationKeysLive || []);
         this.setState({ project, isUpdated: true });
+        this.props.updateLogoNav({ description: "", title: "", state: true });
 
         if (!_(errors).isEmpty()) {
             this.props.snackbar.error(errors.join("\n"));
@@ -334,6 +341,7 @@ const ProjectWizard: React.FC<ProjectWizardProps> = props => {
     const { api, config, isDev } = useAppContext();
     const { action } = props;
     const appHistory = useAppHistory(generateUrl("projects"));
+    const updateLogoNav = useProjectStore(state => state.updateLogoNav);
 
     return (
         <ProjectWizardImplMemo
@@ -344,6 +352,7 @@ const ProjectWizard: React.FC<ProjectWizardProps> = props => {
             location={location}
             action={action}
             isDev={isDev}
+            updateLogoNav={updateLogoNav}
         />
     );
 };

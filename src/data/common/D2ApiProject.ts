@@ -36,6 +36,10 @@ export class D2ApiProject {
         });
     }
 
+    async getById(id: string): Promise<Project> {
+        return Project.get(this.api, this.config, id);
+    }
+
     async getAllProjectsByCountry(
         countryId: Id,
         initialPage: number,

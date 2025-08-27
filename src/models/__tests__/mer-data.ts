@@ -46,6 +46,8 @@ function mockProjectListGet(mock: MockAdapter) {
 export function mockApiForMerReportWithData(mock: MockAdapter) {
     mock.reset();
 
+    mock.onGet("/dataApprovals").reply(200, undefined);
+
     mockProjectListGet(mock);
 
     mock.onGet("/dataStore/data-management-app/mer-PJb0RtEnqlf").replyOnce(200, {

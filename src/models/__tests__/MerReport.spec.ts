@@ -124,6 +124,8 @@ describe("MerReport", () => {
                     prefix: "",
                     locations: [],
                     dateInfo: "Nov 2019 - Mar 2020",
+                    startDate: "2019-11-01T00:00:00",
+                    endDate: "2020-03-31T23:59:59",
                     dataElements: [
                         {
                             id: "WS8XV4WWPE7",
@@ -133,7 +135,10 @@ describe("MerReport", () => {
                             target: { all: 0, approved: 3, unapproved: -3 },
                             actualAchieved: { all: 0, approved: 2, unapproved: -2 },
                             targetAchieved: { all: 0, approved: 5, unapproved: -5 },
-                            achieved: { all: null, approved: 40, unapproved: 40 },
+                            achieved: {
+                                difference: { all: null, approved: -3, unapproved: 3 },
+                                percentage: { all: null, approved: 40, unapproved: 40 },
+                            },
                             comment: "comment1",
                             isCovid19: false,
                         },
@@ -146,9 +151,12 @@ describe("MerReport", () => {
                             actualAchieved: { all: 0, approved: 6, unapproved: -6 },
                             targetAchieved: { all: 0, approved: 7, unapproved: -7 },
                             achieved: {
-                                all: null,
-                                approved: 85.71428571428571,
-                                unapproved: 85.71428571428571,
+                                difference: { all: null, approved: -1, unapproved: 1 },
+                                percentage: {
+                                    all: null,
+                                    approved: 85.71428571428571,
+                                    unapproved: 85.71428571428571,
+                                },
                             },
                             comment: "comment2",
                             isCovid19: false,
@@ -157,6 +165,8 @@ describe("MerReport", () => {
                 },
                 {
                     id: "SKuiiu7Vbwv",
+                    endDate: "2020-03-31T23:59:59",
+                    startDate: "2019-11-01T00:00:00",
                     name: "0Test1-48852",
                     prefix: "",
                     locations: [
@@ -173,7 +183,10 @@ describe("MerReport", () => {
                             target: { all: 0, approved: 0, unapproved: 0 },
                             actualAchieved: { all: 0, approved: 0, unapproved: 0 },
                             targetAchieved: { all: 0, approved: 0, unapproved: 0 },
-                            achieved: { all: null, approved: null, unapproved: null },
+                            achieved: {
+                                difference: { all: null, approved: null, unapproved: null },
+                                percentage: { all: null, approved: null, unapproved: null },
+                            },
                             comment: "",
                             isCovid19: false,
                         },

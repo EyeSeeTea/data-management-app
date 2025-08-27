@@ -10,11 +10,11 @@ export class ProjectD2Repository implements ProjectRepository {
     private d2ApiProject: D2ApiProject;
 
     constructor(private api: D2Api, private config: Config) {
-        this.d2ApiProject = new D2ApiProject(api, config);
+        this.d2ApiProject = new D2ApiProject(this.api, this.config);
     }
 
     async getById(id: Id): Promise<Project> {
-        return Project.get(this.api, this.config, id);
+        return this.d2ApiProject.getById(id);
     }
 
     async getByCountries(countryId: Id): Promise<ProjectForList[]> {

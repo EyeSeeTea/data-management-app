@@ -20,7 +20,12 @@ const DataElementCells: React.FC<DataElementCellsProps> = props => {
             <TableCell>{formatDataNumber(dataElement.targetAchieved)}</TableCell>
             <TableCell>{formatDataNumber(dataElement.actualAchieved)}</TableCell>
             <TableCell>
-                {formatDataNumber(dataElement.achieved, { suffix: "%", decimals: 0 })}
+                {formatDataNumber(dataElement.achieved.difference, {
+                    format: formatNegativeNumber,
+                })}
+            </TableCell>
+            <TableCell>
+                {formatDataNumber(dataElement.achieved.percentage, { suffix: "%", decimals: 0 })}
             </TableCell>
             <TableCell>
                 <CommentField dataElement={dataElement} onChange={onChange} />
@@ -32,6 +37,11 @@ const DataElementCells: React.FC<DataElementCellsProps> = props => {
 interface FormatNumberOptions {
     decimals?: number;
     suffix?: string;
+    format?: (num: number) => string;
+}
+
+function formatNegativeNumber(n: number) {
+    return n < 0 ? `(${Math.abs(n)})` : n.toString();
 }
 
 function removeTrailingZeros(s: string): string {
@@ -39,8 +49,13 @@ function removeTrailingZeros(s: string): string {
 }
 
 function formatNumber(n: number | null | undefined, options: FormatNumberOptions = {}): string {
-    const { suffix, decimals = 3 } = options;
-    return _.isNil(n) ? "-" : removeTrailingZeros(n.toFixed(decimals)) + (suffix || "");
+    const { suffix, decimals = 3, format = (num: number) => String(num) } = options;
+
+    if (_.isNil(n)) return "-";
+    else {
+        const formattedNumber = format(parseFloat(n.toFixed(decimals)));
+        return removeTrailingZeros(formattedNumber) + (suffix || "");
+    }
 }
 
 function formatDataNumber(dataValue: MaybeDataValue, options: FormatNumberOptions = {}): string {
