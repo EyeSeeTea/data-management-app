@@ -23,8 +23,8 @@ import {
     DataValueSetsDataValue,
     DataValueSetsGetRequest,
     MetadataPick,
+    CancelableResponse,
 } from "../../types/d2-api";
-import { CancelableResponse } from "@eyeseetea/d2-api";
 import { promiseMap } from "../../migrations/utils";
 
 type Periods = { startDate: Moment };

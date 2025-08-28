@@ -105,7 +105,11 @@ export default class ProjectsList {
                               sections: { code: true },
                               userAccesses: { id: true, displayName: true, access: true },
                               userGroupAccesses: { id: true, displayName: true, access: true },
-                              access: true,
+                              access: {
+                                  read: true,
+                                  write: true,
+                                  data: { read: true, write: true },
+                              },
                               attributeValues: { attribute: { id: true }, value: true },
                           },
                           // When there are many projects, this results in a 414 error, filter on the response.

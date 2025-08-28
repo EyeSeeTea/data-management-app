@@ -4,12 +4,11 @@ import { useParams } from "react-router-dom";
 import { useLoading, useSnackbar } from "@eyeseetea/d2-ui-components";
 
 import { useAppContext } from "../../contexts/api-context";
-import { ISODateTimeString, Ref } from "../../domain/entities/Ref";
+import { Id, ISODateTimeString, Ref } from "../../domain/entities/Ref";
 import { useGetUniqueBeneficiaries } from "../../hooks/UniqueBeneficiaries";
 import { IndicatorValidationForm } from "./IndicatorValidationForm";
 import { IndicatorValidation } from "../../domain/entities/IndicatorValidation";
 import i18n from "../../locales";
-import { Id } from "@eyeseetea/d2-api";
 import Project from "../../models/Project";
 import { Maybe } from "../../types/utils";
 
