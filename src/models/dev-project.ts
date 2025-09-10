@@ -1,4 +1,6 @@
-import md5 from "md5";
+// @ts-ignore
+import MD5 from "md5.js";
+
 import { D2Api, DataValueSetsPostRequest } from "../types/d2-api";
 import _ from "lodash";
 import Project from "./Project";
@@ -103,7 +105,7 @@ export async function saveDataValues(api: D2Api, project: Project) {
 
                 return cocs.map(coc => {
                     const key = [de.id, coc.id, info.attrCoc, period.id].join("-");
-                    const md5hash = md5(key);
+                    const md5hash = new MD5(key);
                     const value = (parseInt(md5hash.slice(0, 8), 16) % 9) + 1;
 
                     const dataValue: DataValue = {

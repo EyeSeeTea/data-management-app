@@ -1,5 +1,6 @@
 import _ from "lodash";
-import md5 from "md5";
+// @ts-ignore
+import MD5 from "md5.js";
 
 import { D2Api, Ref, Id, MetadataPayload, PostOptions } from "../types/d2-api";
 import { runPromises } from "./promises";
@@ -67,7 +68,7 @@ const maxHashValue = _(uidStructure)
 /* Return pseudo-random UID from seed prefix/key */
 export function getUid(prefix: string, key: string): string {
     const seed = prefix + key;
-    const md5hash = md5(seed);
+    const md5hash: string = new MD5().update(seed).digest("hex");
     const nHashChars = Math.ceil(Math.log(maxHashValue) / Math.log(16));
     const hashInteger = parseInt(md5hash.slice(0, nHashChars), 16);
     const result = uidStructure.reduce(
