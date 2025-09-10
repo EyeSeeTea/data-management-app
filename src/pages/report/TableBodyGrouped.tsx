@@ -37,6 +37,8 @@ export default function TableBodyGrouped<Row extends Ref>(props: RowProps<Row>):
 
 const useStyles = makeStyles({
     row: {
-        borderBottom: "3px solid #E0E0E0",
+        "& td": {
+            borderBottom: "2px solid #C0C0C0",
+        },
     },
 });
