@@ -27,3 +27,8 @@ div[data-test="search"] {
 .feedback-btn-bottom {
     right: 20px;
 }
+
+.data-approval-button-mer {
+    padding: 0 !important;
+    margin: 0 m !important;
+}

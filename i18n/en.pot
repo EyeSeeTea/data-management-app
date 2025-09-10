@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-12-11T14:02:52.077Z\n"
-"PO-Revision-Date: 2024-12-11T14:02:52.077Z\n"
+"POT-Creation-Date: 2025-08-20T11:32:44.779Z\n"
+"PO-Revision-Date: 2025-08-20T11:32:44.779Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -477,6 +477,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Actual-Target Diff.\r\n"
+"to date"
+msgstr ""
+
+msgid ""
 "Achieved\r\n"
 "to date (%)"
 msgstr ""
@@ -885,6 +890,9 @@ msgstr ""
 msgid "Country Project & Indicators"
 msgstr ""
 
+msgid "Any changes will be lost. Are you sure you want to proceed?"
+msgstr ""
+
 msgid "Select Year"
 msgstr ""
 
@@ -892,9 +900,6 @@ msgid "Select period"
 msgstr ""
 
 msgid "No projects found for selected period: {{period}}"
-msgstr ""
-
-msgid "Any changes will be lost. Are you sure you want to proceed?"
 msgstr ""
 
 msgid "Saving..."
@@ -1207,6 +1212,25 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
+msgid ""
+"The {{status}} data for the selected month in this project is currently "
+"unapproved."
+msgstr ""
+
+msgid "Click"
+msgstr ""
+
+msgid "here"
+msgstr ""
+
+msgid ""
+"to review {{approvalTypeText}} data and approve it on the Data Approval "
+"page (opens in a new tab)."
+msgstr ""
+
+msgid "Target and Actual"
+msgstr ""
+
 msgid "[COVID-19]"
 msgstr ""
 
@@ -1229,6 +1253,9 @@ msgid "Report saved"
 msgstr ""
 
 msgid "The report must be saved before it can be downloaded"
+msgstr ""
+
+msgid "Last Analytics Execution"
 msgstr ""
 
 msgid "Date"
@@ -1262,6 +1289,9 @@ msgid "Target to date"
 msgstr ""
 
 msgid "Actual to date"
+msgstr ""
+
+msgid "Actual-Target Diff. to date"
 msgstr ""
 
 msgid "Achieved to date %"

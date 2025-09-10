@@ -724,6 +724,22 @@ class Project {
             created: undefined,
         });
     }
+
+    static getPreviousPeriod(startDate: string, endDate: string): string {
+        const previousMonth = moment().subtract(1, "month").format(monthFormat);
+
+        const projectStartDate = moment(startDate).format(monthFormat);
+        const projectEndDate = moment(endDate).format(monthFormat);
+
+        const period =
+            previousMonth > projectEndDate
+                ? projectEndDate
+                : previousMonth < projectStartDate
+                ? projectStartDate
+                : previousMonth;
+
+        return period;
+    }
 }
 
 interface Project extends ProjectData {}

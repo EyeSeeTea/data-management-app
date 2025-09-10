@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import styled from "styled-components";
 import { makeStyles } from "@material-ui/core/styles";
 import { Paper, Button, LinearProgress } from "@material-ui/core";
 import {
@@ -7,7 +8,7 @@ import {
     ConfirmationDialog,
     useLoading,
 } from "@eyeseetea/d2-ui-components";
-import { Moment } from "moment";
+import moment, { Moment } from "moment";
 
 import MerReport, { MerReportData } from "../../models/MerReport";
 import { useAppContext } from "../../contexts/api-context";
@@ -27,16 +28,20 @@ import ExecutiveSummaries from "../../components/report/ExecutiveSummaries";
 import { useGoTo, generateUrl } from "../../router";
 import { useAppHistory } from "../../utils/use-app-history";
 import { ErrorMessage } from "./ErrorMessage";
+import { useProjectStore } from "../../components/app/App";
+import { AnalyticsInfo } from "../../domain/entities/AnalyticsInfo";
 
 type ProceedWarning = { type: "hidden" } | { type: "visible"; action: () => void };
 
 const MerReportComponent: React.FC = () => {
-    const { api, config, isDev } = useAppContext();
+    const { api, config, isDev, compositionRoot } = useAppContext();
     const translations = getTranslations();
     const appHistory = useAppHistory(generateUrl("projects"));
     const classes = useStyles();
     const snackbar = useSnackbar();
     const initial = isDev ? getDevMerReport() : { date: null, orgUnit: null };
+    const title = i18n.t("Monthly Executive Reports");
+    const description = i18n.t("Any changes will be lost. Are you sure you want to proceed?");
     const {
         confirmIfUnsavedChanges,
         proceedWarning,
@@ -48,8 +53,9 @@ const MerReportComponent: React.FC = () => {
     const [date, setDate] = useState(initial.date);
     const [orgUnit, setOrgUnit] = useState(initial.orgUnit);
     const [merReport, setMerReportBase] = useState<Maybe<MerReport>>(null);
-    const title = i18n.t("Monthly Executive Reports");
+    const updateLogoNav = useProjectStore(state => state.updateLogoNav);
     const loading = useLoading();
+    const [analyticsInfo, setAnalyticsInfo] = React.useState<AnalyticsInfo>();
 
     useRedirectToProjectsPageIfUserHasNoAccess();
 
@@ -57,19 +63,25 @@ const MerReportComponent: React.FC = () => {
         if (date && orgUnit) {
             setMerReportBase(undefined);
             wasReportModifiedSet(false);
+            updateLogoNav(undefined);
             const selectData = { date, organisationUnit: orgUnit };
             withSnackbarOnError(snackbar, () =>
                 MerReport.create(api, config, selectData).then(setMerReportBase)
             );
         }
-    }, [api, config, snackbar, date, orgUnit, wasReportModifiedSet]);
+    }, [api, config, snackbar, date, orgUnit, wasReportModifiedSet, updateLogoNav]);
+
+    React.useEffect(() => {
+        compositionRoot.analyticsInfo.get.execute().then(setAnalyticsInfo);
+    }, [compositionRoot]);
 
     const setMerReport = React.useCallback(
         (report: MerReport) => {
             setMerReportBase(report);
             wasReportModifiedSet(true);
+            updateLogoNav({ description, title, state: true });
         },
-        [wasReportModifiedSet]
+        [wasReportModifiedSet, updateLogoNav, description, title]
     );
 
     const onChange = React.useCallback(
@@ -123,12 +135,13 @@ const MerReportComponent: React.FC = () => {
             {proceedWarning.type === "visible" && (
                 <ConfirmationDialog
                     isOpen={true}
-                    onSave={() => runProceedAction(proceedWarning.action)}
+                    onSave={() => {
+                        runProceedAction(proceedWarning.action);
+                        updateLogoNav(undefined);
+                    }}
                     onCancel={() => runProceedAction(() => {})}
                     title={title}
-                    description={i18n.t(
-                        "Any changes will be lost. Are you sure you want to proceed?"
-                    )}
+                    description={description}
                     saveText={i18n.t("Yes")}
                     cancelText={i18n.t("No")}
                 />
@@ -139,6 +152,15 @@ const MerReportComponent: React.FC = () => {
                 help={translations.help}
                 onBackClick={() => confirmIfUnsavedChanges(appHistory.goBack)}
             />
+
+            {analyticsInfo && (
+                <AnalyticsInfoText>
+                    {i18n.t("Last Analytics Execution")}:{" "}
+                    <strong>
+                        {moment(analyticsInfo.lastExecutionDate).format("YYYY-MM-DD HH:mm:ss")}
+                    </strong>
+                </AnalyticsInfoText>
+            )}
 
             <Paper style={{ marginBottom: 20 }}>
                 <DatePicker
@@ -311,3 +333,11 @@ export function useConfirmChanges() {
         wasReportModifiedSet,
     };
 }
+
+const AnalyticsInfoText = styled.p`
+    position: absolute;
+    right: 1em;
+    top: 80px;
+    font-size: 0.8em;
+    margin: 0;
+`;
