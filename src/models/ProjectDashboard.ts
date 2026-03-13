@@ -107,7 +107,6 @@ export default class ProjectDashboard {
             this.targetVsActualBenefitsTable(),
             this.targetVsActualBenefitsWithDisaggregationTable(),
             this.targetVsActualPeopleTable(),
-            this.targetVsActualUniquePeopleTable(),
             // Percent achieved (to date)
             this.achievedBenefitsTable({ toDate: true }),
             this.achievedBenefitsTotalToDateTable(),
