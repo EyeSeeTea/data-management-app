@@ -996,6 +996,17 @@
             "name": "12345en - MyProject",
             "dashboardItems": [
                 {
+                    "id": "uOsjh5OmILO",
+                    "type": "CHART",
+                    "visualization": {
+                        "id": "ywQZlYBN4nN"
+                    },
+                    "width": 29,
+                    "height": 20,
+                    "x": 0,
+                    "y": 0
+                },
+                {
                     "id": "Ka4yijY2Vhl",
                     "type": "REPORT_TABLE",
                     "visualization": {
@@ -1003,7 +1014,7 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 0,
+                    "x": 29,
                     "y": 0
                 },
                 {
@@ -1014,8 +1025,8 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 29,
-                    "y": 0
+                    "x": 0,
+                    "y": 20
                 },
                 {
                     "id": "y2G8oh7xQBm",
@@ -1025,7 +1036,7 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 0,
+                    "x": 29,
                     "y": 20
                 },
                 {
@@ -1036,8 +1047,8 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 29,
-                    "y": 20
+                    "x": 0,
+                    "y": 40
                 },
                 {
                     "id": "ywvTGMsKdwL",
@@ -1047,7 +1058,7 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 0,
+                    "x": 29,
                     "y": 40
                 },
                 {
@@ -1058,8 +1069,8 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 29,
-                    "y": 40
+                    "x": 0,
+                    "y": 60
                 },
                 {
                     "id": "uyoJujQVRjE",
@@ -1069,7 +1080,7 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 0,
+                    "x": 29,
                     "y": 60
                 },
                 {
@@ -1080,8 +1091,8 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 29,
-                    "y": 60
+                    "x": 0,
+                    "y": 80
                 },
                 {
                     "id": "ys0CVedHirZ",
@@ -1092,7 +1103,7 @@
                     "width": 58,
                     "height": 20,
                     "x": 0,
-                    "y": 80
+                    "y": 100
                 },
                 {
                     "id": "KI0C90Ol10x",
@@ -1103,7 +1114,7 @@
                     "width": 29,
                     "height": 20,
                     "x": 0,
-                    "y": 100
+                    "y": 120
                 },
                 {
                     "id": "uYY7v977Ubm",
@@ -1114,7 +1125,7 @@
                     "width": 29,
                     "height": 20,
                     "x": 29,
-                    "y": 100
+                    "y": 120
                 },
                 {
                     "id": "qUqsDmtiBLF",
@@ -1125,7 +1136,7 @@
                     "width": 29,
                     "height": 20,
                     "x": 0,
-                    "y": 120
+                    "y": 140
                 },
                 {
                     "id": "mwMpIdPdu8H",
@@ -1136,7 +1147,7 @@
                     "width": 29,
                     "height": 20,
                     "x": 29,
-                    "y": 120
+                    "y": 140
                 }
             ],
             "publicAccess": "--------",
@@ -1384,6 +1395,128 @@
         }
     ],
     "visualizations": [
+        {
+            "id": "ywQZlYBN4nN",
+            "type": "COLUMN",
+            "name": "12345en - MyProject - Target vs Actual - Benefits - Column Chart",
+            "numberType": "VALUE",
+            "legendDisplayStyle": "FILL",
+            "rowSubTotals": true,
+            "showDimensionLabels": true,
+            "showData": true,
+            "aggregationType": "DEFAULT",
+            "legendDisplayStrategy": "FIXED",
+            "rowTotals": true,
+            "digitGroupSeparator": "SPACE",
+            "dataDimensionItems": [
+                {
+                    "dataDimensionItemType": "DATA_ELEMENT",
+                    "dataElement": {
+                        "id": "WS8XV4WWPE7"
+                    }
+                },
+                {
+                    "dataDimensionItemType": "DATA_ELEMENT",
+                    "dataElement": {
+                        "id": "yMqK9DKbA3X"
+                    }
+                }
+            ],
+            "organisationUnits": [
+                {
+                    "id": "WGC0DJ0YSis"
+                }
+            ],
+            "periods": [
+                {
+                    "id": "201810"
+                },
+                {
+                    "id": "201811"
+                },
+                {
+                    "id": "201812"
+                },
+                {
+                    "id": "201901"
+                },
+                {
+                    "id": "201902"
+                },
+                {
+                    "id": "201903"
+                }
+            ],
+            "columns": [
+                {
+                    "code": "ACTUAL_TARGET",
+                    "id": "GIIHAr9BzzO",
+                    "dataDimensionType": "ATTRIBUTE",
+                    "categoryOptions": [
+                        {
+                            "code": "TARGET",
+                            "id": "imyqCWQ229K"
+                        },
+                        {
+                            "code": "ACTUAL",
+                            "id": "eWeQoOlAcxV"
+                        }
+                    ]
+                }
+            ],
+            "columnDimensions": ["GIIHAr9BzzO"],
+            "filters": [
+                {
+                    "id": "dx"
+                },
+                {
+                    "id": "ou"
+                }
+            ],
+            "filterDimensions": ["dx", "ou"],
+            "rows": [
+                {
+                    "id": "pe"
+                }
+            ],
+            "rowDimensions": ["pe"],
+            "categoryDimensions": [
+                {
+                    "category": {
+                        "id": "GIIHAr9BzzO"
+                    },
+                    "categoryOptions": [
+                        {
+                            "id": "imyqCWQ229K"
+                        },
+                        {
+                            "id": "eWeQoOlAcxV"
+                        }
+                    ]
+                }
+            ],
+            "publicAccess": "--------",
+            "externalAccess": false,
+            "userAccesses": [
+                {
+                    "id": "M5zQapPyTZI",
+                    "displayName": "admin admin",
+                    "access": "rw------"
+                }
+            ],
+            "userGroupAccesses": [
+                {
+                    "id": "ywuI2WspUUG",
+                    "displayName": "System Admin",
+                    "access": "rw------"
+                },
+                {
+                    "id": "mKKNXzeIAJs",
+                    "displayName": "Data Management Admin",
+                    "access": "rw------"
+                }
+            ]
+        },
         {
             "id": "i07AWJAND8a",
             "type": "PIVOT_TABLE",

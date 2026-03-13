@@ -34,7 +34,11 @@ export default class ProjectDashboard {
     dataElements: ProjectsListDashboard["dataElements"];
     categoryOnlyNew: { id: Id; categoryOptions: Ref[] };
 
-    constructor(private config: Config, private projectsListDashboard: ProjectsListDashboard) {
+    constructor(
+        private config: Config,
+        private projectsListDashboard: ProjectsListDashboard,
+        private dashboardType: "project" | "awardNumber"
+    ) {
         this.dataElements = this.projectsListDashboard.dataElements;
 
         this.categoryOnlyNew = {
@@ -53,7 +57,7 @@ export default class ProjectDashboard {
     ): Promise<ProjectDashboard> {
         const condition: Condition = { type: "project", id: project.id, initialMetadata };
         const projectsListDashboard = await getProjectsListDashboard(api, config, condition);
-        return new ProjectDashboard(config, projectsListDashboard);
+        return new ProjectDashboard(config, projectsListDashboard, "project");
     }
 
     static async buildForAwardNumber(
@@ -64,7 +68,7 @@ export default class ProjectDashboard {
     ): Promise<ProjectDashboard> {
         const condition: Condition = { type: "awardNumber", value: awardNumber, initialMetadata };
         const projectsListDashboard = await getProjectsListDashboard(api, config, condition);
-        return new ProjectDashboard(config, projectsListDashboard);
+        return new ProjectDashboard(config, projectsListDashboard, "awardNumber");
     }
 
     generate(options: { minimumOrgUnits?: number } = {}) {
@@ -73,6 +77,12 @@ export default class ProjectDashboard {
 
         if (!_.isNil(minimumOrgUnits) && projectsListDashboard.orgUnits.length < minimumOrgUnits)
             return { dashboards: [], visualizations: [] };
+
+        // Note: I think this.dashboardType === "project" is the same as the condition for minimumOrgUnits = 2
+        // I'll need to check that before doing the PR
+
+        const targetVsActualBenefitsChart_ =
+            this.dashboardType === "project" ? this.targetVsActualBenefitsChart() : undefined;
 
         const reportTables: Array<PartialPersistedModel<D2Visualization>> = _.compact([
             // General Data View
@@ -99,10 +109,15 @@ export default class ProjectDashboard {
 
         const achievedMonthlyChart_ = this.achievedMonthlyChart();
         const favorites = {
-            visualizations: _.concat(reportTables, _.compact([achievedMonthlyChart_, ...charts])),
+            visualizations: _.concat(
+                _.compact([targetVsActualBenefitsChart_]),
+                reportTables,
+                _.compact([achievedMonthlyChart_, ...charts])
+            ),
         };
 
         const items: Array<PartialModel<D2DashboardItem>> = _.compact([
+            getChartDashboardItem(targetVsActualBenefitsChart_),
             ...reportTables.map(reportTable => getReportTableItem(reportTable)),
             getChartDashboardItem(achievedMonthlyChart_, { width: toItemWidth(100) }),
             ...charts.map(chart => getChartDashboardItem(chart)),
@@ -138,6 +153,23 @@ export default class ProjectDashboard {
             filters: [dimensions.orgUnit],
             columns: [dimensions.period],
             rows: [dimensions.data, config.categories.targetActual],
+        });
+    }
+
+    targetVsActualBenefitsChart(): MaybeD2Visualization {
+        const { config, dataElements } = this;
+        const dataElementsNoDisaggregated = dataElements.benefit.filter(
+            de => !de.categories.includes("newRecurring")
+        );
+
+        return this.getD2VisualizationFromDefinition({
+            type: "chart",
+            key: "chart-target-actual-benefits",
+            name: i18n.t("Target vs Actual - Benefits - Column Chart"),
+            items: dataElementItems(dataElementsNoDisaggregated),
+            filters: [dimensions.data, dimensions.orgUnit],
+            columns: [config.categories.targetActual],
+            rows: [dimensions.period],
         });
     }
 
