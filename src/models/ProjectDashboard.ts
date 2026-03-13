@@ -32,14 +32,26 @@ import { filterPeriods } from "./Period";
 
 export default class ProjectDashboard {
     dataElements: ProjectsListDashboard["dataElements"];
+    merDataElements: Record<"all" | "people" | "benefit", Ref[]>;
     categoryOnlyNew: { id: Id; categoryOptions: Ref[] };
 
     constructor(
         private config: Config,
         private projectsListDashboard: ProjectsListDashboard,
-        private dashboardType: "project" | "awardNumber"
+        private dashboardType: "project" | "awardNumber",
+        project?: Project
     ) {
         this.dataElements = this.projectsListDashboard.dataElements;
+
+        const projectMerDataElements = _(project?.dataElementsMER.getAllSelected())
+            .uniqBy(de => de.id)
+            .value();
+
+        this.merDataElements = {
+            all: projectMerDataElements,
+            people: projectMerDataElements.filter(de => de.peopleOrBenefit === "people"),
+            benefit: projectMerDataElements.filter(de => de.peopleOrBenefit === "benefit"),
+        };
 
         this.categoryOnlyNew = {
             id: config.categories.newRecurring.id,
@@ -52,12 +64,12 @@ export default class ProjectDashboard {
     static async buildForProject(
         api: D2Api,
         config: Config,
-        project: Ref,
+        project: Project,
         initialMetadata?: DashboardSourceMetadata
     ): Promise<ProjectDashboard> {
         const condition: Condition = { type: "project", id: project.id, initialMetadata };
         const projectsListDashboard = await getProjectsListDashboard(api, config, condition);
-        return new ProjectDashboard(config, projectsListDashboard, "project");
+        return new ProjectDashboard(config, projectsListDashboard, "project", project);
     }
 
     static async buildForAwardNumber(
@@ -85,6 +97,8 @@ export default class ProjectDashboard {
             this.dashboardType === "project" ? this.targetVsActualBenefitsChart() : undefined;
         const targetVsActualPeopleChart_ =
             this.dashboardType === "project" ? this.targetVsActualPeopleChart() : undefined;
+        const merTargetVsActualBenefitsChart_ =
+            this.dashboardType === "project" ? this.merTargetVsActualBenefitsChart() : undefined;
 
         const reportTables: Array<PartialPersistedModel<D2Visualization>> = _.compact([
             // General Data View
@@ -112,7 +126,11 @@ export default class ProjectDashboard {
         const achievedMonthlyChart_ = this.achievedMonthlyChart();
         const favorites = {
             visualizations: _.concat(
-                _.compact([targetVsActualBenefitsChart_, targetVsActualPeopleChart_]),
+                _.compact([
+                    targetVsActualBenefitsChart_,
+                    targetVsActualPeopleChart_,
+                    merTargetVsActualBenefitsChart_,
+                ]),
                 reportTables,
                 _.compact([achievedMonthlyChart_, ...charts])
             ),
@@ -121,6 +139,7 @@ export default class ProjectDashboard {
         const items: Array<PartialModel<D2DashboardItem>> = _.compact([
             getChartDashboardItem(targetVsActualBenefitsChart_),
             getChartDashboardItem(targetVsActualPeopleChart_),
+            getChartDashboardItem(merTargetVsActualBenefitsChart_),
             ...reportTables.map(reportTable => getReportTableItem(reportTable)),
             getChartDashboardItem(achievedMonthlyChart_, { width: toItemWidth(100) }),
             ...charts.map(chart => getChartDashboardItem(chart)),
@@ -190,6 +209,20 @@ export default class ProjectDashboard {
                 config.categories.gender,
                 config.categories.newRecurring,
             ],
+            columns: [config.categories.targetActual],
+            rows: [dimensions.period],
+        });
+    }
+
+    merTargetVsActualBenefitsChart(): MaybeD2Visualization {
+        const { config, merDataElements } = this;
+
+        return this.getD2VisualizationFromDefinition({
+            type: "chart",
+            key: "chart-mer-target-actual-benefits",
+            name: i18n.t("MER - Target vs Actual - Benefits - Column Chart"),
+            items: dataElementItems(merDataElements.benefit),
+            filters: [dimensions.orgUnit],
             columns: [config.categories.targetActual],
             rows: [dimensions.period],
         });
