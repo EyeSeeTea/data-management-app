@@ -4,6 +4,7 @@ exports[`getAsString 1`] = `
 "- Name: [UPDATED] MyProject -> Old name
 - Description: -
 - Award Number: 12345
+- Project 16 Code: A1234567890BCDEF
 - Subsequent Lettering: en
 - Additional Designation (Funder, Location, Sector, etc): -
 - Period dates: October 2018 - March 2019
@@ -31,6 +32,7 @@ exports[`getAsString on new project 1`] = `
 "- Name: MyProject
 - Description: -
 - Award Number: 12345
+- Project 16 Code: A1234567890BCDEF
 - Subsequent Lettering: en
 - Additional Designation (Funder, Location, Sector, etc): -
 - Period dates: October 2018 - March 2019
@@ -75,6 +77,13 @@ Array [
     "prevValue": "12345",
     "type": "field",
     "value": "12345",
+  },
+  Object {
+    "action": "none",
+    "name": "Project 16 Code",
+    "prevValue": "A1234567890BCDEF",
+    "type": "field",
+    "value": "A1234567890BCDEF",
   },
   Object {
     "action": "none",
