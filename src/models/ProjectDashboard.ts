@@ -99,6 +99,8 @@ export default class ProjectDashboard {
             this.dashboardType === "project" ? this.targetVsActualPeopleChart() : undefined;
         const merTargetVsActualBenefitsChart_ =
             this.dashboardType === "project" ? this.merTargetVsActualBenefitsChart() : undefined;
+        const merTargetVsActualPeopleChart_ =
+            this.dashboardType === "project" ? this.merTargetVsActualPeopleChart() : undefined;
 
         const reportTables: Array<PartialPersistedModel<D2Visualization>> = _.compact([
             // General Data View
@@ -130,6 +132,7 @@ export default class ProjectDashboard {
                     targetVsActualBenefitsChart_,
                     targetVsActualPeopleChart_,
                     merTargetVsActualBenefitsChart_,
+                    merTargetVsActualPeopleChart_,
                 ]),
                 reportTables,
                 _.compact([achievedMonthlyChart_, ...charts])
@@ -140,6 +143,7 @@ export default class ProjectDashboard {
             getChartDashboardItem(targetVsActualBenefitsChart_),
             getChartDashboardItem(targetVsActualPeopleChart_),
             getChartDashboardItem(merTargetVsActualBenefitsChart_),
+            getChartDashboardItem(merTargetVsActualPeopleChart_),
             ...reportTables.map(reportTable => getReportTableItem(reportTable)),
             getChartDashboardItem(achievedMonthlyChart_, { width: toItemWidth(100) }),
             ...charts.map(chart => getChartDashboardItem(chart)),
@@ -223,6 +227,25 @@ export default class ProjectDashboard {
             name: i18n.t("MER - Target vs Actual - Benefits - Column Chart"),
             items: dataElementItems(merDataElements.benefit),
             filters: [dimensions.orgUnit],
+            columns: [config.categories.targetActual],
+            rows: [dimensions.period],
+        });
+    }
+
+    merTargetVsActualPeopleChart(): MaybeD2Visualization {
+        const { config, merDataElements } = this;
+
+        return this.getD2VisualizationFromDefinition({
+            type: "chart",
+            key: "chart-mer-target-actual-people",
+            name: i18n.t("MER - Target vs Actual - People - Column Chart"),
+            items: dataElementItems(merDataElements.people),
+            filters: [
+                dimensions.data,
+                dimensions.orgUnit,
+                config.categories.gender,
+                config.categories.newRecurring,
+            ],
             columns: [config.categories.targetActual],
             rows: [dimensions.period],
         });
