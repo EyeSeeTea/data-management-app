@@ -83,6 +83,8 @@ export default class ProjectDashboard {
 
         const targetVsActualBenefitsChart_ =
             this.dashboardType === "project" ? this.targetVsActualBenefitsChart() : undefined;
+        const targetVsActualPeopleChart_ =
+            this.dashboardType === "project" ? this.targetVsActualPeopleChart() : undefined;
 
         const reportTables: Array<PartialPersistedModel<D2Visualization>> = _.compact([
             // General Data View
@@ -110,7 +112,7 @@ export default class ProjectDashboard {
         const achievedMonthlyChart_ = this.achievedMonthlyChart();
         const favorites = {
             visualizations: _.concat(
-                _.compact([targetVsActualBenefitsChart_]),
+                _.compact([targetVsActualBenefitsChart_, targetVsActualPeopleChart_]),
                 reportTables,
                 _.compact([achievedMonthlyChart_, ...charts])
             ),
@@ -118,6 +120,7 @@ export default class ProjectDashboard {
 
         const items: Array<PartialModel<D2DashboardItem>> = _.compact([
             getChartDashboardItem(targetVsActualBenefitsChart_),
+            getChartDashboardItem(targetVsActualPeopleChart_),
             ...reportTables.map(reportTable => getReportTableItem(reportTable)),
             getChartDashboardItem(achievedMonthlyChart_, { width: toItemWidth(100) }),
             ...charts.map(chart => getChartDashboardItem(chart)),
@@ -168,6 +171,25 @@ export default class ProjectDashboard {
             name: i18n.t("Target vs Actual - Benefits - Column Chart"),
             items: dataElementItems(dataElementsNoDisaggregated),
             filters: [dimensions.data, dimensions.orgUnit],
+            columns: [config.categories.targetActual],
+            rows: [dimensions.period],
+        });
+    }
+
+    targetVsActualPeopleChart(): MaybeD2Visualization {
+        const { config, dataElements } = this;
+
+        return this.getD2VisualizationFromDefinition({
+            type: "chart",
+            key: "chart-target-actual-people",
+            name: i18n.t("Target vs Actual - People - Column Chart"),
+            items: dataElementItems(dataElements.people),
+            filters: [
+                dimensions.data,
+                dimensions.orgUnit,
+                config.categories.gender,
+                config.categories.newRecurring,
+            ],
             columns: [config.categories.targetActual],
             rows: [dimensions.period],
         });
