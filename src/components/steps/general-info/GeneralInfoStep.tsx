@@ -14,7 +14,13 @@ import { getProjectFieldName } from "../../../utils/form";
 const { TextField } = require("@dhis2/d2-ui-core");
 const { FormBuilder, Validators } = require("@dhis2/d2-ui-forms");
 
-type StringField = "name" | "description" | "awardNumber" | "subsequentLettering" | "additional";
+type StringField =
+    | "name"
+    | "description"
+    | "awardNumber"
+    | "subsequentLettering"
+    | "additional"
+    | "project16Code";
 
 type DateField = "startDate" | "endDate";
 
@@ -47,6 +53,15 @@ class GeneralInfoStep extends React.Component<StepProps> {
                         min: Project.lengths.awardNumber,
                         max: Project.lengths.awardNumber,
                         message: i18n.t("Field should be a 5-digit number"),
+                    }),
+                ],
+            }),
+            getTextField("project16Code", project.project16Code, {
+                validators: [
+                    validators.optionalLength({
+                        min: Project.lengths.project16Code,
+                        max: Project.lengths.project16Code,
+                        message: i18n.t("Field should be exactly 16 characters long"),
                     }),
                 ],
             }),
@@ -110,6 +125,16 @@ const validators = {
                 _.compact([min && `min=${min}`, max && `max=${max}`]).join(", "),
         validator: (s: string) =>
             (min === undefined || s.length >= min) && (max === undefined || s.length <= max),
+    }),
+    optionalLength: ({ min, max, message }: { min?: number; max?: number; message?: string }) => ({
+        message:
+            message ||
+            i18n.t("Field length is invalid") +
+                ": " +
+                _.compact([min && `min=${min}`, max && `max=${max}`]).join(", "),
+        validator: (s: string) =>
+            !s ||
+            ((min === undefined || s.length >= min) && (max === undefined || s.length <= max)),
     }),
     regexp: (regexp: RegExp, message: string) => ({
         message,

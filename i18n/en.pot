@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-08-20T11:32:44.779Z\n"
-"PO-Revision-Date: 2025-08-20T11:32:44.779Z\n"
+"POT-Creation-Date: 2026-03-13T15:48:15.195Z\n"
+"PO-Revision-Date: 2026-03-13T15:48:15.195Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -302,6 +302,9 @@ msgstr ""
 msgid "Field should be a 5-digit number"
 msgstr ""
 
+msgid "Field should be exactly 16 characters long"
+msgstr ""
+
 msgid "Field cannot be blank"
 msgstr ""
 
@@ -514,6 +517,9 @@ msgid "Data Elements MER"
 msgstr ""
 
 msgid "Description"
+msgstr ""
+
+msgid "Project 16 Code"
 msgstr ""
 
 msgid "Award Number"

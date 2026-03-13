@@ -113,6 +113,7 @@ export interface ProjectData {
     documents: ProjectDocument[];
     isDartApplicable: boolean;
     partner: boolean;
+    project16Code: string;
 }
 
 export interface Dashboard {
@@ -170,6 +171,7 @@ const defaultProjectData = {
     dataSets: undefined,
     dashboard: {},
     documents: [],
+    project16Code: "",
 };
 
 function defineGetters(sourceObject: any, targetObject: any) {
@@ -203,6 +205,7 @@ class Project {
     fundersById: Record<Id, Config["funders"][number]>;
 
     static lengths = {
+        project16Code: 16,
         awardNumber: 5,
         additional: 40,
     };
@@ -224,6 +227,7 @@ class Project {
         dataElementsMER: i18n.t("Data Elements MER"),
         disaggregation: i18n.t("Disaggregation"),
         description: i18n.t("Description"),
+        project16Code: i18n.t("Project 16 Code"),
         awardNumber: i18n.t("Award Number"),
         subsequentLettering: i18n.t("Subsequent Lettering"),
         additional: i18n.t("Additional Designation (Funder, Location, Sector, etc)"),
@@ -258,6 +262,13 @@ class Project {
         endDateAfterStartDate: this.endDateAfterStartDate.bind(this),
         endDate: () => validatePresence(this.endDate, this.f("endDate")),
         code: () => this.validateCodeUniqueness(),
+        project16Code: () =>
+            this.project16Code
+                ? validateNumber(this.project16Code.length, this.f("project16Code"), {
+                      min: Project.lengths.project16Code,
+                      max: Project.lengths.project16Code,
+                  })
+                : [],
         awardNumber: () =>
             validateRegexp(
                 this.awardNumber,

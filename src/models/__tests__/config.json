@@ -27,7 +27,8 @@
             "projectDashboard": "DM_PROJECT_DASHBOARD_ID",
             "awardNumberDashboard": "DM_AWARD_NUMBER_DASHBOARD_ID",
             "countingMethod": "DM_COUNTING_METHOD",
-            "mainSector": "DM_MAIN_SECTOR"
+            "mainSector": "DM_MAIN_SECTOR",
+            "project16Code": "DM_PROJECT_16_CODE"
         },
         "categories": {
             "default": "default",
@@ -51921,6 +51922,10 @@
         "pairedDataElement": {
             "code": "DM_PAIRED_DE",
             "id": "qeayiIiTONg"
+        },
+        "project16Code": {
+            "code": "DM_PROJECT_16_CODE",
+            "id": "kaZd6u5e0Ln"
         },
         "projectDashboard": {
             "code": "DM_PROJECT_DASHBOARD_ID",
