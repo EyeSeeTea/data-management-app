@@ -29,6 +29,9 @@ interface Item {
 
 export interface VisualizationDefinition {
     type: "chart" | "table";
+    // TODO: validate if having undefined for the other visualizations
+    // modify somehow the functionality
+    chartType?: Exclude<D2Visualization["type"], "PIVOT_TABLE">;
     key: string;
     name: string;
     items: Item[];
@@ -84,7 +87,7 @@ export function getD2Visualization(visualization: Visualization): MaybeD2Visuali
 
     const d2Table: PartialPersistedModel<D2Visualization> = {
         id: getUid(visualization.key, ""),
-        type: visualization.type === "table" ? "PIVOT_TABLE" : "COLUMN",
+        type: visualization.type === "table" ? "PIVOT_TABLE" : visualization.chartType || "COLUMN",
         name: visualization.name,
         numberType: "VALUE",
         legendDisplayStyle: "FILL",

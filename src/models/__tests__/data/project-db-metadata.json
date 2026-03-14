@@ -1073,6 +1073,17 @@
                     "y": 60
                 },
                 {
+                    "id": "KYcDaXAZa1q",
+                    "type": "CHART",
+                    "visualization": {
+                        "id": "KiUTxsMMYde"
+                    },
+                    "width": 29,
+                    "height": 20,
+                    "x": 29,
+                    "y": 60
+                },
+                {
                     "id": "yWGKgz9vaOh",
                     "type": "REPORT_TABLE",
                     "visualization": {
@@ -1080,8 +1091,8 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 29,
-                    "y": 60
+                    "x": 0,
+                    "y": 80
                 },
                 {
                     "id": "ywvTGMsKdwL",
@@ -1091,7 +1102,7 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 0,
+                    "x": 29,
                     "y": 80
                 },
                 {
@@ -1102,8 +1113,8 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 29,
-                    "y": 80
+                    "x": 0,
+                    "y": 100
                 },
                 {
                     "id": "uyoJujQVRjE",
@@ -1113,7 +1124,7 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 0,
+                    "x": 29,
                     "y": 100
                 },
                 {
@@ -1124,8 +1135,8 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 29,
-                    "y": 100
+                    "x": 0,
+                    "y": 120
                 },
                 {
                     "id": "ys0CVedHirZ",
@@ -1136,7 +1147,7 @@
                     "width": 58,
                     "height": 20,
                     "x": 0,
-                    "y": 120
+                    "y": 140
                 },
                 {
                     "id": "KI0C90Ol10x",
@@ -1147,7 +1158,7 @@
                     "width": 29,
                     "height": 20,
                     "x": 0,
-                    "y": 140
+                    "y": 160
                 },
                 {
                     "id": "uYY7v977Ubm",
@@ -1158,7 +1169,7 @@
                     "width": 29,
                     "height": 20,
                     "x": 29,
-                    "y": 140
+                    "y": 160
                 },
                 {
                     "id": "qUqsDmtiBLF",
@@ -1169,7 +1180,7 @@
                     "width": 29,
                     "height": 20,
                     "x": 0,
-                    "y": 160
+                    "y": 180
                 },
                 {
                     "id": "mwMpIdPdu8H",
@@ -1180,7 +1191,7 @@
                     "width": 29,
                     "height": 20,
                     "x": 29,
-                    "y": 160
+                    "y": 180
                 }
             ],
             "publicAccess": "--------",
@@ -2386,6 +2397,135 @@
                         },
                         {
                             "id": "a6AJLXQy8vO"
+                        }
+                    ]
+                }
+            ],
+            "publicAccess": "--------",
+            "externalAccess": false,
+            "userAccesses": [
+                {
+                    "id": "M5zQapPyTZI",
+                    "displayName": "admin admin",
+                    "access": "rw------"
+                }
+            ],
+            "userGroupAccesses": [
+                {
+                    "id": "ywuI2WspUUG",
+                    "displayName": "System Admin",
+                    "access": "rw------"
+                },
+                {
+                    "id": "mKKNXzeIAJs",
+                    "displayName": "Data Management Admin",
+                    "access": "rw------"
+                }
+            ]
+        },
+        {
+            "id": "KiUTxsMMYde",
+            "type": "LINE",
+            "name": "12345en - MyProject - Target vs Actual - Benefits - Line Chart",
+            "numberType": "VALUE",
+            "legendDisplayStyle": "FILL",
+            "rowSubTotals": true,
+            "showDimensionLabels": true,
+            "showData": true,
+            "aggregationType": "DEFAULT",
+            "legendDisplayStrategy": "FIXED",
+            "rowTotals": true,
+            "digitGroupSeparator": "SPACE",
+            "dataDimensionItems": [
+                {
+                    "dataDimensionItemType": "DATA_ELEMENT",
+                    "dataElement": {
+                        "id": "WS8XV4WWPE7"
+                    }
+                },
+                {
+                    "dataDimensionItemType": "DATA_ELEMENT",
+                    "dataElement": {
+                        "id": "yMqK9DKbA3X"
+                    }
+                }
+            ],
+            "organisationUnits": [
+                {
+                    "id": "WGC0DJ0YSis"
+                }
+            ],
+            "periods": [
+                {
+                    "id": "201810"
+                },
+                {
+                    "id": "201811"
+                },
+                {
+                    "id": "201812"
+                },
+                {
+                    "id": "201901"
+                },
+                {
+                    "id": "201902"
+                },
+                {
+                    "id": "201903"
+                }
+            ],
+            "columns": [
+                {
+                    "code": "ACTUAL_TARGET",
+                    "id": "GIIHAr9BzzO",
+                    "dataDimensionType": "ATTRIBUTE",
+                    "categoryOptions": [
+                        {
+                            "code": "TARGET",
+                            "id": "imyqCWQ229K"
+                        },
+                        {
+                            "code": "ACTUAL",
+                            "id": "eWeQoOlAcxV"
+                        }
+                    ]
+                }
+            ],
+            "columnDimensions": [
+                "GIIHAr9BzzO"
+            ],
+            "filters": [
+                {
+                    "id": "ou"
+                }
+            ],
+            "filterDimensions": [
+                "ou"
+            ],
+            "rows": [
+                {
+                    "id": "dx"
+                },
+                {
+                    "id": "pe"
+                }
+            ],
+            "rowDimensions": [
+                "dx",
+                "pe"
+            ],
+            "categoryDimensions": [
+                {
+                    "category": {
+                        "id": "GIIHAr9BzzO"
+                    },
+                    "categoryOptions": [
+                        {
+                            "id": "imyqCWQ229K"
+                        },
+                        {
+                            "id": "eWeQoOlAcxV"
                         }
                     ]
                 }

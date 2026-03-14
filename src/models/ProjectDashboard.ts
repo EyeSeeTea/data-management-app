@@ -109,6 +109,8 @@ export default class ProjectDashboard {
             this.dashboardType === "project"
                 ? this.targetVsActualPeopleDisaggregatedByIndicatorChart()
                 : undefined;
+        const targetVsActualBenefitsLineChart_ =
+            this.dashboardType === "project" ? this.targetVsActualBenefitsLineChart() : undefined;
 
         const reportTables: Array<PartialPersistedModel<D2Visualization>> = _.compact([
             // General Data View
@@ -149,6 +151,7 @@ export default class ProjectDashboard {
             targetVsActualPeopleTable_,
             targetVsActualBenefitsDisaggregatedByIndicatorChart_,
             targetVsActualPeopleDisaggregatedByIndicatorChart_,
+            targetVsActualBenefitsLineChart_,
             targetVsActualBenefitsWithDisaggregationTable_,
         ]);
         const defaultVisualizations = _.concat(
@@ -177,6 +180,7 @@ export default class ProjectDashboard {
                       getReportTableItem(targetVsActualPeopleTable_),
                       getChartDashboardItem(targetVsActualBenefitsDisaggregatedByIndicatorChart_),
                       getChartDashboardItem(targetVsActualPeopleDisaggregatedByIndicatorChart_),
+                      getChartDashboardItem(targetVsActualBenefitsLineChart_),
                       getReportTableItem(targetVsActualBenefitsWithDisaggregationTable_),
                   ])
                 : reportTables.map(reportTable => getReportTableItem(reportTable))),
@@ -317,6 +321,24 @@ export default class ProjectDashboard {
             filters: [dimensions.orgUnit, config.categories.gender, config.categories.newRecurring],
             columns: [dimensions.data],
             rows: [dimensions.period, config.categories.targetActual],
+        });
+    }
+
+    targetVsActualBenefitsLineChart(): MaybeD2Visualization {
+        const { config, dataElements } = this;
+        const dataElementsNoDisaggregated = dataElements.benefit.filter(
+            de => !de.categories.includes("newRecurring")
+        );
+
+        return this.getD2VisualizationFromDefinition({
+            type: "chart",
+            chartType: "LINE",
+            key: "chart-target-actual-benefits-line",
+            name: i18n.t("Target vs Actual - Benefits - Line Chart"),
+            items: dataElementItems(dataElementsNoDisaggregated),
+            filters: [dimensions.orgUnit],
+            columns: [config.categories.targetActual],
+            rows: [dimensions.data, dimensions.period],
         });
     }
 
