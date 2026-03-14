@@ -1040,10 +1040,10 @@
                     "y": 20
                 },
                 {
-                    "id": "yWGKgz9vaOh",
+                    "id": "m4LaU9HizHi",
                     "type": "REPORT_TABLE",
                     "visualization": {
-                        "id": "iqqgnCj9DQj"
+                        "id": "iOk52Z42bjp"
                     },
                     "width": 29,
                     "height": 20,
@@ -1051,10 +1051,10 @@
                     "y": 40
                 },
                 {
-                    "id": "y2G8oh7xQBm",
-                    "type": "REPORT_TABLE",
+                    "id": "i66m5HwnH6v",
+                    "type": "CHART",
                     "visualization": {
-                        "id": "GycLEG8dPPO"
+                        "id": "a46jcQ65Axt"
                     },
                     "width": 29,
                     "height": 20,
@@ -1062,10 +1062,10 @@
                     "y": 40
                 },
                 {
-                    "id": "m4LaU9HizHi",
+                    "id": "yWGKgz9vaOh",
                     "type": "REPORT_TABLE",
                     "visualization": {
-                        "id": "iOk52Z42bjp"
+                        "id": "iqqgnCj9DQj"
                     },
                     "width": 29,
                     "height": 20,
@@ -1272,17 +1272,6 @@
                     "y": 0
                 },
                 {
-                    "id": "K0YRx2HGCs5",
-                    "type": "REPORT_TABLE",
-                    "visualization": {
-                        "id": "ayOoqqk9Rnb"
-                    },
-                    "width": 29,
-                    "height": 20,
-                    "x": 0,
-                    "y": 20
-                },
-                {
                     "id": "O0uabsxLqGS",
                     "type": "REPORT_TABLE",
                     "visualization": {
@@ -1290,7 +1279,7 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 29,
+                    "x": 0,
                     "y": 20
                 },
                 {
@@ -1301,8 +1290,8 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 0,
-                    "y": 40
+                    "x": 29,
+                    "y": 20
                 },
                 {
                     "id": "iIyADNFfXEV",
@@ -1312,7 +1301,7 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 29,
+                    "x": 0,
                     "y": 40
                 },
                 {
@@ -1323,8 +1312,8 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 0,
-                    "y": 60
+                    "x": 29,
+                    "y": 40
                 },
                 {
                     "id": "yseGHIbXcNQ",
@@ -1334,7 +1323,7 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 29,
+                    "x": 0,
                     "y": 60
                 },
                 {
@@ -1959,6 +1948,225 @@
             ]
         },
         {
+            "id": "iOk52Z42bjp",
+            "type": "PIVOT_TABLE",
+            "name": "12345en - MyProject - Achieved to date (%) - Benefits",
+            "numberType": "VALUE",
+            "legendDisplayStyle": "FILL",
+            "rowSubTotals": true,
+            "showDimensionLabels": true,
+            "showData": true,
+            "aggregationType": "DEFAULT",
+            "legendDisplayStrategy": "FIXED",
+            "rowTotals": true,
+            "digitGroupSeparator": "SPACE",
+            "dataDimensionItems": [
+                {
+                    "dataDimensionItemType": "INDICATOR",
+                    "indicator": {
+                        "id": "eCufXa6RkTm"
+                    }
+                },
+                {
+                    "dataDimensionItemType": "INDICATOR",
+                    "indicator": {
+                        "id": "i01veyO4Cuw"
+                    }
+                }
+            ],
+            "organisationUnits": [
+                {
+                    "id": "WGC0DJ0YSis"
+                }
+            ],
+            "periods": [
+                {
+                    "id": "201810"
+                },
+                {
+                    "id": "201811"
+                },
+                {
+                    "id": "201812"
+                },
+                {
+                    "id": "201901"
+                },
+                {
+                    "id": "201902"
+                },
+                {
+                    "id": "201903"
+                }
+            ],
+            "columns": [
+                {
+                    "id": "pe"
+                }
+            ],
+            "columnDimensions": ["pe"],
+            "filters": [
+                {
+                    "id": "ou"
+                }
+            ],
+            "filterDimensions": ["ou"],
+            "rows": [
+                {
+                    "id": "dx"
+                }
+            ],
+            "rowDimensions": ["dx"],
+            "categoryDimensions": [],
+            "publicAccess": "--------",
+            "externalAccess": false,
+            "userAccesses": [
+                {
+                    "id": "M5zQapPyTZI",
+                    "displayName": "admin admin",
+                    "access": "rw------"
+                }
+            ],
+            "userGroupAccesses": [
+                {
+                    "id": "ywuI2WspUUG",
+                    "displayName": "System Admin",
+                    "access": "rw------"
+                },
+                {
+                    "id": "mKKNXzeIAJs",
+                    "displayName": "Data Management Admin",
+                    "access": "rw------"
+                }
+            ],
+            "legendSet": {
+                "code": "ACTUAL_TARGET_ACHIEVED",
+                "id": "yoAt108kUFm"
+            }
+        },
+        {
+            "id": "a46jcQ65Axt",
+            "type": "COLUMN",
+            "name": "12345en - MyProject - Target vs Actual - Benefits - Column Chart Disaggregated By Indicator",
+            "numberType": "VALUE",
+            "legendDisplayStyle": "FILL",
+            "rowSubTotals": true,
+            "showDimensionLabels": true,
+            "showData": true,
+            "aggregationType": "DEFAULT",
+            "legendDisplayStrategy": "FIXED",
+            "rowTotals": true,
+            "digitGroupSeparator": "SPACE",
+            "dataDimensionItems": [
+                {
+                    "dataDimensionItemType": "DATA_ELEMENT",
+                    "dataElement": {
+                        "id": "WS8XV4WWPE7"
+                    }
+                },
+                {
+                    "dataDimensionItemType": "DATA_ELEMENT",
+                    "dataElement": {
+                        "id": "yMqK9DKbA3X"
+                    }
+                }
+            ],
+            "organisationUnits": [
+                {
+                    "id": "WGC0DJ0YSis"
+                }
+            ],
+            "periods": [
+                {
+                    "id": "201810"
+                },
+                {
+                    "id": "201811"
+                },
+                {
+                    "id": "201812"
+                },
+                {
+                    "id": "201901"
+                },
+                {
+                    "id": "201902"
+                },
+                {
+                    "id": "201903"
+                }
+            ],
+            "columns": [
+                {
+                    "id": "dx"
+                }
+            ],
+            "columnDimensions": ["dx"],
+            "filters": [
+                {
+                    "id": "ou"
+                }
+            ],
+            "filterDimensions": ["ou"],
+            "rows": [
+                {
+                    "id": "pe"
+                },
+                {
+                    "code": "ACTUAL_TARGET",
+                    "id": "GIIHAr9BzzO",
+                    "dataDimensionType": "ATTRIBUTE",
+                    "categoryOptions": [
+                        {
+                            "code": "TARGET",
+                            "id": "imyqCWQ229K"
+                        },
+                        {
+                            "code": "ACTUAL",
+                            "id": "eWeQoOlAcxV"
+                        }
+                    ]
+                }
+            ],
+            "rowDimensions": ["pe", "GIIHAr9BzzO"],
+            "categoryDimensions": [
+                {
+                    "category": {
+                        "id": "GIIHAr9BzzO"
+                    },
+                    "categoryOptions": [
+                        {
+                            "id": "imyqCWQ229K"
+                        },
+                        {
+                            "id": "eWeQoOlAcxV"
+                        }
+                    ]
+                }
+            ],
+            "publicAccess": "--------",
+            "externalAccess": false,
+            "userAccesses": [
+                {
+                    "id": "M5zQapPyTZI",
+                    "displayName": "admin admin",
+                    "access": "rw------"
+                }
+            ],
+            "userGroupAccesses": [
+                {
+                    "id": "ywuI2WspUUG",
+                    "displayName": "System Admin",
+                    "access": "rw------"
+                },
+                {
+                    "id": "mKKNXzeIAJs",
+                    "displayName": "Data Management Admin",
+                    "access": "rw------"
+                }
+            ]
+        },
+        {
             "id": "iqqgnCj9DQj",
             "type": "PIVOT_TABLE",
             "name": "12345en - MyProject - Target vs Actual - People",
@@ -2141,277 +2349,6 @@
                     "access": "rw------"
                 }
             ]
-        },
-        {
-            "id": "GycLEG8dPPO",
-            "type": "PIVOT_TABLE",
-            "name": "12345en - MyProject - Target vs Actual - Unique People",
-            "numberType": "VALUE",
-            "legendDisplayStyle": "FILL",
-            "rowSubTotals": true,
-            "showDimensionLabels": true,
-            "showData": true,
-            "aggregationType": "DEFAULT",
-            "legendDisplayStrategy": "FIXED",
-            "rowTotals": true,
-            "digitGroupSeparator": "SPACE",
-            "dataDimensionItems": [
-                {
-                    "dataDimensionItemType": "DATA_ELEMENT",
-                    "dataElement": {
-                        "id": "K6mAC5SiO29"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "DATA_ELEMENT",
-                    "dataElement": {
-                        "id": "ik0ICagvIjm"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "DATA_ELEMENT",
-                    "dataElement": {
-                        "id": "GQyudNlGzkI"
-                    }
-                }
-            ],
-            "organisationUnits": [
-                {
-                    "id": "WGC0DJ0YSis"
-                }
-            ],
-            "periods": [
-                {
-                    "id": "201810"
-                },
-                {
-                    "id": "201811"
-                },
-                {
-                    "id": "201812"
-                },
-                {
-                    "id": "201901"
-                },
-                {
-                    "id": "201902"
-                },
-                {
-                    "id": "201903"
-                }
-            ],
-            "columns": [
-                {
-                    "id": "pe"
-                },
-                {
-                    "code": "GENDER",
-                    "id": "Kyg1O6YEGa9",
-                    "dataDimensionType": "DISAGGREGATION",
-                    "categoryOptions": [
-                        {
-                            "code": "MALE",
-                            "id": "qk2FihwV6IL"
-                        },
-                        {
-                            "code": "FEMALE",
-                            "id": "yW2hYVS3S4u"
-                        }
-                    ]
-                }
-            ],
-            "columnDimensions": ["pe", "Kyg1O6YEGa9"],
-            "filters": [
-                {
-                    "id": "ou"
-                },
-                {
-                    "id": "uSMHdwhxFSV",
-                    "categoryOptions": [
-                        {
-                            "id": "KiK0FMExoqh"
-                        }
-                    ]
-                }
-            ],
-            "filterDimensions": ["ou", "uSMHdwhxFSV"],
-            "rows": [
-                {
-                    "id": "dx"
-                },
-                {
-                    "code": "ACTUAL_TARGET",
-                    "id": "GIIHAr9BzzO",
-                    "dataDimensionType": "ATTRIBUTE",
-                    "categoryOptions": [
-                        {
-                            "code": "TARGET",
-                            "id": "imyqCWQ229K"
-                        },
-                        {
-                            "code": "ACTUAL",
-                            "id": "eWeQoOlAcxV"
-                        }
-                    ]
-                }
-            ],
-            "rowDimensions": ["dx", "GIIHAr9BzzO"],
-            "categoryDimensions": [
-                {
-                    "category": {
-                        "id": "Kyg1O6YEGa9"
-                    },
-                    "categoryOptions": [
-                        {
-                            "id": "qk2FihwV6IL"
-                        },
-                        {
-                            "id": "yW2hYVS3S4u"
-                        }
-                    ]
-                },
-                {
-                    "category": {
-                        "id": "GIIHAr9BzzO"
-                    },
-                    "categoryOptions": [
-                        {
-                            "id": "imyqCWQ229K"
-                        },
-                        {
-                            "id": "eWeQoOlAcxV"
-                        }
-                    ]
-                },
-                {
-                    "category": {
-                        "id": "uSMHdwhxFSV"
-                    },
-                    "categoryOptions": [
-                        {
-                            "id": "KiK0FMExoqh"
-                        }
-                    ]
-                }
-            ],
-            "publicAccess": "--------",
-            "externalAccess": false,
-            "userAccesses": [
-                {
-                    "id": "M5zQapPyTZI",
-                    "displayName": "admin admin",
-                    "access": "rw------"
-                }
-            ],
-            "userGroupAccesses": [
-                {
-                    "id": "ywuI2WspUUG",
-                    "displayName": "System Admin",
-                    "access": "rw------"
-                },
-                {
-                    "id": "mKKNXzeIAJs",
-                    "displayName": "Data Management Admin",
-                    "access": "rw------"
-                }
-            ]
-        },
-        {
-            "id": "iOk52Z42bjp",
-            "type": "PIVOT_TABLE",
-            "name": "12345en - MyProject - Achieved to date (%) - Benefits",
-            "numberType": "VALUE",
-            "legendDisplayStyle": "FILL",
-            "rowSubTotals": true,
-            "showDimensionLabels": true,
-            "showData": true,
-            "aggregationType": "DEFAULT",
-            "legendDisplayStrategy": "FIXED",
-            "rowTotals": true,
-            "digitGroupSeparator": "SPACE",
-            "dataDimensionItems": [
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "eCufXa6RkTm"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "i01veyO4Cuw"
-                    }
-                }
-            ],
-            "organisationUnits": [
-                {
-                    "id": "WGC0DJ0YSis"
-                }
-            ],
-            "periods": [
-                {
-                    "id": "201810"
-                },
-                {
-                    "id": "201811"
-                },
-                {
-                    "id": "201812"
-                },
-                {
-                    "id": "201901"
-                },
-                {
-                    "id": "201902"
-                },
-                {
-                    "id": "201903"
-                }
-            ],
-            "columns": [
-                {
-                    "id": "pe"
-                }
-            ],
-            "columnDimensions": ["pe"],
-            "filters": [
-                {
-                    "id": "ou"
-                }
-            ],
-            "filterDimensions": ["ou"],
-            "rows": [
-                {
-                    "id": "dx"
-                }
-            ],
-            "rowDimensions": ["dx"],
-            "categoryDimensions": [],
-            "publicAccess": "--------",
-            "externalAccess": false,
-            "userAccesses": [
-                {
-                    "id": "M5zQapPyTZI",
-                    "displayName": "admin admin",
-                    "access": "rw------"
-                }
-            ],
-            "userGroupAccesses": [
-                {
-                    "id": "ywuI2WspUUG",
-                    "displayName": "System Admin",
-                    "access": "rw------"
-                },
-                {
-                    "id": "mKKNXzeIAJs",
-                    "displayName": "Data Management Admin",
-                    "access": "rw------"
-                }
-            ],
-            "legendSet": {
-                "code": "ACTUAL_TARGET_ACHIEVED",
-                "id": "yoAt108kUFm"
-            }
         },
         {
             "id": "SQSYgZjfA3z",
@@ -4434,291 +4371,6 @@
                         },
                         {
                             "id": "a6AJLXQy8vO"
-                        }
-                    ]
-                }
-            ],
-            "publicAccess": "--------",
-            "externalAccess": false,
-            "userAccesses": [
-                {
-                    "id": "M5zQapPyTZI",
-                    "displayName": "admin admin",
-                    "access": "rw------"
-                }
-            ],
-            "userGroupAccesses": [
-                {
-                    "id": "ywuI2WspUUG",
-                    "displayName": "System Admin",
-                    "access": "rw------"
-                },
-                {
-                    "id": "mKKNXzeIAJs",
-                    "displayName": "Data Management Admin",
-                    "access": "rw------"
-                }
-            ]
-        },
-        {
-            "id": "ayOoqqk9Rnb",
-            "type": "PIVOT_TABLE",
-            "name": "Award Number 12345 - Target vs Actual - Unique People",
-            "numberType": "VALUE",
-            "legendDisplayStyle": "FILL",
-            "rowSubTotals": true,
-            "showDimensionLabels": true,
-            "showData": true,
-            "aggregationType": "DEFAULT",
-            "legendDisplayStrategy": "FIXED",
-            "rowTotals": true,
-            "digitGroupSeparator": "SPACE",
-            "dataDimensionItems": [
-                {
-                    "dataDimensionItemType": "DATA_ELEMENT",
-                    "dataElement": {
-                        "id": "SQy5q6kCYI1"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "DATA_ELEMENT",
-                    "dataElement": {
-                        "id": "iYEDR850FFL"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "DATA_ELEMENT",
-                    "dataElement": {
-                        "id": "qkyeCTJHU2d"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "DATA_ELEMENT",
-                    "dataElement": {
-                        "id": "eAkVLI8mKBa"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "DATA_ELEMENT",
-                    "dataElement": {
-                        "id": "Kg29718LQHl"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "DATA_ELEMENT",
-                    "dataElement": {
-                        "id": "KKmUWsn19fq"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "DATA_ELEMENT",
-                    "dataElement": {
-                        "id": "iCKxYSFIlcu"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "DATA_ELEMENT",
-                    "dataElement": {
-                        "id": "qAM1NbCbS9G"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "DATA_ELEMENT",
-                    "dataElement": {
-                        "id": "K6mAC5SiO29"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "DATA_ELEMENT",
-                    "dataElement": {
-                        "id": "ik0ICagvIjm"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "DATA_ELEMENT",
-                    "dataElement": {
-                        "id": "GQyudNlGzkI"
-                    }
-                }
-            ],
-            "organisationUnits": [
-                {
-                    "id": "WGC0DJ0YSis"
-                },
-                {
-                    "id": "TvSmIyYcRnd"
-                },
-                {
-                    "id": "cqZ9zQfePzQ"
-                }
-            ],
-            "periods": [
-                {
-                    "id": "201810"
-                },
-                {
-                    "id": "201811"
-                },
-                {
-                    "id": "201812"
-                },
-                {
-                    "id": "201901"
-                },
-                {
-                    "id": "201902"
-                },
-                {
-                    "id": "201903"
-                },
-                {
-                    "id": "201904"
-                },
-                {
-                    "id": "201905"
-                },
-                {
-                    "id": "201906"
-                },
-                {
-                    "id": "201907"
-                },
-                {
-                    "id": "201908"
-                },
-                {
-                    "id": "201909"
-                },
-                {
-                    "id": "201910"
-                },
-                {
-                    "id": "201911"
-                },
-                {
-                    "id": "201912"
-                },
-                {
-                    "id": "202001"
-                },
-                {
-                    "id": "202002"
-                },
-                {
-                    "id": "202003"
-                },
-                {
-                    "id": "202004"
-                },
-                {
-                    "id": "202005"
-                },
-                {
-                    "id": "202006"
-                },
-                {
-                    "id": "202007"
-                },
-                {
-                    "id": "202008"
-                },
-                {
-                    "id": "202009"
-                },
-                {
-                    "id": "202010"
-                }
-            ],
-            "columns": [
-                {
-                    "id": "pe"
-                },
-                {
-                    "code": "GENDER",
-                    "id": "Kyg1O6YEGa9",
-                    "dataDimensionType": "DISAGGREGATION",
-                    "categoryOptions": [
-                        {
-                            "code": "MALE",
-                            "id": "qk2FihwV6IL"
-                        },
-                        {
-                            "code": "FEMALE",
-                            "id": "yW2hYVS3S4u"
-                        }
-                    ]
-                }
-            ],
-            "columnDimensions": ["pe", "Kyg1O6YEGa9"],
-            "filters": [
-                {
-                    "id": "ou"
-                },
-                {
-                    "id": "uSMHdwhxFSV",
-                    "categoryOptions": [
-                        {
-                            "id": "KiK0FMExoqh"
-                        }
-                    ]
-                }
-            ],
-            "filterDimensions": ["ou", "uSMHdwhxFSV"],
-            "rows": [
-                {
-                    "id": "dx"
-                },
-                {
-                    "code": "ACTUAL_TARGET",
-                    "id": "GIIHAr9BzzO",
-                    "dataDimensionType": "ATTRIBUTE",
-                    "categoryOptions": [
-                        {
-                            "code": "TARGET",
-                            "id": "imyqCWQ229K"
-                        },
-                        {
-                            "code": "ACTUAL",
-                            "id": "eWeQoOlAcxV"
-                        }
-                    ]
-                }
-            ],
-            "rowDimensions": ["dx", "GIIHAr9BzzO"],
-            "categoryDimensions": [
-                {
-                    "category": {
-                        "id": "Kyg1O6YEGa9"
-                    },
-                    "categoryOptions": [
-                        {
-                            "id": "qk2FihwV6IL"
-                        },
-                        {
-                            "id": "yW2hYVS3S4u"
-                        }
-                    ]
-                },
-                {
-                    "category": {
-                        "id": "GIIHAr9BzzO"
-                    },
-                    "categoryOptions": [
-                        {
-                            "id": "imyqCWQ229K"
-                        },
-                        {
-                            "id": "eWeQoOlAcxV"
-                        }
-                    ]
-                },
-                {
-                    "category": {
-                        "id": "uSMHdwhxFSV"
-                    },
-                    "categoryOptions": [
-                        {
-                            "id": "KiK0FMExoqh"
                         }
                     ]
                 }

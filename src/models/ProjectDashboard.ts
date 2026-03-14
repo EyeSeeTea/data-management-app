@@ -101,6 +101,10 @@ export default class ProjectDashboard {
             this.dashboardType === "project" ? this.merTargetVsActualBenefitsChart() : undefined;
         const merTargetVsActualPeopleChart_ =
             this.dashboardType === "project" ? this.merTargetVsActualPeopleChart() : undefined;
+        const targetVsActualBenefitsDisaggregatedByIndicatorChart_ =
+            this.dashboardType === "project"
+                ? this.targetVsActualBenefitsDisaggregatedByIndicatorChart()
+                : undefined;
 
         const reportTables: Array<PartialPersistedModel<D2Visualization>> = _.compact([
             // General Data View
@@ -125,25 +129,54 @@ export default class ProjectDashboard {
         ]);
 
         const achievedMonthlyChart_ = this.achievedMonthlyChart();
+        const [
+            targetVsActualBenefitsTable_,
+            targetVsActualBenefitsWithDisaggregationTable_,
+            targetVsActualPeopleTable_,
+        ] = reportTables;
+        const otherReportTables = reportTables.slice(3);
+
+        const projectVisualizations = _.compact([
+            targetVsActualBenefitsChart_,
+            targetVsActualPeopleChart_,
+            merTargetVsActualBenefitsChart_,
+            merTargetVsActualPeopleChart_,
+            targetVsActualBenefitsTable_,
+            targetVsActualPeopleTable_,
+            targetVsActualBenefitsDisaggregatedByIndicatorChart_,
+            targetVsActualBenefitsWithDisaggregationTable_,
+        ]);
+        const defaultVisualizations = _.concat(
+            reportTables,
+            _.compact([achievedMonthlyChart_, ...charts])
+        );
         const favorites = {
-            visualizations: _.concat(
-                _.compact([
-                    targetVsActualBenefitsChart_,
-                    targetVsActualPeopleChart_,
-                    merTargetVsActualBenefitsChart_,
-                    merTargetVsActualPeopleChart_,
-                ]),
-                reportTables,
-                _.compact([achievedMonthlyChart_, ...charts])
-            ),
+            visualizations:
+                this.dashboardType === "project"
+                    ? _.concat(
+                          projectVisualizations,
+                          otherReportTables,
+                          _.compact([achievedMonthlyChart_, ...charts])
+                      )
+                    : defaultVisualizations,
         };
 
         const items: Array<PartialModel<D2DashboardItem>> = _.compact([
-            getChartDashboardItem(targetVsActualBenefitsChart_),
-            getChartDashboardItem(targetVsActualPeopleChart_),
-            getChartDashboardItem(merTargetVsActualBenefitsChart_),
-            getChartDashboardItem(merTargetVsActualPeopleChart_),
-            ...reportTables.map(reportTable => getReportTableItem(reportTable)),
+            ...(this.dashboardType === "project"
+                ? _.compact([
+                      getChartDashboardItem(targetVsActualBenefitsChart_),
+                      getChartDashboardItem(targetVsActualPeopleChart_),
+                      getChartDashboardItem(merTargetVsActualBenefitsChart_),
+                      getChartDashboardItem(merTargetVsActualPeopleChart_),
+                      getReportTableItem(targetVsActualBenefitsTable_),
+                      getReportTableItem(targetVsActualPeopleTable_),
+                      getChartDashboardItem(targetVsActualBenefitsDisaggregatedByIndicatorChart_),
+                      getReportTableItem(targetVsActualBenefitsWithDisaggregationTable_),
+                  ])
+                : reportTables.map(reportTable => getReportTableItem(reportTable))),
+            ...(this.dashboardType === "project"
+                ? otherReportTables.map(reportTable => getReportTableItem(reportTable))
+                : []),
             getChartDashboardItem(achievedMonthlyChart_, { width: toItemWidth(100) }),
             ...charts.map(chart => getChartDashboardItem(chart)),
         ]);
@@ -247,6 +280,23 @@ export default class ProjectDashboard {
             ],
             columns: [config.categories.targetActual],
             rows: [dimensions.period],
+        });
+    }
+
+    targetVsActualBenefitsDisaggregatedByIndicatorChart(): MaybeD2Visualization {
+        const { config, dataElements } = this;
+        const dataElementsNoDisaggregated = dataElements.benefit.filter(
+            de => !de.categories.includes("newRecurring")
+        );
+
+        return this.getD2VisualizationFromDefinition({
+            type: "chart",
+            key: "chart-target-actual-benefits-disaggregated-by-indicator",
+            name: i18n.t("Target vs Actual - Benefits - Column Chart Disaggregated By Indicator"),
+            items: dataElementItems(dataElementsNoDisaggregated),
+            filters: [dimensions.orgUnit],
+            columns: [dimensions.data],
+            rows: [dimensions.period, config.categories.targetActual],
         });
     }
 
