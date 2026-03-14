@@ -105,6 +105,10 @@ export default class ProjectDashboard {
             this.dashboardType === "project"
                 ? this.targetVsActualBenefitsDisaggregatedByIndicatorChart()
                 : undefined;
+        const targetVsActualPeopleDisaggregatedByIndicatorChart_ =
+            this.dashboardType === "project"
+                ? this.targetVsActualPeopleDisaggregatedByIndicatorChart()
+                : undefined;
 
         const reportTables: Array<PartialPersistedModel<D2Visualization>> = _.compact([
             // General Data View
@@ -144,6 +148,7 @@ export default class ProjectDashboard {
             targetVsActualBenefitsTable_,
             targetVsActualPeopleTable_,
             targetVsActualBenefitsDisaggregatedByIndicatorChart_,
+            targetVsActualPeopleDisaggregatedByIndicatorChart_,
             targetVsActualBenefitsWithDisaggregationTable_,
         ]);
         const defaultVisualizations = _.concat(
@@ -171,6 +176,7 @@ export default class ProjectDashboard {
                       getReportTableItem(targetVsActualBenefitsTable_),
                       getReportTableItem(targetVsActualPeopleTable_),
                       getChartDashboardItem(targetVsActualBenefitsDisaggregatedByIndicatorChart_),
+                      getChartDashboardItem(targetVsActualPeopleDisaggregatedByIndicatorChart_),
                       getReportTableItem(targetVsActualBenefitsWithDisaggregationTable_),
                   ])
                 : reportTables.map(reportTable => getReportTableItem(reportTable))),
@@ -295,6 +301,20 @@ export default class ProjectDashboard {
             name: i18n.t("Target vs Actual - Benefits - Column Chart Disaggregated By Indicator"),
             items: dataElementItems(dataElementsNoDisaggregated),
             filters: [dimensions.orgUnit],
+            columns: [dimensions.data],
+            rows: [dimensions.period, config.categories.targetActual],
+        });
+    }
+
+    targetVsActualPeopleDisaggregatedByIndicatorChart(): MaybeD2Visualization {
+        const { config, dataElements } = this;
+
+        return this.getD2VisualizationFromDefinition({
+            type: "chart",
+            key: "chart-target-actual-people-disaggregated-by-indicator",
+            name: i18n.t("Target vs Actual - People - Column Chart Disaggregated By Indicator"),
+            items: dataElementItems(dataElements.people),
+            filters: [dimensions.orgUnit, config.categories.gender, config.categories.newRecurring],
             columns: [dimensions.data],
             rows: [dimensions.period, config.categories.targetActual],
         });
