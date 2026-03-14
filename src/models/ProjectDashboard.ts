@@ -101,59 +101,78 @@ export default class ProjectDashboard {
         if (!_.isNil(minimumOrgUnits) && projectsListDashboard.orgUnits.length < minimumOrgUnits)
             return { dashboards: [], visualizations: [] };
 
-        // Note: I think this.dashboardType === "project" is the same as the condition for minimumOrgUnits = 2
-        // I'll need to check that before doing the PR
-
         const targetVsActualBenefitsChart_ =
             this.dashboardType === "project" ? this.targetVsActualBenefitsChart() : undefined;
+
         const targetVsActualPeopleChart_ =
             this.dashboardType === "project" ? this.targetVsActualPeopleChart() : undefined;
+
         const merTargetVsActualBenefitsChart_ =
             this.dashboardType === "project" ? this.merTargetVsActualBenefitsChart() : undefined;
+
         const merTargetVsActualPeopleChart_ =
             this.dashboardType === "project" ? this.merTargetVsActualPeopleChart() : undefined;
+
         const targetVsActualBenefitsDisaggregatedByIndicatorChart_ =
             this.dashboardType === "project"
                 ? this.targetVsActualBenefitsDisaggregatedByIndicatorChart()
                 : undefined;
+
         const targetVsActualPeopleDisaggregatedByIndicatorChart_ =
             this.dashboardType === "project"
                 ? this.targetVsActualPeopleDisaggregatedByIndicatorChart()
                 : undefined;
+
         const targetVsActualBenefitsLineChart_ =
             this.dashboardType === "project" ? this.targetVsActualBenefitsLineChart() : undefined;
+
         const targetVsActualPeopleLineChart_ =
             this.dashboardType === "project" ? this.targetVsActualPeopleLineChart() : undefined;
+
         const targetVsActualPeopleLineChartMaleOnly_ =
             this.dashboardType === "project"
                 ? this.targetVsActualPeopleLineChartMaleOnly()
                 : undefined;
+
         const targetVsActualPeopleLineChartFemaleOnly_ =
             this.dashboardType === "project"
                 ? this.targetVsActualPeopleLineChartFemaleOnly()
                 : undefined;
+
         const targetVsActualPeopleLineColumnChartMaleOnly_ =
             this.dashboardType === "project"
                 ? this.targetVsActualPeopleLineColumnChartMaleOnly()
                 : undefined;
+
         const targetVsActualPeopleLineColumnChartFemaleOnly_ =
             this.dashboardType === "project"
                 ? this.targetVsActualPeopleLineColumnChartFemaleOnly()
                 : undefined;
 
+        const targetVsActualBenefitsTable_ = this.targetVsActualBenefitsTable();
+        const targetVsActualBenefitsWithDisaggregationTable_ =
+            this.targetVsActualBenefitsWithDisaggregationTable();
+        const targetVsActualPeopleTable_ = this.targetVsActualPeopleTable();
+        const achievedBenefitsToDateTable_ = this.achievedBenefitsTable({ toDate: true });
+        const achievedBenefitsTotalToDateTable_ = this.achievedBenefitsTotalToDateTable();
+        const achievedPeopleTotalToDateTable_ = this.achievedPeopleTotalTable({ toDate: true });
+        const achievedBenefitsTable_ = this.achievedBenefitsTable();
+        const achievedPeopleToDateTable_ = this.achievedPeopleTable();
+        const achievedPeopleTotalTable_ = this.achievedPeopleTotalTable();
+
         const reportTables: Array<PartialPersistedModel<D2Visualization>> = _.compact([
             // General Data View
-            this.targetVsActualBenefitsTable(),
-            this.targetVsActualBenefitsWithDisaggregationTable(),
-            this.targetVsActualPeopleTable(),
+            targetVsActualBenefitsTable_,
+            targetVsActualBenefitsWithDisaggregationTable_,
+            targetVsActualPeopleTable_,
             // Percent achieved (to date)
-            this.achievedBenefitsTable({ toDate: true }),
-            this.achievedBenefitsTotalToDateTable(),
-            this.achievedPeopleTotalTable({ toDate: true }),
+            achievedBenefitsToDateTable_,
+            achievedBenefitsTotalToDateTable_,
+            achievedPeopleTotalToDateTable_,
             // Percent achieved
-            this.achievedBenefitsTable(),
-            this.achievedPeopleTable(),
-            this.achievedPeopleTotalTable(),
+            achievedBenefitsTable_,
+            achievedPeopleToDateTable_,
+            achievedPeopleTotalTable_,
         ]);
 
         const charts: Array<PartialPersistedModel<D2Visualization>> = _.compact([
@@ -162,13 +181,6 @@ export default class ProjectDashboard {
             this.genderChart(),
             this.costBenefitTable(),
         ]);
-
-        const [
-            targetVsActualBenefitsTable_,
-            targetVsActualBenefitsWithDisaggregationTable_,
-            targetVsActualPeopleTable_,
-        ] = reportTables;
-        const otherReportTables = reportTables.slice(3);
 
         const projectVisualizations = _.compact([
             targetVsActualBenefitsChart_,
@@ -185,41 +197,24 @@ export default class ProjectDashboard {
             targetVsActualPeopleLineChartFemaleOnly_,
             targetVsActualPeopleLineColumnChartMaleOnly_,
             targetVsActualPeopleLineColumnChartFemaleOnly_,
-            targetVsActualBenefitsWithDisaggregationTable_,
+            achievedBenefitsToDateTable_,
+            achievedPeopleToDateTable_,
+            ...charts,
         ]);
-        const defaultVisualizations = _.concat(reportTables, _.compact(charts));
-        const favorites = {
-            visualizations:
-                this.dashboardType === "project"
-                    ? _.concat(projectVisualizations, otherReportTables, _.compact(charts))
-                    : defaultVisualizations,
-        };
 
-        const items: Array<PartialModel<D2DashboardItem>> = _.compact([
-            ...(this.dashboardType === "project"
-                ? _.compact([
-                      getChartDashboardItem(targetVsActualBenefitsChart_),
-                      getChartDashboardItem(targetVsActualPeopleChart_),
-                      getChartDashboardItem(merTargetVsActualBenefitsChart_),
-                      getChartDashboardItem(merTargetVsActualPeopleChart_),
-                      getReportTableItem(targetVsActualBenefitsTable_),
-                      getReportTableItem(targetVsActualPeopleTable_),
-                      getChartDashboardItem(targetVsActualBenefitsDisaggregatedByIndicatorChart_),
-                      getChartDashboardItem(targetVsActualPeopleDisaggregatedByIndicatorChart_),
-                      getChartDashboardItem(targetVsActualBenefitsLineChart_),
-                      getChartDashboardItem(targetVsActualPeopleLineChart_),
-                      getChartDashboardItem(targetVsActualPeopleLineChartMaleOnly_),
-                      getChartDashboardItem(targetVsActualPeopleLineChartFemaleOnly_),
-                      getChartDashboardItem(targetVsActualPeopleLineColumnChartMaleOnly_),
-                      getChartDashboardItem(targetVsActualPeopleLineColumnChartFemaleOnly_),
-                      getReportTableItem(targetVsActualBenefitsWithDisaggregationTable_),
-                  ])
-                : reportTables.map(reportTable => getReportTableItem(reportTable))),
-            ...(this.dashboardType === "project"
-                ? otherReportTables.map(reportTable => getReportTableItem(reportTable))
-                : []),
-            ...charts.map(chart => getChartDashboardItem(chart)),
-        ]);
+        const defaultVisualizations = _.concat(reportTables, _.compact(charts));
+
+        const visualizations =
+            this.dashboardType === "project" ? projectVisualizations : defaultVisualizations;
+
+        const items: Array<PartialModel<D2DashboardItem>> = _(visualizations)
+            .map(visualization =>
+                visualization.type === "PIVOT_TABLE"
+                    ? getReportTableItem(visualization)
+                    : getChartDashboardItem(visualization)
+            )
+            .compact()
+            .value();
 
         const positionItemsOptions: PositionItemsOptions = {
             maxWidth: toItemWidth(100),
@@ -234,7 +229,7 @@ export default class ProjectDashboard {
             ...new ProjectSharing(config, projectsListDashboard).getSharingAttributesForDashboard(),
         };
 
-        return { dashboards: [dashboard], ...favorites };
+        return { dashboards: [dashboard], visualizations };
     }
 
     targetVsActualBenefitsTable(): MaybeD2Visualization {

@@ -1029,10 +1029,10 @@
                     "y": 20
                 },
                 {
-                    "id": "Ka4yijY2Vhl",
-                    "type": "REPORT_TABLE",
+                    "id": "imK8xQLwwYX",
+                    "type": "CHART",
                     "visualization": {
-                        "id": "i07AWJAND8a"
+                        "id": "uYWdSMZQ1LH"
                     },
                     "width": 29,
                     "height": 20,
@@ -1040,103 +1040,15 @@
                     "y": 20
                 },
                 {
-                    "id": "m4LaU9HizHi",
+                    "id": "Ka4yijY2Vhl",
                     "type": "REPORT_TABLE",
                     "visualization": {
-                        "id": "iOk52Z42bjp"
+                        "id": "i07AWJAND8a"
                     },
                     "width": 29,
                     "height": 20,
                     "x": 0,
                     "y": 40
-                },
-                {
-                    "id": "i66m5HwnH6v",
-                    "type": "CHART",
-                    "visualization": {
-                        "id": "a46jcQ65Axt"
-                    },
-                    "width": 29,
-                    "height": 20,
-                    "x": 29,
-                    "y": 40
-                },
-                {
-                    "id": "a4GacNVWHLX",
-                    "type": "CHART",
-                    "visualization": {
-                        "id": "GA87u7JwgSK"
-                    },
-                    "width": 29,
-                    "height": 20,
-                    "x": 0,
-                    "y": 60
-                },
-                {
-                    "id": "KYcDaXAZa1q",
-                    "type": "CHART",
-                    "visualization": {
-                        "id": "KiUTxsMMYde"
-                    },
-                    "width": 29,
-                    "height": 20,
-                    "x": 29,
-                    "y": 60
-                },
-                {
-                    "id": "a6cSVlR6bSj",
-                    "type": "CHART",
-                    "visualization": {
-                        "id": "GkoTRBEmIQt"
-                    },
-                    "width": 29,
-                    "height": 20,
-                    "x": 0,
-                    "y": 80
-                },
-                {
-                    "id": "W4DOghdXUmp",
-                    "type": "CHART",
-                    "visualization": {
-                        "id": "S2kJHgM41El"
-                    },
-                    "width": 29,
-                    "height": 20,
-                    "x": 29,
-                    "y": 80
-                },
-                {
-                    "id": "OgO4mL6ovvU",
-                    "type": "CHART",
-                    "visualization": {
-                        "id": "KasxZ8vT1n0"
-                    },
-                    "width": 29,
-                    "height": 20,
-                    "x": 0,
-                    "y": 100
-                },
-                {
-                    "id": "K2amO1SBZFm",
-                    "type": "CHART",
-                    "visualization": {
-                        "id": "W2SCFrHCiEm"
-                    },
-                    "width": 29,
-                    "height": 20,
-                    "x": 29,
-                    "y": 100
-                },
-                {
-                    "id": "GW6MALzFIVR",
-                    "type": "CHART",
-                    "visualization": {
-                        "id": "OuKm5zK7l53"
-                    },
-                    "width": 29,
-                    "height": 20,
-                    "x": 0,
-                    "y": 120
                 },
                 {
                     "id": "yWGKgz9vaOh",
@@ -1147,28 +1059,105 @@
                     "width": 29,
                     "height": 20,
                     "x": 29,
-                    "y": 120
+                    "y": 40
                 },
                 {
-                    "id": "ywvTGMsKdwL",
-                    "type": "REPORT_TABLE",
+                    "id": "i66m5HwnH6v",
+                    "type": "CHART",
                     "visualization": {
-                        "id": "SQSYgZjfA3z"
+                        "id": "a46jcQ65Axt"
                     },
                     "width": 29,
                     "height": 20,
                     "x": 0,
-                    "y": 140
+                    "y": 60
                 },
                 {
-                    "id": "qMSWdZHPjyN",
-                    "type": "REPORT_TABLE",
+                    "id": "a4GacNVWHLX",
+                    "type": "CHART",
                     "visualization": {
-                        "id": "aeGIpbJkZAX"
+                        "id": "GA87u7JwgSK"
                     },
                     "width": 29,
                     "height": 20,
                     "x": 29,
+                    "y": 60
+                },
+                {
+                    "id": "KYcDaXAZa1q",
+                    "type": "CHART",
+                    "visualization": {
+                        "id": "KiUTxsMMYde"
+                    },
+                    "width": 29,
+                    "height": 20,
+                    "x": 0,
+                    "y": 80
+                },
+                {
+                    "id": "a6cSVlR6bSj",
+                    "type": "CHART",
+                    "visualization": {
+                        "id": "GkoTRBEmIQt"
+                    },
+                    "width": 29,
+                    "height": 20,
+                    "x": 29,
+                    "y": 80
+                },
+                {
+                    "id": "W4DOghdXUmp",
+                    "type": "CHART",
+                    "visualization": {
+                        "id": "S2kJHgM41El"
+                    },
+                    "width": 29,
+                    "height": 20,
+                    "x": 0,
+                    "y": 100
+                },
+                {
+                    "id": "OgO4mL6ovvU",
+                    "type": "CHART",
+                    "visualization": {
+                        "id": "KasxZ8vT1n0"
+                    },
+                    "width": 29,
+                    "height": 20,
+                    "x": 29,
+                    "y": 100
+                },
+                {
+                    "id": "K2amO1SBZFm",
+                    "type": "CHART",
+                    "visualization": {
+                        "id": "W2SCFrHCiEm"
+                    },
+                    "width": 29,
+                    "height": 20,
+                    "x": 0,
+                    "y": 120
+                },
+                {
+                    "id": "GW6MALzFIVR",
+                    "type": "CHART",
+                    "visualization": {
+                        "id": "OuKm5zK7l53"
+                    },
+                    "width": 29,
+                    "height": 20,
+                    "x": 29,
+                    "y": 120
+                },
+                {
+                    "id": "m4LaU9HizHi",
+                    "type": "REPORT_TABLE",
+                    "visualization": {
+                        "id": "iOk52Z42bjp"
+                    },
+                    "width": 29,
+                    "height": 20,
+                    "x": 0,
                     "y": 140
                 },
                 {
@@ -1179,30 +1168,8 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 0,
-                    "y": 160
-                },
-                {
-                    "id": "mgwFIMjbsdw",
-                    "type": "REPORT_TABLE",
-                    "visualization": {
-                        "id": "GEe8ZzUkVwG"
-                    },
-                    "width": 29,
-                    "height": 20,
                     "x": 29,
-                    "y": 160
-                },
-                {
-                    "id": "ys0CVedHirZ",
-                    "type": "CHART",
-                    "visualization": {
-                        "id": "uG9C9z46CNK"
-                    },
-                    "width": 58,
-                    "height": 20,
-                    "x": 0,
-                    "y": 180
+                    "y": 140
                 },
                 {
                     "id": "KI0C90Ol10x",
@@ -1213,7 +1180,7 @@
                     "width": 29,
                     "height": 20,
                     "x": 0,
-                    "y": 200
+                    "y": 160
                 },
                 {
                     "id": "uYY7v977Ubm",
@@ -1224,7 +1191,7 @@
                     "width": 29,
                     "height": 20,
                     "x": 29,
-                    "y": 200
+                    "y": 160
                 },
                 {
                     "id": "qUqsDmtiBLF",
@@ -1235,7 +1202,7 @@
                     "width": 29,
                     "height": 20,
                     "x": 0,
-                    "y": 220
+                    "y": 180
                 },
                 {
                     "id": "mwMpIdPdu8H",
@@ -1246,7 +1213,7 @@
                     "width": 29,
                     "height": 20,
                     "x": 29,
-                    "y": 220
+                    "y": 180
                 }
             ],
             "publicAccess": "--------",
@@ -1404,17 +1371,6 @@
                     "y": 60
                 },
                 {
-                    "id": "CkcoElgGMuu",
-                    "type": "CHART",
-                    "visualization": {
-                        "id": "CYYNLjxd96q"
-                    },
-                    "width": 58,
-                    "height": 20,
-                    "x": 0,
-                    "y": 80
-                },
-                {
                     "id": "GqqyIiwIxog",
                     "type": "CHART",
                     "visualization": {
@@ -1422,8 +1378,8 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 0,
-                    "y": 100
+                    "x": 29,
+                    "y": 60
                 },
                 {
                     "id": "mCeCHYX6DOG",
@@ -1433,8 +1389,8 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 29,
-                    "y": 100
+                    "x": 0,
+                    "y": 80
                 },
                 {
                     "id": "O8EPBVIg4zK",
@@ -1444,8 +1400,8 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 0,
-                    "y": 120
+                    "x": 29,
+                    "y": 80
                 },
                 {
                     "id": "OI8TXjJJwfS",
@@ -1455,8 +1411,8 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 29,
-                    "y": 120
+                    "x": 0,
+                    "y": 100
                 }
             ],
             "publicAccess": "--------",
@@ -1552,7 +1508,9 @@
                     ]
                 }
             ],
-            "columnDimensions": ["GIIHAr9BzzO"],
+            "columnDimensions": [
+                "GIIHAr9BzzO"
+            ],
             "filters": [
                 {
                     "id": "dx"
@@ -1561,13 +1519,18 @@
                     "id": "ou"
                 }
             ],
-            "filterDimensions": ["dx", "ou"],
+            "filterDimensions": [
+                "dx",
+                "ou"
+            ],
             "rows": [
                 {
                     "id": "pe"
                 }
             ],
-            "rowDimensions": ["pe"],
+            "rowDimensions": [
+                "pe"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -1680,7 +1643,9 @@
                     ]
                 }
             ],
-            "columnDimensions": ["GIIHAr9BzzO"],
+            "columnDimensions": [
+                "GIIHAr9BzzO"
+            ],
             "filters": [
                 {
                     "id": "dx"
@@ -1719,13 +1684,20 @@
                     ]
                 }
             ],
-            "filterDimensions": ["dx", "ou", "Kyg1O6YEGa9", "uSMHdwhxFSV"],
+            "filterDimensions": [
+                "dx",
+                "ou",
+                "Kyg1O6YEGa9",
+                "uSMHdwhxFSV"
+            ],
             "rows": [
                 {
                     "id": "pe"
                 }
             ],
-            "rowDimensions": ["pe"],
+            "rowDimensions": [
+                "pe"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -1852,19 +1824,25 @@
                     ]
                 }
             ],
-            "columnDimensions": ["GIIHAr9BzzO"],
+            "columnDimensions": [
+                "GIIHAr9BzzO"
+            ],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": ["ou"],
+            "filterDimensions": [
+                "ou"
+            ],
             "rows": [
                 {
                     "id": "pe"
                 }
             ],
-            "rowDimensions": ["pe"],
+            "rowDimensions": [
+                "pe"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -1876,6 +1854,187 @@
                         },
                         {
                             "id": "eWeQoOlAcxV"
+                        }
+                    ]
+                }
+            ],
+            "publicAccess": "--------",
+            "externalAccess": false,
+            "userAccesses": [
+                {
+                    "id": "M5zQapPyTZI",
+                    "displayName": "admin admin",
+                    "access": "rw------"
+                }
+            ],
+            "userGroupAccesses": [
+                {
+                    "id": "ywuI2WspUUG",
+                    "displayName": "System Admin",
+                    "access": "rw------"
+                },
+                {
+                    "id": "mKKNXzeIAJs",
+                    "displayName": "Data Management Admin",
+                    "access": "rw------"
+                }
+            ]
+        },
+        {
+            "id": "uYWdSMZQ1LH",
+            "type": "COLUMN",
+            "name": "12345en - MyProject - MER - Target vs Actual - People - Column Chart",
+            "numberType": "VALUE",
+            "legendDisplayStyle": "FILL",
+            "rowSubTotals": true,
+            "showDimensionLabels": true,
+            "showData": true,
+            "aggregationType": "DEFAULT",
+            "legendDisplayStrategy": "FIXED",
+            "rowTotals": true,
+            "digitGroupSeparator": "SPACE",
+            "dataDimensionItems": [
+                {
+                    "dataDimensionItemType": "DATA_ELEMENT",
+                    "dataElement": {
+                        "id": "ik0ICagvIjm"
+                    }
+                }
+            ],
+            "organisationUnits": [
+                {
+                    "id": "WGC0DJ0YSis"
+                }
+            ],
+            "periods": [
+                {
+                    "id": "201810"
+                },
+                {
+                    "id": "201811"
+                },
+                {
+                    "id": "201812"
+                },
+                {
+                    "id": "201901"
+                },
+                {
+                    "id": "201902"
+                },
+                {
+                    "id": "201903"
+                }
+            ],
+            "columns": [
+                {
+                    "code": "ACTUAL_TARGET",
+                    "id": "GIIHAr9BzzO",
+                    "dataDimensionType": "ATTRIBUTE",
+                    "categoryOptions": [
+                        {
+                            "code": "TARGET",
+                            "id": "imyqCWQ229K"
+                        },
+                        {
+                            "code": "ACTUAL",
+                            "id": "eWeQoOlAcxV"
+                        }
+                    ]
+                }
+            ],
+            "columnDimensions": [
+                "GIIHAr9BzzO"
+            ],
+            "filters": [
+                {
+                    "id": "dx"
+                },
+                {
+                    "id": "ou"
+                },
+                {
+                    "code": "GENDER",
+                    "id": "Kyg1O6YEGa9",
+                    "dataDimensionType": "DISAGGREGATION",
+                    "categoryOptions": [
+                        {
+                            "code": "MALE",
+                            "id": "qk2FihwV6IL"
+                        },
+                        {
+                            "code": "FEMALE",
+                            "id": "yW2hYVS3S4u"
+                        }
+                    ]
+                },
+                {
+                    "code": "NEW_RETURNING",
+                    "id": "uSMHdwhxFSV",
+                    "dataDimensionType": "DISAGGREGATION",
+                    "categoryOptions": [
+                        {
+                            "code": "NEW",
+                            "id": "KiK0FMExoqh"
+                        },
+                        {
+                            "code": "RETURNING",
+                            "id": "a6AJLXQy8vO"
+                        }
+                    ]
+                }
+            ],
+            "filterDimensions": [
+                "dx",
+                "ou",
+                "Kyg1O6YEGa9",
+                "uSMHdwhxFSV"
+            ],
+            "rows": [
+                {
+                    "id": "pe"
+                }
+            ],
+            "rowDimensions": [
+                "pe"
+            ],
+            "categoryDimensions": [
+                {
+                    "category": {
+                        "id": "GIIHAr9BzzO"
+                    },
+                    "categoryOptions": [
+                        {
+                            "id": "imyqCWQ229K"
+                        },
+                        {
+                            "id": "eWeQoOlAcxV"
+                        }
+                    ]
+                },
+                {
+                    "category": {
+                        "id": "Kyg1O6YEGa9"
+                    },
+                    "categoryOptions": [
+                        {
+                            "id": "qk2FihwV6IL"
+                        },
+                        {
+                            "id": "yW2hYVS3S4u"
+                        }
+                    ]
+                },
+                {
+                    "category": {
+                        "id": "uSMHdwhxFSV"
+                    },
+                    "categoryOptions": [
+                        {
+                            "id": "KiK0FMExoqh"
+                        },
+                        {
+                            "id": "a6AJLXQy8vO"
                         }
                     ]
                 }
@@ -1959,13 +2118,17 @@
                     "id": "pe"
                 }
             ],
-            "columnDimensions": ["pe"],
+            "columnDimensions": [
+                "pe"
+            ],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": ["ou"],
+            "filterDimensions": [
+                "ou"
+            ],
             "rows": [
                 {
                     "id": "dx"
@@ -1986,7 +2149,10 @@
                     ]
                 }
             ],
-            "rowDimensions": ["dx", "GIIHAr9BzzO"],
+            "rowDimensions": [
+                "dx",
+                "GIIHAr9BzzO"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -2025,9 +2191,9 @@
             ]
         },
         {
-            "id": "iOk52Z42bjp",
+            "id": "iqqgnCj9DQj",
             "type": "PIVOT_TABLE",
-            "name": "12345en - MyProject - Achieved to date (%) - Benefits",
+            "name": "12345en - MyProject - Target vs Actual - People",
             "numberType": "VALUE",
             "legendDisplayStyle": "FILL",
             "rowSubTotals": true,
@@ -2039,15 +2205,21 @@
             "digitGroupSeparator": "SPACE",
             "dataDimensionItems": [
                 {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "eCufXa6RkTm"
+                    "dataDimensionItemType": "DATA_ELEMENT",
+                    "dataElement": {
+                        "id": "K6mAC5SiO29"
                     }
                 },
                 {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "i01veyO4Cuw"
+                    "dataDimensionItemType": "DATA_ELEMENT",
+                    "dataElement": {
+                        "id": "ik0ICagvIjm"
+                    }
+                },
+                {
+                    "dataDimensionItemType": "DATA_ELEMENT",
+                    "dataElement": {
+                        "id": "GQyudNlGzkI"
                     }
                 }
             ],
@@ -2079,22 +2251,116 @@
             "columns": [
                 {
                     "id": "pe"
+                },
+                {
+                    "code": "GENDER",
+                    "id": "Kyg1O6YEGa9",
+                    "dataDimensionType": "DISAGGREGATION",
+                    "categoryOptions": [
+                        {
+                            "code": "MALE",
+                            "id": "qk2FihwV6IL"
+                        },
+                        {
+                            "code": "FEMALE",
+                            "id": "yW2hYVS3S4u"
+                        }
+                    ]
                 }
             ],
-            "columnDimensions": ["pe"],
+            "columnDimensions": [
+                "pe",
+                "Kyg1O6YEGa9"
+            ],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": ["ou"],
+            "filterDimensions": [
+                "ou"
+            ],
             "rows": [
                 {
                     "id": "dx"
+                },
+                {
+                    "code": "ACTUAL_TARGET",
+                    "id": "GIIHAr9BzzO",
+                    "dataDimensionType": "ATTRIBUTE",
+                    "categoryOptions": [
+                        {
+                            "code": "TARGET",
+                            "id": "imyqCWQ229K"
+                        },
+                        {
+                            "code": "ACTUAL",
+                            "id": "eWeQoOlAcxV"
+                        }
+                    ]
+                },
+                {
+                    "code": "NEW_RETURNING",
+                    "id": "uSMHdwhxFSV",
+                    "dataDimensionType": "DISAGGREGATION",
+                    "categoryOptions": [
+                        {
+                            "code": "NEW",
+                            "id": "KiK0FMExoqh"
+                        },
+                        {
+                            "code": "RETURNING",
+                            "id": "a6AJLXQy8vO"
+                        }
+                    ]
                 }
             ],
-            "rowDimensions": ["dx"],
-            "categoryDimensions": [],
+            "rowDimensions": [
+                "dx",
+                "GIIHAr9BzzO",
+                "uSMHdwhxFSV"
+            ],
+            "categoryDimensions": [
+                {
+                    "category": {
+                        "id": "Kyg1O6YEGa9"
+                    },
+                    "categoryOptions": [
+                        {
+                            "id": "qk2FihwV6IL"
+                        },
+                        {
+                            "id": "yW2hYVS3S4u"
+                        }
+                    ]
+                },
+                {
+                    "category": {
+                        "id": "GIIHAr9BzzO"
+                    },
+                    "categoryOptions": [
+                        {
+                            "id": "imyqCWQ229K"
+                        },
+                        {
+                            "id": "eWeQoOlAcxV"
+                        }
+                    ]
+                },
+                {
+                    "category": {
+                        "id": "uSMHdwhxFSV"
+                    },
+                    "categoryOptions": [
+                        {
+                            "id": "KiK0FMExoqh"
+                        },
+                        {
+                            "id": "a6AJLXQy8vO"
+                        }
+                    ]
+                }
+            ],
             "publicAccess": "--------",
             "externalAccess": false,
             "userAccesses": [
@@ -2115,11 +2381,7 @@
                     "displayName": "Data Management Admin",
                     "access": "rw------"
                 }
-            ],
-            "legendSet": {
-                "code": "ACTUAL_TARGET_ACHIEVED",
-                "id": "yoAt108kUFm"
-            }
+            ]
         },
         {
             "id": "a46jcQ65Axt",
@@ -2178,13 +2440,17 @@
                     "id": "dx"
                 }
             ],
-            "columnDimensions": ["dx"],
+            "columnDimensions": [
+                "dx"
+            ],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": ["ou"],
+            "filterDimensions": [
+                "ou"
+            ],
             "rows": [
                 {
                     "id": "pe"
@@ -2205,7 +2471,10 @@
                     ]
                 }
             ],
-            "rowDimensions": ["pe", "GIIHAr9BzzO"],
+            "rowDimensions": [
+                "pe",
+                "GIIHAr9BzzO"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -2306,7 +2575,9 @@
                     "id": "dx"
                 }
             ],
-            "columnDimensions": ["dx"],
+            "columnDimensions": [
+                "dx"
+            ],
             "filters": [
                 {
                     "id": "ou"
@@ -2342,7 +2613,11 @@
                     ]
                 }
             ],
-            "filterDimensions": ["ou", "Kyg1O6YEGa9", "uSMHdwhxFSV"],
+            "filterDimensions": [
+                "ou",
+                "Kyg1O6YEGa9",
+                "uSMHdwhxFSV"
+            ],
             "rows": [
                 {
                     "id": "pe"
@@ -2363,7 +2638,10 @@
                     ]
                 }
             ],
-            "rowDimensions": ["pe", "GIIHAr9BzzO"],
+            "rowDimensions": [
+                "pe",
+                "GIIHAr9BzzO"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -2496,13 +2774,17 @@
                     ]
                 }
             ],
-            "columnDimensions": ["GIIHAr9BzzO"],
+            "columnDimensions": [
+                "GIIHAr9BzzO"
+            ],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": ["ou"],
+            "filterDimensions": [
+                "ou"
+            ],
             "rows": [
                 {
                     "id": "dx"
@@ -2511,7 +2793,10 @@
                     "id": "pe"
                 }
             ],
-            "rowDimensions": ["dx", "pe"],
+            "rowDimensions": [
+                "dx",
+                "pe"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -2624,7 +2909,9 @@
                     ]
                 }
             ],
-            "columnDimensions": ["GIIHAr9BzzO"],
+            "columnDimensions": [
+                "GIIHAr9BzzO"
+            ],
             "filters": [
                 {
                     "id": "ou"
@@ -2660,7 +2947,11 @@
                     ]
                 }
             ],
-            "filterDimensions": ["ou", "Kyg1O6YEGa9", "uSMHdwhxFSV"],
+            "filterDimensions": [
+                "ou",
+                "Kyg1O6YEGa9",
+                "uSMHdwhxFSV"
+            ],
             "rows": [
                 {
                     "id": "dx"
@@ -2669,7 +2960,10 @@
                     "id": "pe"
                 }
             ],
-            "rowDimensions": ["dx", "pe"],
+            "rowDimensions": [
+                "dx",
+                "pe"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -2808,7 +3102,9 @@
                     ]
                 }
             ],
-            "columnDimensions": ["GIIHAr9BzzO"],
+            "columnDimensions": [
+                "GIIHAr9BzzO"
+            ],
             "filters": [
                 {
                     "id": "ou"
@@ -2837,7 +3133,11 @@
                     ]
                 }
             ],
-            "filterDimensions": ["ou", "Kyg1O6YEGa9", "uSMHdwhxFSV"],
+            "filterDimensions": [
+                "ou",
+                "Kyg1O6YEGa9",
+                "uSMHdwhxFSV"
+            ],
             "rows": [
                 {
                     "id": "dx"
@@ -2846,7 +3146,10 @@
                     "id": "pe"
                 }
             ],
-            "rowDimensions": ["dx", "pe"],
+            "rowDimensions": [
+                "dx",
+                "pe"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -2982,7 +3285,9 @@
                     ]
                 }
             ],
-            "columnDimensions": ["GIIHAr9BzzO"],
+            "columnDimensions": [
+                "GIIHAr9BzzO"
+            ],
             "filters": [
                 {
                     "id": "ou"
@@ -3011,7 +3316,11 @@
                     ]
                 }
             ],
-            "filterDimensions": ["ou", "Kyg1O6YEGa9", "uSMHdwhxFSV"],
+            "filterDimensions": [
+                "ou",
+                "Kyg1O6YEGa9",
+                "uSMHdwhxFSV"
+            ],
             "rows": [
                 {
                     "id": "dx"
@@ -3020,7 +3329,10 @@
                     "id": "pe"
                 }
             ],
-            "rowDimensions": ["dx", "pe"],
+            "rowDimensions": [
+                "dx",
+                "pe"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -3156,7 +3468,9 @@
                     ]
                 }
             ],
-            "columnDimensions": ["GIIHAr9BzzO"],
+            "columnDimensions": [
+                "GIIHAr9BzzO"
+            ],
             "filters": [
                 {
                     "id": "ou"
@@ -3185,7 +3499,11 @@
                     ]
                 }
             ],
-            "filterDimensions": ["ou", "Kyg1O6YEGa9", "uSMHdwhxFSV"],
+            "filterDimensions": [
+                "ou",
+                "Kyg1O6YEGa9",
+                "uSMHdwhxFSV"
+            ],
             "rows": [
                 {
                     "id": "dx"
@@ -3194,7 +3512,10 @@
                     "id": "pe"
                 }
             ],
-            "rowDimensions": ["dx", "pe"],
+            "rowDimensions": [
+                "dx",
+                "pe"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -3341,7 +3662,9 @@
                     ]
                 }
             ],
-            "columnDimensions": ["GIIHAr9BzzO"],
+            "columnDimensions": [
+                "GIIHAr9BzzO"
+            ],
             "filters": [
                 {
                     "id": "ou"
@@ -3370,7 +3693,11 @@
                     ]
                 }
             ],
-            "filterDimensions": ["ou", "Kyg1O6YEGa9", "uSMHdwhxFSV"],
+            "filterDimensions": [
+                "ou",
+                "Kyg1O6YEGa9",
+                "uSMHdwhxFSV"
+            ],
             "rows": [
                 {
                     "id": "dx"
@@ -3379,7 +3706,10 @@
                     "id": "pe"
                 }
             ],
-            "rowDimensions": ["dx", "pe"],
+            "rowDimensions": [
+                "dx",
+                "pe"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -3452,315 +3782,9 @@
             ]
         },
         {
-            "id": "iqqgnCj9DQj",
+            "id": "iOk52Z42bjp",
             "type": "PIVOT_TABLE",
-            "name": "12345en - MyProject - Target vs Actual - People",
-            "numberType": "VALUE",
-            "legendDisplayStyle": "FILL",
-            "rowSubTotals": true,
-            "showDimensionLabels": true,
-            "showData": true,
-            "aggregationType": "DEFAULT",
-            "legendDisplayStrategy": "FIXED",
-            "rowTotals": true,
-            "digitGroupSeparator": "SPACE",
-            "dataDimensionItems": [
-                {
-                    "dataDimensionItemType": "DATA_ELEMENT",
-                    "dataElement": {
-                        "id": "K6mAC5SiO29"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "DATA_ELEMENT",
-                    "dataElement": {
-                        "id": "ik0ICagvIjm"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "DATA_ELEMENT",
-                    "dataElement": {
-                        "id": "GQyudNlGzkI"
-                    }
-                }
-            ],
-            "organisationUnits": [
-                {
-                    "id": "WGC0DJ0YSis"
-                }
-            ],
-            "periods": [
-                {
-                    "id": "201810"
-                },
-                {
-                    "id": "201811"
-                },
-                {
-                    "id": "201812"
-                },
-                {
-                    "id": "201901"
-                },
-                {
-                    "id": "201902"
-                },
-                {
-                    "id": "201903"
-                }
-            ],
-            "columns": [
-                {
-                    "id": "pe"
-                },
-                {
-                    "code": "GENDER",
-                    "id": "Kyg1O6YEGa9",
-                    "dataDimensionType": "DISAGGREGATION",
-                    "categoryOptions": [
-                        {
-                            "code": "MALE",
-                            "id": "qk2FihwV6IL"
-                        },
-                        {
-                            "code": "FEMALE",
-                            "id": "yW2hYVS3S4u"
-                        }
-                    ]
-                }
-            ],
-            "columnDimensions": ["pe", "Kyg1O6YEGa9"],
-            "filters": [
-                {
-                    "id": "ou"
-                }
-            ],
-            "filterDimensions": ["ou"],
-            "rows": [
-                {
-                    "id": "dx"
-                },
-                {
-                    "code": "ACTUAL_TARGET",
-                    "id": "GIIHAr9BzzO",
-                    "dataDimensionType": "ATTRIBUTE",
-                    "categoryOptions": [
-                        {
-                            "code": "TARGET",
-                            "id": "imyqCWQ229K"
-                        },
-                        {
-                            "code": "ACTUAL",
-                            "id": "eWeQoOlAcxV"
-                        }
-                    ]
-                },
-                {
-                    "code": "NEW_RETURNING",
-                    "id": "uSMHdwhxFSV",
-                    "dataDimensionType": "DISAGGREGATION",
-                    "categoryOptions": [
-                        {
-                            "code": "NEW",
-                            "id": "KiK0FMExoqh"
-                        },
-                        {
-                            "code": "RETURNING",
-                            "id": "a6AJLXQy8vO"
-                        }
-                    ]
-                }
-            ],
-            "rowDimensions": ["dx", "GIIHAr9BzzO", "uSMHdwhxFSV"],
-            "categoryDimensions": [
-                {
-                    "category": {
-                        "id": "Kyg1O6YEGa9"
-                    },
-                    "categoryOptions": [
-                        {
-                            "id": "qk2FihwV6IL"
-                        },
-                        {
-                            "id": "yW2hYVS3S4u"
-                        }
-                    ]
-                },
-                {
-                    "category": {
-                        "id": "GIIHAr9BzzO"
-                    },
-                    "categoryOptions": [
-                        {
-                            "id": "imyqCWQ229K"
-                        },
-                        {
-                            "id": "eWeQoOlAcxV"
-                        }
-                    ]
-                },
-                {
-                    "category": {
-                        "id": "uSMHdwhxFSV"
-                    },
-                    "categoryOptions": [
-                        {
-                            "id": "KiK0FMExoqh"
-                        },
-                        {
-                            "id": "a6AJLXQy8vO"
-                        }
-                    ]
-                }
-            ],
-            "publicAccess": "--------",
-            "externalAccess": false,
-            "userAccesses": [
-                {
-                    "id": "M5zQapPyTZI",
-                    "displayName": "admin admin",
-                    "access": "rw------"
-                }
-            ],
-            "userGroupAccesses": [
-                {
-                    "id": "ywuI2WspUUG",
-                    "displayName": "System Admin",
-                    "access": "rw------"
-                },
-                {
-                    "id": "mKKNXzeIAJs",
-                    "displayName": "Data Management Admin",
-                    "access": "rw------"
-                }
-            ]
-        },
-        {
-            "id": "SQSYgZjfA3z",
-            "type": "PIVOT_TABLE",
-            "name": "12345en - MyProject - Achieved total to date (%) - People",
-            "numberType": "VALUE",
-            "legendDisplayStyle": "FILL",
-            "rowSubTotals": true,
-            "showDimensionLabels": true,
-            "showData": true,
-            "aggregationType": "DEFAULT",
-            "legendDisplayStrategy": "FIXED",
-            "rowTotals": false,
-            "digitGroupSeparator": "SPACE",
-            "dataDimensionItems": [
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "eYmeRzhBFV4"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "u404ICrBKj3"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "K4sH0aQDdeL"
-                    }
-                }
-            ],
-            "organisationUnits": [
-                {
-                    "id": "WGC0DJ0YSis"
-                }
-            ],
-            "periods": [
-                {
-                    "id": "201810"
-                },
-                {
-                    "id": "201811"
-                },
-                {
-                    "id": "201812"
-                },
-                {
-                    "id": "201901"
-                },
-                {
-                    "id": "201902"
-                },
-                {
-                    "id": "201903"
-                }
-            ],
-            "columns": [
-                {
-                    "id": "uSMHdwhxFSV",
-                    "categoryOptions": [
-                        {
-                            "id": "KiK0FMExoqh"
-                        }
-                    ]
-                }
-            ],
-            "columnDimensions": ["uSMHdwhxFSV"],
-            "filters": [
-                {
-                    "id": "ou"
-                },
-                {
-                    "id": "pe"
-                }
-            ],
-            "filterDimensions": ["ou", "pe"],
-            "rows": [
-                {
-                    "id": "dx"
-                }
-            ],
-            "rowDimensions": ["dx"],
-            "categoryDimensions": [
-                {
-                    "category": {
-                        "id": "uSMHdwhxFSV"
-                    },
-                    "categoryOptions": [
-                        {
-                            "id": "KiK0FMExoqh"
-                        }
-                    ]
-                }
-            ],
-            "publicAccess": "--------",
-            "externalAccess": false,
-            "userAccesses": [
-                {
-                    "id": "M5zQapPyTZI",
-                    "displayName": "admin admin",
-                    "access": "rw------"
-                }
-            ],
-            "userGroupAccesses": [
-                {
-                    "id": "ywuI2WspUUG",
-                    "displayName": "System Admin",
-                    "access": "rw------"
-                },
-                {
-                    "id": "mKKNXzeIAJs",
-                    "displayName": "Data Management Admin",
-                    "access": "rw------"
-                }
-            ],
-            "legendSet": {
-                "code": "ACTUAL_TARGET_ACHIEVED",
-                "id": "yoAt108kUFm"
-            }
-        },
-        {
-            "id": "aeGIpbJkZAX",
-            "type": "PIVOT_TABLE",
-            "name": "12345en - MyProject - Achieved (%) - Benefits",
+            "name": "12345en - MyProject - Achieved to date (%) - Benefits",
             "numberType": "VALUE",
             "legendDisplayStyle": "FILL",
             "rowSubTotals": true,
@@ -3814,19 +3838,25 @@
                     "id": "pe"
                 }
             ],
-            "columnDimensions": ["pe"],
+            "columnDimensions": [
+                "pe"
+            ],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": ["ou"],
+            "filterDimensions": [
+                "ou"
+            ],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": ["dx"],
+            "rowDimensions": [
+                "dx"
+            ],
             "categoryDimensions": [],
             "publicAccess": "--------",
             "externalAccess": false,
@@ -3917,19 +3947,25 @@
                     "id": "pe"
                 }
             ],
-            "columnDimensions": ["pe"],
+            "columnDimensions": [
+                "pe"
+            ],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": ["ou"],
+            "filterDimensions": [
+                "ou"
+            ],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": ["dx"],
+            "rowDimensions": [
+                "dx"
+            ],
             "categoryDimensions": [],
             "publicAccess": "--------",
             "externalAccess": false,
@@ -3956,239 +3992,6 @@
                 "code": "ACTUAL_TARGET_ACHIEVED",
                 "id": "yoAt108kUFm"
             }
-        },
-        {
-            "id": "GEe8ZzUkVwG",
-            "type": "PIVOT_TABLE",
-            "name": "12345en - MyProject - Achieved total (%) - People",
-            "numberType": "VALUE",
-            "legendDisplayStyle": "FILL",
-            "rowSubTotals": true,
-            "showDimensionLabels": true,
-            "showData": true,
-            "aggregationType": "DEFAULT",
-            "legendDisplayStrategy": "FIXED",
-            "rowTotals": false,
-            "digitGroupSeparator": "SPACE",
-            "dataDimensionItems": [
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "eYmeRzhBFV4"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "u404ICrBKj3"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "K4sH0aQDdeL"
-                    }
-                }
-            ],
-            "organisationUnits": [
-                {
-                    "id": "WGC0DJ0YSis"
-                }
-            ],
-            "periods": [
-                {
-                    "id": "201810"
-                },
-                {
-                    "id": "201811"
-                },
-                {
-                    "id": "201812"
-                },
-                {
-                    "id": "201901"
-                },
-                {
-                    "id": "201902"
-                },
-                {
-                    "id": "201903"
-                }
-            ],
-            "columns": [
-                {
-                    "id": "uSMHdwhxFSV",
-                    "categoryOptions": [
-                        {
-                            "id": "KiK0FMExoqh"
-                        }
-                    ]
-                }
-            ],
-            "columnDimensions": ["uSMHdwhxFSV"],
-            "filters": [
-                {
-                    "id": "ou"
-                },
-                {
-                    "id": "pe"
-                }
-            ],
-            "filterDimensions": ["ou", "pe"],
-            "rows": [
-                {
-                    "id": "dx"
-                }
-            ],
-            "rowDimensions": ["dx"],
-            "categoryDimensions": [
-                {
-                    "category": {
-                        "id": "uSMHdwhxFSV"
-                    },
-                    "categoryOptions": [
-                        {
-                            "id": "KiK0FMExoqh"
-                        }
-                    ]
-                }
-            ],
-            "publicAccess": "--------",
-            "externalAccess": false,
-            "userAccesses": [
-                {
-                    "id": "M5zQapPyTZI",
-                    "displayName": "admin admin",
-                    "access": "rw------"
-                }
-            ],
-            "userGroupAccesses": [
-                {
-                    "id": "ywuI2WspUUG",
-                    "displayName": "System Admin",
-                    "access": "rw------"
-                },
-                {
-                    "id": "mKKNXzeIAJs",
-                    "displayName": "Data Management Admin",
-                    "access": "rw------"
-                }
-            ],
-            "legendSet": {
-                "code": "ACTUAL_TARGET_ACHIEVED",
-                "id": "yoAt108kUFm"
-            }
-        },
-        {
-            "id": "uG9C9z46CNK",
-            "type": "COLUMN",
-            "name": "12345en - MyProject - Achieved monthly (%)",
-            "numberType": "VALUE",
-            "legendDisplayStyle": "FILL",
-            "rowSubTotals": true,
-            "showDimensionLabels": true,
-            "showData": true,
-            "aggregationType": "DEFAULT",
-            "legendDisplayStrategy": "FIXED",
-            "rowTotals": true,
-            "digitGroupSeparator": "SPACE",
-            "dataDimensionItems": [
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "eCufXa6RkTm"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "i01veyO4Cuw"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "eYmeRzhBFV4"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "u404ICrBKj3"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "K4sH0aQDdeL"
-                    }
-                }
-            ],
-            "organisationUnits": [
-                {
-                    "id": "WGC0DJ0YSis"
-                }
-            ],
-            "periods": [
-                {
-                    "id": "201810"
-                },
-                {
-                    "id": "201811"
-                },
-                {
-                    "id": "201812"
-                },
-                {
-                    "id": "201901"
-                },
-                {
-                    "id": "201902"
-                },
-                {
-                    "id": "201903"
-                }
-            ],
-            "columns": [
-                {
-                    "id": "pe"
-                }
-            ],
-            "columnDimensions": ["pe"],
-            "filters": [
-                {
-                    "id": "ou"
-                }
-            ],
-            "filterDimensions": ["ou"],
-            "rows": [
-                {
-                    "id": "dx"
-                }
-            ],
-            "rowDimensions": ["dx"],
-            "categoryDimensions": [],
-            "publicAccess": "--------",
-            "externalAccess": false,
-            "userAccesses": [
-                {
-                    "id": "M5zQapPyTZI",
-                    "displayName": "admin admin",
-                    "access": "rw------"
-                }
-            ],
-            "userGroupAccesses": [
-                {
-                    "id": "ywuI2WspUUG",
-                    "displayName": "System Admin",
-                    "access": "rw------"
-                },
-                {
-                    "id": "mKKNXzeIAJs",
-                    "displayName": "Data Management Admin",
-                    "access": "rw------"
-                }
-            ]
         },
         {
             "id": "qmsj4FqnVPX",
@@ -4247,19 +4050,25 @@
                     "id": "ou"
                 }
             ],
-            "columnDimensions": ["ou"],
+            "columnDimensions": [
+                "ou"
+            ],
             "filters": [
                 {
                     "id": "pe"
                 }
             ],
-            "filterDimensions": ["pe"],
+            "filterDimensions": [
+                "pe"
+            ],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": ["dx"],
+            "rowDimensions": [
+                "dx"
+            ],
             "categoryDimensions": [],
             "publicAccess": "--------",
             "externalAccess": false,
@@ -4346,7 +4155,9 @@
                     "id": "ou"
                 }
             ],
-            "columnDimensions": ["ou"],
+            "columnDimensions": [
+                "ou"
+            ],
             "filters": [
                 {
                     "id": "pe"
@@ -4360,13 +4171,18 @@
                     ]
                 }
             ],
-            "filterDimensions": ["pe", "uSMHdwhxFSV"],
+            "filterDimensions": [
+                "pe",
+                "uSMHdwhxFSV"
+            ],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": ["dx"],
+            "rowDimensions": [
+                "dx"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -4476,7 +4292,9 @@
                     ]
                 }
             ],
-            "columnDimensions": ["Kyg1O6YEGa9"],
+            "columnDimensions": [
+                "Kyg1O6YEGa9"
+            ],
             "filters": [
                 {
                     "id": "ou"
@@ -4493,13 +4311,19 @@
                     ]
                 }
             ],
-            "filterDimensions": ["ou", "pe", "uSMHdwhxFSV"],
+            "filterDimensions": [
+                "ou",
+                "pe",
+                "uSMHdwhxFSV"
+            ],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": ["dx"],
+            "rowDimensions": [
+                "dx"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -4598,19 +4422,25 @@
                     "id": "ou"
                 }
             ],
-            "columnDimensions": ["ou"],
+            "columnDimensions": [
+                "ou"
+            ],
             "filters": [
                 {
                     "id": "pe"
                 }
             ],
-            "filterDimensions": ["pe"],
+            "filterDimensions": [
+                "pe"
+            ],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": ["dx"],
+            "rowDimensions": [
+                "dx"
+            ],
             "categoryDimensions": [],
             "publicAccess": "--------",
             "externalAccess": false,
@@ -4735,7 +4565,9 @@
                     "id": "dx"
                 }
             ],
-            "columnDimensions": ["dx"],
+            "columnDimensions": [
+                "dx"
+            ],
             "filters": [
                 {
                     "id": "pe"
@@ -4757,13 +4589,19 @@
                     ]
                 }
             ],
-            "filterDimensions": ["pe", "uSMHdwhxFSV", "GIIHAr9BzzO"],
+            "filterDimensions": [
+                "pe",
+                "uSMHdwhxFSV",
+                "GIIHAr9BzzO"
+            ],
             "rows": [
                 {
                     "id": "ou"
                 }
             ],
-            "rowDimensions": ["ou"],
+            "rowDimensions": [
+                "ou"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -4871,7 +4709,9 @@
                     "id": "dx"
                 }
             ],
-            "columnDimensions": ["dx"],
+            "columnDimensions": [
+                "dx"
+            ],
             "filters": [
                 {
                     "id": "pe"
@@ -4885,13 +4725,18 @@
                     ]
                 }
             ],
-            "filterDimensions": ["pe", "GIIHAr9BzzO"],
+            "filterDimensions": [
+                "pe",
+                "GIIHAr9BzzO"
+            ],
             "rows": [
                 {
                     "id": "ou"
                 }
             ],
-            "rowDimensions": ["ou"],
+            "rowDimensions": [
+                "ou"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -5001,7 +4846,9 @@
                     "id": "dx"
                 }
             ],
-            "columnDimensions": ["dx"],
+            "columnDimensions": [
+                "dx"
+            ],
             "filters": [
                 {
                     "id": "ou"
@@ -5023,13 +4870,19 @@
                     ]
                 }
             ],
-            "filterDimensions": ["ou", "uSMHdwhxFSV", "GIIHAr9BzzO"],
+            "filterDimensions": [
+                "ou",
+                "uSMHdwhxFSV",
+                "GIIHAr9BzzO"
+            ],
             "rows": [
                 {
                     "id": "pe"
                 }
             ],
-            "rowDimensions": ["pe"],
+            "rowDimensions": [
+                "pe"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -5131,7 +4984,9 @@
                     "id": "dx"
                 }
             ],
-            "columnDimensions": ["dx"],
+            "columnDimensions": [
+                "dx"
+            ],
             "filters": [
                 {
                     "id": "ou"
@@ -5145,13 +5000,18 @@
                     ]
                 }
             ],
-            "filterDimensions": ["ou", "GIIHAr9BzzO"],
+            "filterDimensions": [
+                "ou",
+                "GIIHAr9BzzO"
+            ],
             "rows": [
                 {
                     "id": "pe"
                 }
             ],
-            "rowDimensions": ["pe"],
+            "rowDimensions": [
+                "pe"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -5322,13 +5182,17 @@
                     "id": "pe"
                 }
             ],
-            "columnDimensions": ["pe"],
+            "columnDimensions": [
+                "pe"
+            ],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": ["ou"],
+            "filterDimensions": [
+                "ou"
+            ],
             "rows": [
                 {
                     "id": "dx"
@@ -5349,7 +5213,10 @@
                     ]
                 }
             ],
-            "rowDimensions": ["dx", "GIIHAr9BzzO"],
+            "rowDimensions": [
+                "dx",
+                "GIIHAr9BzzO"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -5576,13 +5443,18 @@
                     ]
                 }
             ],
-            "columnDimensions": ["pe", "Kyg1O6YEGa9"],
+            "columnDimensions": [
+                "pe",
+                "Kyg1O6YEGa9"
+            ],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": ["ou"],
+            "filterDimensions": [
+                "ou"
+            ],
             "rows": [
                 {
                     "id": "dx"
@@ -5618,7 +5490,11 @@
                     ]
                 }
             ],
-            "rowDimensions": ["dx", "GIIHAr9BzzO", "uSMHdwhxFSV"],
+            "rowDimensions": [
+                "dx",
+                "GIIHAr9BzzO",
+                "uSMHdwhxFSV"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -5838,19 +5714,25 @@
                     "id": "pe"
                 }
             ],
-            "columnDimensions": ["pe"],
+            "columnDimensions": [
+                "pe"
+            ],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": ["ou"],
+            "filterDimensions": [
+                "ou"
+            ],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": ["dx"],
+            "rowDimensions": [
+                "dx"
+            ],
             "categoryDimensions": [],
             "publicAccess": "--------",
             "externalAccess": false,
@@ -6057,7 +5939,9 @@
                     ]
                 }
             ],
-            "columnDimensions": ["uSMHdwhxFSV"],
+            "columnDimensions": [
+                "uSMHdwhxFSV"
+            ],
             "filters": [
                 {
                     "id": "ou"
@@ -6066,13 +5950,18 @@
                     "id": "pe"
                 }
             ],
-            "filterDimensions": ["ou", "pe"],
+            "filterDimensions": [
+                "ou",
+                "pe"
+            ],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": ["dx"],
+            "rowDimensions": [
+                "dx"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -6267,19 +6156,25 @@
                     "id": "pe"
                 }
             ],
-            "columnDimensions": ["pe"],
+            "columnDimensions": [
+                "pe"
+            ],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": ["ou"],
+            "filterDimensions": [
+                "ou"
+            ],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": ["dx"],
+            "rowDimensions": [
+                "dx"
+            ],
             "categoryDimensions": [],
             "publicAccess": "--------",
             "externalAccess": false,
@@ -6481,19 +6376,25 @@
                     "id": "pe"
                 }
             ],
-            "columnDimensions": ["pe"],
+            "columnDimensions": [
+                "pe"
+            ],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": ["ou"],
+            "filterDimensions": [
+                "ou"
+            ],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": ["dx"],
+            "rowDimensions": [
+                "dx"
+            ],
             "categoryDimensions": [],
             "publicAccess": "--------",
             "externalAccess": false,
@@ -6700,7 +6601,9 @@
                     ]
                 }
             ],
-            "columnDimensions": ["uSMHdwhxFSV"],
+            "columnDimensions": [
+                "uSMHdwhxFSV"
+            ],
             "filters": [
                 {
                     "id": "ou"
@@ -6709,13 +6612,18 @@
                     "id": "pe"
                 }
             ],
-            "filterDimensions": ["ou", "pe"],
+            "filterDimensions": [
+                "ou",
+                "pe"
+            ],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": ["dx"],
+            "rowDimensions": [
+                "dx"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -6753,264 +6661,6 @@
                 "code": "ACTUAL_TARGET_ACHIEVED",
                 "id": "yoAt108kUFm"
             }
-        },
-        {
-            "id": "CYYNLjxd96q",
-            "type": "COLUMN",
-            "name": "Award Number 12345 - Achieved monthly (%)",
-            "numberType": "VALUE",
-            "legendDisplayStyle": "FILL",
-            "rowSubTotals": true,
-            "showDimensionLabels": true,
-            "showData": true,
-            "aggregationType": "DEFAULT",
-            "legendDisplayStrategy": "FIXED",
-            "rowTotals": true,
-            "digitGroupSeparator": "SPACE",
-            "dataDimensionItems": [
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "qu0x94utOgv"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "qQsafE8eZQt"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "isKcihOpMrF"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "OOIDqW7eQqr"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "CqURW24bmHJ"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "iewd6jLYV4H"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "K6ipXoSOmt2"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "qgGwMTqEq4d"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "aOALuHaoaEQ"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "yeQN47GFqwM"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "K2ADN2EmEmr"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "qW6b6ZRfXA5"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "m68LzR6ho7V"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "KOKIhtZYDOh"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "eCufXa6RkTm"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "i01veyO4Cuw"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "eYmeRzhBFV4"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "u404ICrBKj3"
-                    }
-                },
-                {
-                    "dataDimensionItemType": "INDICATOR",
-                    "indicator": {
-                        "id": "K4sH0aQDdeL"
-                    }
-                }
-            ],
-            "organisationUnits": [
-                {
-                    "id": "WGC0DJ0YSis"
-                },
-                {
-                    "id": "TvSmIyYcRnd"
-                },
-                {
-                    "id": "cqZ9zQfePzQ"
-                }
-            ],
-            "periods": [
-                {
-                    "id": "201810"
-                },
-                {
-                    "id": "201811"
-                },
-                {
-                    "id": "201812"
-                },
-                {
-                    "id": "201901"
-                },
-                {
-                    "id": "201902"
-                },
-                {
-                    "id": "201903"
-                },
-                {
-                    "id": "201904"
-                },
-                {
-                    "id": "201905"
-                },
-                {
-                    "id": "201906"
-                },
-                {
-                    "id": "201907"
-                },
-                {
-                    "id": "201908"
-                },
-                {
-                    "id": "201909"
-                },
-                {
-                    "id": "201910"
-                },
-                {
-                    "id": "201911"
-                },
-                {
-                    "id": "201912"
-                },
-                {
-                    "id": "202001"
-                },
-                {
-                    "id": "202002"
-                },
-                {
-                    "id": "202003"
-                },
-                {
-                    "id": "202004"
-                },
-                {
-                    "id": "202005"
-                },
-                {
-                    "id": "202006"
-                },
-                {
-                    "id": "202007"
-                },
-                {
-                    "id": "202008"
-                },
-                {
-                    "id": "202009"
-                },
-                {
-                    "id": "202010"
-                }
-            ],
-            "columns": [
-                {
-                    "id": "pe"
-                }
-            ],
-            "columnDimensions": ["pe"],
-            "filters": [
-                {
-                    "id": "ou"
-                }
-            ],
-            "filterDimensions": ["ou"],
-            "rows": [
-                {
-                    "id": "dx"
-                }
-            ],
-            "rowDimensions": ["dx"],
-            "categoryDimensions": [],
-            "publicAccess": "--------",
-            "externalAccess": false,
-            "userAccesses": [
-                {
-                    "id": "M5zQapPyTZI",
-                    "displayName": "admin admin",
-                    "access": "rw------"
-                }
-            ],
-            "userGroupAccesses": [
-                {
-                    "id": "ywuI2WspUUG",
-                    "displayName": "System Admin",
-                    "access": "rw------"
-                },
-                {
-                    "id": "mKKNXzeIAJs",
-                    "displayName": "Data Management Admin",
-                    "access": "rw------"
-                }
-            ]
         },
         {
             "id": "Gi2PegQJhbu",
@@ -7168,19 +6818,25 @@
                     "id": "ou"
                 }
             ],
-            "columnDimensions": ["ou"],
+            "columnDimensions": [
+                "ou"
+            ],
             "filters": [
                 {
                     "id": "pe"
                 }
             ],
-            "filterDimensions": ["pe"],
+            "filterDimensions": [
+                "pe"
+            ],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": ["dx"],
+            "rowDimensions": [
+                "dx"
+            ],
             "categoryDimensions": [],
             "publicAccess": "--------",
             "externalAccess": false,
@@ -7378,7 +7034,9 @@
                     "id": "ou"
                 }
             ],
-            "columnDimensions": ["ou"],
+            "columnDimensions": [
+                "ou"
+            ],
             "filters": [
                 {
                     "id": "pe"
@@ -7392,13 +7050,18 @@
                     ]
                 }
             ],
-            "filterDimensions": ["pe", "uSMHdwhxFSV"],
+            "filterDimensions": [
+                "pe",
+                "uSMHdwhxFSV"
+            ],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": ["dx"],
+            "rowDimensions": [
+                "dx"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -7619,7 +7282,9 @@
                     ]
                 }
             ],
-            "columnDimensions": ["Kyg1O6YEGa9"],
+            "columnDimensions": [
+                "Kyg1O6YEGa9"
+            ],
             "filters": [
                 {
                     "id": "ou"
@@ -7636,13 +7301,19 @@
                     ]
                 }
             ],
-            "filterDimensions": ["ou", "pe", "uSMHdwhxFSV"],
+            "filterDimensions": [
+                "ou",
+                "pe",
+                "uSMHdwhxFSV"
+            ],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": ["dx"],
+            "rowDimensions": [
+                "dx"
+            ],
             "categoryDimensions": [
                 {
                     "category": {
@@ -7804,19 +7475,25 @@
                     "id": "ou"
                 }
             ],
-            "columnDimensions": ["ou"],
+            "columnDimensions": [
+                "ou"
+            ],
             "filters": [
                 {
                     "id": "pe"
                 }
             ],
-            "filterDimensions": ["pe"],
+            "filterDimensions": [
+                "pe"
+            ],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": ["dx"],
+            "rowDimensions": [
+                "dx"
+            ],
             "categoryDimensions": [],
             "publicAccess": "--------",
             "externalAccess": false,
