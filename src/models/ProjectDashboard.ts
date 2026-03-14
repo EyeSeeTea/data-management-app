@@ -34,6 +34,7 @@ export default class ProjectDashboard {
     dataElements: ProjectsListDashboard["dataElements"];
     merDataElements: Record<"all" | "people" | "benefit", Ref[]>;
     categoryOnlyNew: { id: Id; categoryOptions: Ref[] };
+    categoryOnlyMale: { id: Id; categoryOptions: Ref[] };
 
     constructor(
         private config: Config,
@@ -56,6 +57,11 @@ export default class ProjectDashboard {
         this.categoryOnlyNew = {
             id: config.categories.newRecurring.id,
             categoryOptions: [{ id: config.categoryOptions.new.id }],
+        };
+
+        this.categoryOnlyMale = {
+            id: config.categories.gender.id,
+            categoryOptions: [{ id: config.categoryOptions.male.id }],
         };
 
         this.config = config;
@@ -113,6 +119,10 @@ export default class ProjectDashboard {
             this.dashboardType === "project" ? this.targetVsActualBenefitsLineChart() : undefined;
         const targetVsActualPeopleLineChart_ =
             this.dashboardType === "project" ? this.targetVsActualPeopleLineChart() : undefined;
+        const targetVsActualPeopleLineChartMaleOnly_ =
+            this.dashboardType === "project"
+                ? this.targetVsActualPeopleLineChartMaleOnly()
+                : undefined;
 
         const reportTables: Array<PartialPersistedModel<D2Visualization>> = _.compact([
             // General Data View
@@ -155,6 +165,7 @@ export default class ProjectDashboard {
             targetVsActualPeopleDisaggregatedByIndicatorChart_,
             targetVsActualBenefitsLineChart_,
             targetVsActualPeopleLineChart_,
+            targetVsActualPeopleLineChartMaleOnly_,
             targetVsActualBenefitsWithDisaggregationTable_,
         ]);
         const defaultVisualizations = _.concat(
@@ -185,6 +196,7 @@ export default class ProjectDashboard {
                       getChartDashboardItem(targetVsActualPeopleDisaggregatedByIndicatorChart_),
                       getChartDashboardItem(targetVsActualBenefitsLineChart_),
                       getChartDashboardItem(targetVsActualPeopleLineChart_),
+                      getChartDashboardItem(targetVsActualPeopleLineChartMaleOnly_),
                       getReportTableItem(targetVsActualBenefitsWithDisaggregationTable_),
                   ])
                 : reportTables.map(reportTable => getReportTableItem(reportTable))),
@@ -356,6 +368,21 @@ export default class ProjectDashboard {
             name: i18n.t("Target vs Actual - People - Line Chart"),
             items: dataElementItems(dataElements.people),
             filters: [dimensions.orgUnit, config.categories.gender, config.categories.newRecurring],
+            columns: [config.categories.targetActual],
+            rows: [dimensions.data, dimensions.period],
+        });
+    }
+
+    targetVsActualPeopleLineChartMaleOnly(): MaybeD2Visualization {
+        const { config, dataElements } = this;
+
+        return this.getD2VisualizationFromDefinition({
+            type: "chart",
+            chartType: "LINE",
+            key: "chart-target-actual-people-line-male-only",
+            name: i18n.t("Target vs Actual - People - Line Chart - Male Only"),
+            items: dataElementItems(dataElements.people),
+            filters: [dimensions.orgUnit, this.categoryOnlyMale, config.categories.newRecurring],
             columns: [config.categories.targetActual],
             rows: [dimensions.data, dimensions.period],
         });
