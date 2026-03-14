@@ -163,7 +163,6 @@ export default class ProjectDashboard {
             this.costBenefitTable(),
         ]);
 
-        const achievedMonthlyChart_ = this.achievedMonthlyChart();
         const [
             targetVsActualBenefitsTable_,
             targetVsActualBenefitsWithDisaggregationTable_,
@@ -188,18 +187,11 @@ export default class ProjectDashboard {
             targetVsActualPeopleLineColumnChartFemaleOnly_,
             targetVsActualBenefitsWithDisaggregationTable_,
         ]);
-        const defaultVisualizations = _.concat(
-            reportTables,
-            _.compact([achievedMonthlyChart_, ...charts])
-        );
+        const defaultVisualizations = _.concat(reportTables, _.compact(charts));
         const favorites = {
             visualizations:
                 this.dashboardType === "project"
-                    ? _.concat(
-                          projectVisualizations,
-                          otherReportTables,
-                          _.compact([achievedMonthlyChart_, ...charts])
-                      )
+                    ? _.concat(projectVisualizations, otherReportTables, _.compact(charts))
                     : defaultVisualizations,
         };
 
@@ -226,7 +218,6 @@ export default class ProjectDashboard {
             ...(this.dashboardType === "project"
                 ? otherReportTables.map(reportTable => getReportTableItem(reportTable))
                 : []),
-            getChartDashboardItem(achievedMonthlyChart_, { width: toItemWidth(100) }),
             ...charts.map(chart => getChartDashboardItem(chart)),
         ]);
 

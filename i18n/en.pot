@@ -609,7 +609,7 @@ msgstr ""
 msgid "Achieved (%) - Benefits"
 msgstr ""
 
-msgid "Achieved (%) - People"
+msgid "Achieved to date (%) - People"
 msgstr ""
 
 msgid "Achieved total to date (%) - People"
