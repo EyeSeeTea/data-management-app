@@ -136,6 +136,10 @@ export default class ProjectDashboard {
             this.dashboardType === "project"
                 ? this.targetVsActualPeopleLineColumnChartMaleOnly()
                 : undefined;
+        const targetVsActualPeopleLineColumnChartFemaleOnly_ =
+            this.dashboardType === "project"
+                ? this.targetVsActualPeopleLineColumnChartFemaleOnly()
+                : undefined;
 
         const reportTables: Array<PartialPersistedModel<D2Visualization>> = _.compact([
             // General Data View
@@ -181,6 +185,7 @@ export default class ProjectDashboard {
             targetVsActualPeopleLineChartMaleOnly_,
             targetVsActualPeopleLineChartFemaleOnly_,
             targetVsActualPeopleLineColumnChartMaleOnly_,
+            targetVsActualPeopleLineColumnChartFemaleOnly_,
             targetVsActualBenefitsWithDisaggregationTable_,
         ]);
         const defaultVisualizations = _.concat(
@@ -214,6 +219,7 @@ export default class ProjectDashboard {
                       getChartDashboardItem(targetVsActualPeopleLineChartMaleOnly_),
                       getChartDashboardItem(targetVsActualPeopleLineChartFemaleOnly_),
                       getChartDashboardItem(targetVsActualPeopleLineColumnChartMaleOnly_),
+                      getChartDashboardItem(targetVsActualPeopleLineColumnChartFemaleOnly_),
                       getReportTableItem(targetVsActualBenefitsWithDisaggregationTable_),
                   ])
                 : reportTables.map(reportTable => getReportTableItem(reportTable))),
@@ -445,6 +451,31 @@ export default class ProjectDashboard {
         });
     }
 
+    targetVsActualPeopleLineColumnChartFemaleOnly(): MaybeD2Visualization {
+        const { config, dataElements } = this;
+
+        return this.getD2VisualizationFromDefinition({
+            type: "chart",
+            chartType: "LINE",
+            key: "chart-target-actual-people-line-column-female-only",
+            name: i18n.t("Target vs Actual - People - Line/Column Chart - Female Only"),
+            items: dataElementItems(dataElements.people),
+            filters: [dimensions.orgUnit, this.categoryOnlyFemale, config.categories.newRecurring],
+            columns: [config.categories.targetActual],
+            rows: [dimensions.data, dimensions.period],
+            extra: {
+                series: [
+                    { dimensionItem: config.categoryOptions.target.id, axis: 0 },
+                    {
+                        dimensionItem: config.categoryOptions.actual.id,
+                        axis: 0,
+                        type: "COLUMN",
+                    },
+                ],
+            },
+        });
+    }
+
     targetVsActualBenefitsWithDisaggregationTable(): MaybeD2Visualization {
         const { config, dataElements } = this;
         const dataElementsDisaggregated = dataElements.benefit.filter(de =>
@@ -516,7 +547,7 @@ export default class ProjectDashboard {
         return this.getD2VisualizationFromDefinition({
             type: "table",
             key: "reportTable-indicators-people",
-            name: i18n.t("Achieved (%) - People"),
+            name: i18n.t("Achieved to date (%) - People"),
             items: indicatorItems(indicators),
             filters: [dimensions.orgUnit],
             columns: [dimensions.period],

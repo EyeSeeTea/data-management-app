@@ -1128,6 +1128,17 @@
                     "y": 100
                 },
                 {
+                    "id": "GW6MALzFIVR",
+                    "type": "CHART",
+                    "visualization": {
+                        "id": "OuKm5zK7l53"
+                    },
+                    "width": 29,
+                    "height": 20,
+                    "x": 0,
+                    "y": 120
+                },
+                {
                     "id": "yWGKgz9vaOh",
                     "type": "REPORT_TABLE",
                     "visualization": {
@@ -1135,7 +1146,7 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 0,
+                    "x": 29,
                     "y": 120
                 },
                 {
@@ -1146,8 +1157,8 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 29,
-                    "y": 120
+                    "x": 0,
+                    "y": 140
                 },
                 {
                     "id": "qMSWdZHPjyN",
@@ -1157,7 +1168,7 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 0,
+                    "x": 29,
                     "y": 140
                 },
                 {
@@ -1168,8 +1179,8 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 29,
-                    "y": 140
+                    "x": 0,
+                    "y": 160
                 },
                 {
                     "id": "mgwFIMjbsdw",
@@ -1179,7 +1190,7 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 0,
+                    "x": 29,
                     "y": 160
                 },
                 {
@@ -1541,9 +1552,7 @@
                     ]
                 }
             ],
-            "columnDimensions": [
-                "GIIHAr9BzzO"
-            ],
+            "columnDimensions": ["GIIHAr9BzzO"],
             "filters": [
                 {
                     "id": "dx"
@@ -1552,18 +1561,13 @@
                     "id": "ou"
                 }
             ],
-            "filterDimensions": [
-                "dx",
-                "ou"
-            ],
+            "filterDimensions": ["dx", "ou"],
             "rows": [
                 {
                     "id": "pe"
                 }
             ],
-            "rowDimensions": [
-                "pe"
-            ],
+            "rowDimensions": ["pe"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -1676,9 +1680,7 @@
                     ]
                 }
             ],
-            "columnDimensions": [
-                "GIIHAr9BzzO"
-            ],
+            "columnDimensions": ["GIIHAr9BzzO"],
             "filters": [
                 {
                     "id": "dx"
@@ -1717,20 +1719,13 @@
                     ]
                 }
             ],
-            "filterDimensions": [
-                "dx",
-                "ou",
-                "Kyg1O6YEGa9",
-                "uSMHdwhxFSV"
-            ],
+            "filterDimensions": ["dx", "ou", "Kyg1O6YEGa9", "uSMHdwhxFSV"],
             "rows": [
                 {
                     "id": "pe"
                 }
             ],
-            "rowDimensions": [
-                "pe"
-            ],
+            "rowDimensions": ["pe"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -1857,25 +1852,19 @@
                     ]
                 }
             ],
-            "columnDimensions": [
-                "GIIHAr9BzzO"
-            ],
+            "columnDimensions": ["GIIHAr9BzzO"],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": [
-                "ou"
-            ],
+            "filterDimensions": ["ou"],
             "rows": [
                 {
                     "id": "pe"
                 }
             ],
-            "rowDimensions": [
-                "pe"
-            ],
+            "rowDimensions": ["pe"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -1970,17 +1959,13 @@
                     "id": "pe"
                 }
             ],
-            "columnDimensions": [
-                "pe"
-            ],
+            "columnDimensions": ["pe"],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": [
-                "ou"
-            ],
+            "filterDimensions": ["ou"],
             "rows": [
                 {
                     "id": "dx"
@@ -2001,10 +1986,7 @@
                     ]
                 }
             ],
-            "rowDimensions": [
-                "dx",
-                "GIIHAr9BzzO"
-            ],
+            "rowDimensions": ["dx", "GIIHAr9BzzO"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -2099,25 +2081,19 @@
                     "id": "pe"
                 }
             ],
-            "columnDimensions": [
-                "pe"
-            ],
+            "columnDimensions": ["pe"],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": [
-                "ou"
-            ],
+            "filterDimensions": ["ou"],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": [
-                "dx"
-            ],
+            "rowDimensions": ["dx"],
             "categoryDimensions": [],
             "publicAccess": "--------",
             "externalAccess": false,
@@ -2202,17 +2178,13 @@
                     "id": "dx"
                 }
             ],
-            "columnDimensions": [
-                "dx"
-            ],
+            "columnDimensions": ["dx"],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": [
-                "ou"
-            ],
+            "filterDimensions": ["ou"],
             "rows": [
                 {
                     "id": "pe"
@@ -2233,10 +2205,7 @@
                     ]
                 }
             ],
-            "rowDimensions": [
-                "pe",
-                "GIIHAr9BzzO"
-            ],
+            "rowDimensions": ["pe", "GIIHAr9BzzO"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -2337,9 +2306,7 @@
                     "id": "dx"
                 }
             ],
-            "columnDimensions": [
-                "dx"
-            ],
+            "columnDimensions": ["dx"],
             "filters": [
                 {
                     "id": "ou"
@@ -2375,11 +2342,7 @@
                     ]
                 }
             ],
-            "filterDimensions": [
-                "ou",
-                "Kyg1O6YEGa9",
-                "uSMHdwhxFSV"
-            ],
+            "filterDimensions": ["ou", "Kyg1O6YEGa9", "uSMHdwhxFSV"],
             "rows": [
                 {
                     "id": "pe"
@@ -2400,10 +2363,7 @@
                     ]
                 }
             ],
-            "rowDimensions": [
-                "pe",
-                "GIIHAr9BzzO"
-            ],
+            "rowDimensions": ["pe", "GIIHAr9BzzO"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -2536,17 +2496,13 @@
                     ]
                 }
             ],
-            "columnDimensions": [
-                "GIIHAr9BzzO"
-            ],
+            "columnDimensions": ["GIIHAr9BzzO"],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": [
-                "ou"
-            ],
+            "filterDimensions": ["ou"],
             "rows": [
                 {
                     "id": "dx"
@@ -2555,10 +2511,7 @@
                     "id": "pe"
                 }
             ],
-            "rowDimensions": [
-                "dx",
-                "pe"
-            ],
+            "rowDimensions": ["dx", "pe"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -2671,9 +2624,7 @@
                     ]
                 }
             ],
-            "columnDimensions": [
-                "GIIHAr9BzzO"
-            ],
+            "columnDimensions": ["GIIHAr9BzzO"],
             "filters": [
                 {
                     "id": "ou"
@@ -2709,11 +2660,7 @@
                     ]
                 }
             ],
-            "filterDimensions": [
-                "ou",
-                "Kyg1O6YEGa9",
-                "uSMHdwhxFSV"
-            ],
+            "filterDimensions": ["ou", "Kyg1O6YEGa9", "uSMHdwhxFSV"],
             "rows": [
                 {
                     "id": "dx"
@@ -2722,10 +2669,7 @@
                     "id": "pe"
                 }
             ],
-            "rowDimensions": [
-                "dx",
-                "pe"
-            ],
+            "rowDimensions": ["dx", "pe"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -2864,9 +2808,7 @@
                     ]
                 }
             ],
-            "columnDimensions": [
-                "GIIHAr9BzzO"
-            ],
+            "columnDimensions": ["GIIHAr9BzzO"],
             "filters": [
                 {
                     "id": "ou"
@@ -2895,11 +2837,7 @@
                     ]
                 }
             ],
-            "filterDimensions": [
-                "ou",
-                "Kyg1O6YEGa9",
-                "uSMHdwhxFSV"
-            ],
+            "filterDimensions": ["ou", "Kyg1O6YEGa9", "uSMHdwhxFSV"],
             "rows": [
                 {
                     "id": "dx"
@@ -2908,10 +2846,7 @@
                     "id": "pe"
                 }
             ],
-            "rowDimensions": [
-                "dx",
-                "pe"
-            ],
+            "rowDimensions": ["dx", "pe"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -3047,9 +2982,7 @@
                     ]
                 }
             ],
-            "columnDimensions": [
-                "GIIHAr9BzzO"
-            ],
+            "columnDimensions": ["GIIHAr9BzzO"],
             "filters": [
                 {
                     "id": "ou"
@@ -3078,11 +3011,7 @@
                     ]
                 }
             ],
-            "filterDimensions": [
-                "ou",
-                "Kyg1O6YEGa9",
-                "uSMHdwhxFSV"
-            ],
+            "filterDimensions": ["ou", "Kyg1O6YEGa9", "uSMHdwhxFSV"],
             "rows": [
                 {
                     "id": "dx"
@@ -3091,10 +3020,7 @@
                     "id": "pe"
                 }
             ],
-            "rowDimensions": [
-                "dx",
-                "pe"
-            ],
+            "rowDimensions": ["dx", "pe"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -3230,9 +3156,7 @@
                     ]
                 }
             ],
-            "columnDimensions": [
-                "GIIHAr9BzzO"
-            ],
+            "columnDimensions": ["GIIHAr9BzzO"],
             "filters": [
                 {
                     "id": "ou"
@@ -3261,11 +3185,7 @@
                     ]
                 }
             ],
-            "filterDimensions": [
-                "ou",
-                "Kyg1O6YEGa9",
-                "uSMHdwhxFSV"
-            ],
+            "filterDimensions": ["ou", "Kyg1O6YEGa9", "uSMHdwhxFSV"],
             "rows": [
                 {
                     "id": "dx"
@@ -3274,10 +3194,7 @@
                     "id": "pe"
                 }
             ],
-            "rowDimensions": [
-                "dx",
-                "pe"
-            ],
+            "rowDimensions": ["dx", "pe"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -3299,6 +3216,191 @@
                     "categoryOptions": [
                         {
                             "id": "qk2FihwV6IL"
+                        }
+                    ]
+                },
+                {
+                    "category": {
+                        "id": "uSMHdwhxFSV"
+                    },
+                    "categoryOptions": [
+                        {
+                            "id": "KiK0FMExoqh"
+                        },
+                        {
+                            "id": "a6AJLXQy8vO"
+                        }
+                    ]
+                }
+            ],
+            "publicAccess": "--------",
+            "externalAccess": false,
+            "userAccesses": [
+                {
+                    "id": "M5zQapPyTZI",
+                    "displayName": "admin admin",
+                    "access": "rw------"
+                }
+            ],
+            "userGroupAccesses": [
+                {
+                    "id": "ywuI2WspUUG",
+                    "displayName": "System Admin",
+                    "access": "rw------"
+                },
+                {
+                    "id": "mKKNXzeIAJs",
+                    "displayName": "Data Management Admin",
+                    "access": "rw------"
+                }
+            ],
+            "series": [
+                {
+                    "dimensionItem": "imyqCWQ229K",
+                    "axis": 0
+                },
+                {
+                    "dimensionItem": "eWeQoOlAcxV",
+                    "axis": 0,
+                    "type": "COLUMN"
+                }
+            ]
+        },
+        {
+            "id": "OuKm5zK7l53",
+            "type": "LINE",
+            "name": "12345en - MyProject - Target vs Actual - People - Line/Column Chart - Female Only",
+            "numberType": "VALUE",
+            "legendDisplayStyle": "FILL",
+            "rowSubTotals": true,
+            "showDimensionLabels": true,
+            "showData": true,
+            "aggregationType": "DEFAULT",
+            "legendDisplayStrategy": "FIXED",
+            "rowTotals": true,
+            "digitGroupSeparator": "SPACE",
+            "dataDimensionItems": [
+                {
+                    "dataDimensionItemType": "DATA_ELEMENT",
+                    "dataElement": {
+                        "id": "K6mAC5SiO29"
+                    }
+                },
+                {
+                    "dataDimensionItemType": "DATA_ELEMENT",
+                    "dataElement": {
+                        "id": "ik0ICagvIjm"
+                    }
+                },
+                {
+                    "dataDimensionItemType": "DATA_ELEMENT",
+                    "dataElement": {
+                        "id": "GQyudNlGzkI"
+                    }
+                }
+            ],
+            "organisationUnits": [
+                {
+                    "id": "WGC0DJ0YSis"
+                }
+            ],
+            "periods": [
+                {
+                    "id": "201810"
+                },
+                {
+                    "id": "201811"
+                },
+                {
+                    "id": "201812"
+                },
+                {
+                    "id": "201901"
+                },
+                {
+                    "id": "201902"
+                },
+                {
+                    "id": "201903"
+                }
+            ],
+            "columns": [
+                {
+                    "code": "ACTUAL_TARGET",
+                    "id": "GIIHAr9BzzO",
+                    "dataDimensionType": "ATTRIBUTE",
+                    "categoryOptions": [
+                        {
+                            "code": "TARGET",
+                            "id": "imyqCWQ229K"
+                        },
+                        {
+                            "code": "ACTUAL",
+                            "id": "eWeQoOlAcxV"
+                        }
+                    ]
+                }
+            ],
+            "columnDimensions": ["GIIHAr9BzzO"],
+            "filters": [
+                {
+                    "id": "ou"
+                },
+                {
+                    "id": "Kyg1O6YEGa9",
+                    "categoryOptions": [
+                        {
+                            "id": "yW2hYVS3S4u"
+                        }
+                    ]
+                },
+                {
+                    "code": "NEW_RETURNING",
+                    "id": "uSMHdwhxFSV",
+                    "dataDimensionType": "DISAGGREGATION",
+                    "categoryOptions": [
+                        {
+                            "code": "NEW",
+                            "id": "KiK0FMExoqh"
+                        },
+                        {
+                            "code": "RETURNING",
+                            "id": "a6AJLXQy8vO"
+                        }
+                    ]
+                }
+            ],
+            "filterDimensions": ["ou", "Kyg1O6YEGa9", "uSMHdwhxFSV"],
+            "rows": [
+                {
+                    "id": "dx"
+                },
+                {
+                    "id": "pe"
+                }
+            ],
+            "rowDimensions": ["dx", "pe"],
+            "categoryDimensions": [
+                {
+                    "category": {
+                        "id": "GIIHAr9BzzO"
+                    },
+                    "categoryOptions": [
+                        {
+                            "id": "imyqCWQ229K"
+                        },
+                        {
+                            "id": "eWeQoOlAcxV"
+                        }
+                    ]
+                },
+                {
+                    "category": {
+                        "id": "Kyg1O6YEGa9"
+                    },
+                    "categoryOptions": [
+                        {
+                            "id": "yW2hYVS3S4u"
                         }
                     ]
                 },
@@ -3427,18 +3529,13 @@
                     ]
                 }
             ],
-            "columnDimensions": [
-                "pe",
-                "Kyg1O6YEGa9"
-            ],
+            "columnDimensions": ["pe", "Kyg1O6YEGa9"],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": [
-                "ou"
-            ],
+            "filterDimensions": ["ou"],
             "rows": [
                 {
                     "id": "dx"
@@ -3474,11 +3571,7 @@
                     ]
                 }
             ],
-            "rowDimensions": [
-                "dx",
-                "GIIHAr9BzzO",
-                "uSMHdwhxFSV"
-            ],
+            "rowDimensions": ["dx", "GIIHAr9BzzO", "uSMHdwhxFSV"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -3610,9 +3703,7 @@
                     ]
                 }
             ],
-            "columnDimensions": [
-                "uSMHdwhxFSV"
-            ],
+            "columnDimensions": ["uSMHdwhxFSV"],
             "filters": [
                 {
                     "id": "ou"
@@ -3621,18 +3712,13 @@
                     "id": "pe"
                 }
             ],
-            "filterDimensions": [
-                "ou",
-                "pe"
-            ],
+            "filterDimensions": ["ou", "pe"],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": [
-                "dx"
-            ],
+            "rowDimensions": ["dx"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -3728,25 +3814,19 @@
                     "id": "pe"
                 }
             ],
-            "columnDimensions": [
-                "pe"
-            ],
+            "columnDimensions": ["pe"],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": [
-                "ou"
-            ],
+            "filterDimensions": ["ou"],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": [
-                "dx"
-            ],
+            "rowDimensions": ["dx"],
             "categoryDimensions": [],
             "publicAccess": "--------",
             "externalAccess": false,
@@ -3777,7 +3857,7 @@
         {
             "id": "GM6SxObVwI3",
             "type": "PIVOT_TABLE",
-            "name": "12345en - MyProject - Achieved (%) - People",
+            "name": "12345en - MyProject - Achieved to date (%) - People",
             "numberType": "VALUE",
             "legendDisplayStyle": "FILL",
             "rowSubTotals": true,
@@ -3837,25 +3917,19 @@
                     "id": "pe"
                 }
             ],
-            "columnDimensions": [
-                "pe"
-            ],
+            "columnDimensions": ["pe"],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": [
-                "ou"
-            ],
+            "filterDimensions": ["ou"],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": [
-                "dx"
-            ],
+            "rowDimensions": ["dx"],
             "categoryDimensions": [],
             "publicAccess": "--------",
             "externalAccess": false,
@@ -3951,9 +4025,7 @@
                     ]
                 }
             ],
-            "columnDimensions": [
-                "uSMHdwhxFSV"
-            ],
+            "columnDimensions": ["uSMHdwhxFSV"],
             "filters": [
                 {
                     "id": "ou"
@@ -3962,18 +4034,13 @@
                     "id": "pe"
                 }
             ],
-            "filterDimensions": [
-                "ou",
-                "pe"
-            ],
+            "filterDimensions": ["ou", "pe"],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": [
-                "dx"
-            ],
+            "rowDimensions": ["dx"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -4087,25 +4154,19 @@
                     "id": "pe"
                 }
             ],
-            "columnDimensions": [
-                "pe"
-            ],
+            "columnDimensions": ["pe"],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": [
-                "ou"
-            ],
+            "filterDimensions": ["ou"],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": [
-                "dx"
-            ],
+            "rowDimensions": ["dx"],
             "categoryDimensions": [],
             "publicAccess": "--------",
             "externalAccess": false,
@@ -4186,25 +4247,19 @@
                     "id": "ou"
                 }
             ],
-            "columnDimensions": [
-                "ou"
-            ],
+            "columnDimensions": ["ou"],
             "filters": [
                 {
                     "id": "pe"
                 }
             ],
-            "filterDimensions": [
-                "pe"
-            ],
+            "filterDimensions": ["pe"],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": [
-                "dx"
-            ],
+            "rowDimensions": ["dx"],
             "categoryDimensions": [],
             "publicAccess": "--------",
             "externalAccess": false,
@@ -4291,9 +4346,7 @@
                     "id": "ou"
                 }
             ],
-            "columnDimensions": [
-                "ou"
-            ],
+            "columnDimensions": ["ou"],
             "filters": [
                 {
                     "id": "pe"
@@ -4307,18 +4360,13 @@
                     ]
                 }
             ],
-            "filterDimensions": [
-                "pe",
-                "uSMHdwhxFSV"
-            ],
+            "filterDimensions": ["pe", "uSMHdwhxFSV"],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": [
-                "dx"
-            ],
+            "rowDimensions": ["dx"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -4428,9 +4476,7 @@
                     ]
                 }
             ],
-            "columnDimensions": [
-                "Kyg1O6YEGa9"
-            ],
+            "columnDimensions": ["Kyg1O6YEGa9"],
             "filters": [
                 {
                     "id": "ou"
@@ -4447,19 +4493,13 @@
                     ]
                 }
             ],
-            "filterDimensions": [
-                "ou",
-                "pe",
-                "uSMHdwhxFSV"
-            ],
+            "filterDimensions": ["ou", "pe", "uSMHdwhxFSV"],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": [
-                "dx"
-            ],
+            "rowDimensions": ["dx"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -4558,25 +4598,19 @@
                     "id": "ou"
                 }
             ],
-            "columnDimensions": [
-                "ou"
-            ],
+            "columnDimensions": ["ou"],
             "filters": [
                 {
                     "id": "pe"
                 }
             ],
-            "filterDimensions": [
-                "pe"
-            ],
+            "filterDimensions": ["pe"],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": [
-                "dx"
-            ],
+            "rowDimensions": ["dx"],
             "categoryDimensions": [],
             "publicAccess": "--------",
             "externalAccess": false,
@@ -4701,9 +4735,7 @@
                     "id": "dx"
                 }
             ],
-            "columnDimensions": [
-                "dx"
-            ],
+            "columnDimensions": ["dx"],
             "filters": [
                 {
                     "id": "pe"
@@ -4725,19 +4757,13 @@
                     ]
                 }
             ],
-            "filterDimensions": [
-                "pe",
-                "uSMHdwhxFSV",
-                "GIIHAr9BzzO"
-            ],
+            "filterDimensions": ["pe", "uSMHdwhxFSV", "GIIHAr9BzzO"],
             "rows": [
                 {
                     "id": "ou"
                 }
             ],
-            "rowDimensions": [
-                "ou"
-            ],
+            "rowDimensions": ["ou"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -4845,9 +4871,7 @@
                     "id": "dx"
                 }
             ],
-            "columnDimensions": [
-                "dx"
-            ],
+            "columnDimensions": ["dx"],
             "filters": [
                 {
                     "id": "pe"
@@ -4861,18 +4885,13 @@
                     ]
                 }
             ],
-            "filterDimensions": [
-                "pe",
-                "GIIHAr9BzzO"
-            ],
+            "filterDimensions": ["pe", "GIIHAr9BzzO"],
             "rows": [
                 {
                     "id": "ou"
                 }
             ],
-            "rowDimensions": [
-                "ou"
-            ],
+            "rowDimensions": ["ou"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -4982,9 +5001,7 @@
                     "id": "dx"
                 }
             ],
-            "columnDimensions": [
-                "dx"
-            ],
+            "columnDimensions": ["dx"],
             "filters": [
                 {
                     "id": "ou"
@@ -5006,19 +5023,13 @@
                     ]
                 }
             ],
-            "filterDimensions": [
-                "ou",
-                "uSMHdwhxFSV",
-                "GIIHAr9BzzO"
-            ],
+            "filterDimensions": ["ou", "uSMHdwhxFSV", "GIIHAr9BzzO"],
             "rows": [
                 {
                     "id": "pe"
                 }
             ],
-            "rowDimensions": [
-                "pe"
-            ],
+            "rowDimensions": ["pe"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -5120,9 +5131,7 @@
                     "id": "dx"
                 }
             ],
-            "columnDimensions": [
-                "dx"
-            ],
+            "columnDimensions": ["dx"],
             "filters": [
                 {
                     "id": "ou"
@@ -5136,18 +5145,13 @@
                     ]
                 }
             ],
-            "filterDimensions": [
-                "ou",
-                "GIIHAr9BzzO"
-            ],
+            "filterDimensions": ["ou", "GIIHAr9BzzO"],
             "rows": [
                 {
                     "id": "pe"
                 }
             ],
-            "rowDimensions": [
-                "pe"
-            ],
+            "rowDimensions": ["pe"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -5318,17 +5322,13 @@
                     "id": "pe"
                 }
             ],
-            "columnDimensions": [
-                "pe"
-            ],
+            "columnDimensions": ["pe"],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": [
-                "ou"
-            ],
+            "filterDimensions": ["ou"],
             "rows": [
                 {
                     "id": "dx"
@@ -5349,10 +5349,7 @@
                     ]
                 }
             ],
-            "rowDimensions": [
-                "dx",
-                "GIIHAr9BzzO"
-            ],
+            "rowDimensions": ["dx", "GIIHAr9BzzO"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -5579,18 +5576,13 @@
                     ]
                 }
             ],
-            "columnDimensions": [
-                "pe",
-                "Kyg1O6YEGa9"
-            ],
+            "columnDimensions": ["pe", "Kyg1O6YEGa9"],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": [
-                "ou"
-            ],
+            "filterDimensions": ["ou"],
             "rows": [
                 {
                     "id": "dx"
@@ -5626,11 +5618,7 @@
                     ]
                 }
             ],
-            "rowDimensions": [
-                "dx",
-                "GIIHAr9BzzO",
-                "uSMHdwhxFSV"
-            ],
+            "rowDimensions": ["dx", "GIIHAr9BzzO", "uSMHdwhxFSV"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -5850,25 +5838,19 @@
                     "id": "pe"
                 }
             ],
-            "columnDimensions": [
-                "pe"
-            ],
+            "columnDimensions": ["pe"],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": [
-                "ou"
-            ],
+            "filterDimensions": ["ou"],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": [
-                "dx"
-            ],
+            "rowDimensions": ["dx"],
             "categoryDimensions": [],
             "publicAccess": "--------",
             "externalAccess": false,
@@ -6075,9 +6057,7 @@
                     ]
                 }
             ],
-            "columnDimensions": [
-                "uSMHdwhxFSV"
-            ],
+            "columnDimensions": ["uSMHdwhxFSV"],
             "filters": [
                 {
                     "id": "ou"
@@ -6086,18 +6066,13 @@
                     "id": "pe"
                 }
             ],
-            "filterDimensions": [
-                "ou",
-                "pe"
-            ],
+            "filterDimensions": ["ou", "pe"],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": [
-                "dx"
-            ],
+            "rowDimensions": ["dx"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -6292,25 +6267,19 @@
                     "id": "pe"
                 }
             ],
-            "columnDimensions": [
-                "pe"
-            ],
+            "columnDimensions": ["pe"],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": [
-                "ou"
-            ],
+            "filterDimensions": ["ou"],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": [
-                "dx"
-            ],
+            "rowDimensions": ["dx"],
             "categoryDimensions": [],
             "publicAccess": "--------",
             "externalAccess": false,
@@ -6341,7 +6310,7 @@
         {
             "id": "i6CWRJp61Hp",
             "type": "PIVOT_TABLE",
-            "name": "Award Number 12345 - Achieved (%) - People",
+            "name": "Award Number 12345 - Achieved to date (%) - People",
             "numberType": "VALUE",
             "legendDisplayStyle": "FILL",
             "rowSubTotals": true,
@@ -6512,25 +6481,19 @@
                     "id": "pe"
                 }
             ],
-            "columnDimensions": [
-                "pe"
-            ],
+            "columnDimensions": ["pe"],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": [
-                "ou"
-            ],
+            "filterDimensions": ["ou"],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": [
-                "dx"
-            ],
+            "rowDimensions": ["dx"],
             "categoryDimensions": [],
             "publicAccess": "--------",
             "externalAccess": false,
@@ -6737,9 +6700,7 @@
                     ]
                 }
             ],
-            "columnDimensions": [
-                "uSMHdwhxFSV"
-            ],
+            "columnDimensions": ["uSMHdwhxFSV"],
             "filters": [
                 {
                     "id": "ou"
@@ -6748,18 +6709,13 @@
                     "id": "pe"
                 }
             ],
-            "filterDimensions": [
-                "ou",
-                "pe"
-            ],
+            "filterDimensions": ["ou", "pe"],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": [
-                "dx"
-            ],
+            "rowDimensions": ["dx"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -7020,25 +6976,19 @@
                     "id": "pe"
                 }
             ],
-            "columnDimensions": [
-                "pe"
-            ],
+            "columnDimensions": ["pe"],
             "filters": [
                 {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": [
-                "ou"
-            ],
+            "filterDimensions": ["ou"],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": [
-                "dx"
-            ],
+            "rowDimensions": ["dx"],
             "categoryDimensions": [],
             "publicAccess": "--------",
             "externalAccess": false,
@@ -7218,25 +7168,19 @@
                     "id": "ou"
                 }
             ],
-            "columnDimensions": [
-                "ou"
-            ],
+            "columnDimensions": ["ou"],
             "filters": [
                 {
                     "id": "pe"
                 }
             ],
-            "filterDimensions": [
-                "pe"
-            ],
+            "filterDimensions": ["pe"],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": [
-                "dx"
-            ],
+            "rowDimensions": ["dx"],
             "categoryDimensions": [],
             "publicAccess": "--------",
             "externalAccess": false,
@@ -7434,9 +7378,7 @@
                     "id": "ou"
                 }
             ],
-            "columnDimensions": [
-                "ou"
-            ],
+            "columnDimensions": ["ou"],
             "filters": [
                 {
                     "id": "pe"
@@ -7450,18 +7392,13 @@
                     ]
                 }
             ],
-            "filterDimensions": [
-                "pe",
-                "uSMHdwhxFSV"
-            ],
+            "filterDimensions": ["pe", "uSMHdwhxFSV"],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": [
-                "dx"
-            ],
+            "rowDimensions": ["dx"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -7682,9 +7619,7 @@
                     ]
                 }
             ],
-            "columnDimensions": [
-                "Kyg1O6YEGa9"
-            ],
+            "columnDimensions": ["Kyg1O6YEGa9"],
             "filters": [
                 {
                     "id": "ou"
@@ -7701,19 +7636,13 @@
                     ]
                 }
             ],
-            "filterDimensions": [
-                "ou",
-                "pe",
-                "uSMHdwhxFSV"
-            ],
+            "filterDimensions": ["ou", "pe", "uSMHdwhxFSV"],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": [
-                "dx"
-            ],
+            "rowDimensions": ["dx"],
             "categoryDimensions": [
                 {
                     "category": {
@@ -7875,25 +7804,19 @@
                     "id": "ou"
                 }
             ],
-            "columnDimensions": [
-                "ou"
-            ],
+            "columnDimensions": ["ou"],
             "filters": [
                 {
                     "id": "pe"
                 }
             ],
-            "filterDimensions": [
-                "pe"
-            ],
+            "filterDimensions": ["pe"],
             "rows": [
                 {
                     "id": "dx"
                 }
             ],
-            "rowDimensions": [
-                "dx"
-            ],
+            "rowDimensions": ["dx"],
             "categoryDimensions": [],
             "publicAccess": "--------",
             "externalAccess": false,
