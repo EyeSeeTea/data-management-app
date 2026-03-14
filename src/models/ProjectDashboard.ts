@@ -111,6 +111,8 @@ export default class ProjectDashboard {
                 : undefined;
         const targetVsActualBenefitsLineChart_ =
             this.dashboardType === "project" ? this.targetVsActualBenefitsLineChart() : undefined;
+        const targetVsActualPeopleLineChart_ =
+            this.dashboardType === "project" ? this.targetVsActualPeopleLineChart() : undefined;
 
         const reportTables: Array<PartialPersistedModel<D2Visualization>> = _.compact([
             // General Data View
@@ -152,6 +154,7 @@ export default class ProjectDashboard {
             targetVsActualBenefitsDisaggregatedByIndicatorChart_,
             targetVsActualPeopleDisaggregatedByIndicatorChart_,
             targetVsActualBenefitsLineChart_,
+            targetVsActualPeopleLineChart_,
             targetVsActualBenefitsWithDisaggregationTable_,
         ]);
         const defaultVisualizations = _.concat(
@@ -181,6 +184,7 @@ export default class ProjectDashboard {
                       getChartDashboardItem(targetVsActualBenefitsDisaggregatedByIndicatorChart_),
                       getChartDashboardItem(targetVsActualPeopleDisaggregatedByIndicatorChart_),
                       getChartDashboardItem(targetVsActualBenefitsLineChart_),
+                      getChartDashboardItem(targetVsActualPeopleLineChart_),
                       getReportTableItem(targetVsActualBenefitsWithDisaggregationTable_),
                   ])
                 : reportTables.map(reportTable => getReportTableItem(reportTable))),
@@ -337,6 +341,21 @@ export default class ProjectDashboard {
             name: i18n.t("Target vs Actual - Benefits - Line Chart"),
             items: dataElementItems(dataElementsNoDisaggregated),
             filters: [dimensions.orgUnit],
+            columns: [config.categories.targetActual],
+            rows: [dimensions.data, dimensions.period],
+        });
+    }
+
+    targetVsActualPeopleLineChart(): MaybeD2Visualization {
+        const { config, dataElements } = this;
+
+        return this.getD2VisualizationFromDefinition({
+            type: "chart",
+            chartType: "LINE",
+            key: "chart-target-actual-people-line",
+            name: i18n.t("Target vs Actual - People - Line Chart"),
+            items: dataElementItems(dataElements.people),
+            filters: [dimensions.orgUnit, config.categories.gender, config.categories.newRecurring],
             columns: [config.categories.targetActual],
             rows: [dimensions.data, dimensions.period],
         });
