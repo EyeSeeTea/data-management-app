@@ -132,6 +132,10 @@ export default class ProjectDashboard {
             this.dashboardType === "project"
                 ? this.targetVsActualPeopleLineChartFemaleOnly()
                 : undefined;
+        const targetVsActualPeopleLineColumnChartMaleOnly_ =
+            this.dashboardType === "project"
+                ? this.targetVsActualPeopleLineColumnChartMaleOnly()
+                : undefined;
 
         const reportTables: Array<PartialPersistedModel<D2Visualization>> = _.compact([
             // General Data View
@@ -176,6 +180,7 @@ export default class ProjectDashboard {
             targetVsActualPeopleLineChart_,
             targetVsActualPeopleLineChartMaleOnly_,
             targetVsActualPeopleLineChartFemaleOnly_,
+            targetVsActualPeopleLineColumnChartMaleOnly_,
             targetVsActualBenefitsWithDisaggregationTable_,
         ]);
         const defaultVisualizations = _.concat(
@@ -208,6 +213,7 @@ export default class ProjectDashboard {
                       getChartDashboardItem(targetVsActualPeopleLineChart_),
                       getChartDashboardItem(targetVsActualPeopleLineChartMaleOnly_),
                       getChartDashboardItem(targetVsActualPeopleLineChartFemaleOnly_),
+                      getChartDashboardItem(targetVsActualPeopleLineColumnChartMaleOnly_),
                       getReportTableItem(targetVsActualBenefitsWithDisaggregationTable_),
                   ])
                 : reportTables.map(reportTable => getReportTableItem(reportTable))),
@@ -411,6 +417,31 @@ export default class ProjectDashboard {
             filters: [dimensions.orgUnit, this.categoryOnlyFemale, config.categories.newRecurring],
             columns: [config.categories.targetActual],
             rows: [dimensions.data, dimensions.period],
+        });
+    }
+
+    targetVsActualPeopleLineColumnChartMaleOnly(): MaybeD2Visualization {
+        const { config, dataElements } = this;
+
+        return this.getD2VisualizationFromDefinition({
+            type: "chart",
+            chartType: "LINE",
+            key: "chart-target-actual-people-line-column-male-only",
+            name: i18n.t("Target vs Actual - People - Line/Column Chart - Male Only"),
+            items: dataElementItems(dataElements.people),
+            filters: [dimensions.orgUnit, this.categoryOnlyMale, config.categories.newRecurring],
+            columns: [config.categories.targetActual],
+            rows: [dimensions.data, dimensions.period],
+            extra: {
+                series: [
+                    { dimensionItem: config.categoryOptions.target.id, axis: 0 },
+                    {
+                        dimensionItem: config.categoryOptions.actual.id,
+                        axis: 0,
+                        type: "COLUMN",
+                    },
+                ],
+            },
         });
     }
 

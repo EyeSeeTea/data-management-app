@@ -1117,6 +1117,17 @@
                     "y": 100
                 },
                 {
+                    "id": "K2amO1SBZFm",
+                    "type": "CHART",
+                    "visualization": {
+                        "id": "W2SCFrHCiEm"
+                    },
+                    "width": 29,
+                    "height": 20,
+                    "x": 29,
+                    "y": 100
+                },
+                {
                     "id": "yWGKgz9vaOh",
                     "type": "REPORT_TABLE",
                     "visualization": {
@@ -1124,8 +1135,8 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 29,
-                    "y": 100
+                    "x": 0,
+                    "y": 120
                 },
                 {
                     "id": "ywvTGMsKdwL",
@@ -1135,7 +1146,7 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 0,
+                    "x": 29,
                     "y": 120
                 },
                 {
@@ -1146,8 +1157,8 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 29,
-                    "y": 120
+                    "x": 0,
+                    "y": 140
                 },
                 {
                     "id": "uyoJujQVRjE",
@@ -1157,7 +1168,7 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 0,
+                    "x": 29,
                     "y": 140
                 },
                 {
@@ -1168,8 +1179,8 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 29,
-                    "y": 140
+                    "x": 0,
+                    "y": 160
                 },
                 {
                     "id": "ys0CVedHirZ",
@@ -1180,7 +1191,7 @@
                     "width": 58,
                     "height": 20,
                     "x": 0,
-                    "y": 160
+                    "y": 180
                 },
                 {
                     "id": "KI0C90Ol10x",
@@ -1191,7 +1202,7 @@
                     "width": 29,
                     "height": 20,
                     "x": 0,
-                    "y": 180
+                    "y": 200
                 },
                 {
                     "id": "uYY7v977Ubm",
@@ -1202,7 +1213,7 @@
                     "width": 29,
                     "height": 20,
                     "x": 29,
-                    "y": 180
+                    "y": 200
                 },
                 {
                     "id": "qUqsDmtiBLF",
@@ -1213,7 +1224,7 @@
                     "width": 29,
                     "height": 20,
                     "x": 0,
-                    "y": 200
+                    "y": 220
                 },
                 {
                     "id": "mwMpIdPdu8H",
@@ -1224,7 +1235,7 @@
                     "width": 29,
                     "height": 20,
                     "x": 29,
-                    "y": 200
+                    "y": 220
                 }
             ],
             "publicAccess": "--------",
@@ -3141,6 +3152,200 @@
                     "id": "mKKNXzeIAJs",
                     "displayName": "Data Management Admin",
                     "access": "rw------"
+                }
+            ]
+        },
+        {
+            "id": "W2SCFrHCiEm",
+            "type": "LINE",
+            "name": "12345en - MyProject - Target vs Actual - People - Line/Column Chart - Male Only",
+            "numberType": "VALUE",
+            "legendDisplayStyle": "FILL",
+            "rowSubTotals": true,
+            "showDimensionLabels": true,
+            "showData": true,
+            "aggregationType": "DEFAULT",
+            "legendDisplayStrategy": "FIXED",
+            "rowTotals": true,
+            "digitGroupSeparator": "SPACE",
+            "dataDimensionItems": [
+                {
+                    "dataDimensionItemType": "DATA_ELEMENT",
+                    "dataElement": {
+                        "id": "K6mAC5SiO29"
+                    }
+                },
+                {
+                    "dataDimensionItemType": "DATA_ELEMENT",
+                    "dataElement": {
+                        "id": "ik0ICagvIjm"
+                    }
+                },
+                {
+                    "dataDimensionItemType": "DATA_ELEMENT",
+                    "dataElement": {
+                        "id": "GQyudNlGzkI"
+                    }
+                }
+            ],
+            "organisationUnits": [
+                {
+                    "id": "WGC0DJ0YSis"
+                }
+            ],
+            "periods": [
+                {
+                    "id": "201810"
+                },
+                {
+                    "id": "201811"
+                },
+                {
+                    "id": "201812"
+                },
+                {
+                    "id": "201901"
+                },
+                {
+                    "id": "201902"
+                },
+                {
+                    "id": "201903"
+                }
+            ],
+            "columns": [
+                {
+                    "code": "ACTUAL_TARGET",
+                    "id": "GIIHAr9BzzO",
+                    "dataDimensionType": "ATTRIBUTE",
+                    "categoryOptions": [
+                        {
+                            "code": "TARGET",
+                            "id": "imyqCWQ229K"
+                        },
+                        {
+                            "code": "ACTUAL",
+                            "id": "eWeQoOlAcxV"
+                        }
+                    ]
+                }
+            ],
+            "columnDimensions": [
+                "GIIHAr9BzzO"
+            ],
+            "filters": [
+                {
+                    "id": "ou"
+                },
+                {
+                    "id": "Kyg1O6YEGa9",
+                    "categoryOptions": [
+                        {
+                            "id": "qk2FihwV6IL"
+                        }
+                    ]
+                },
+                {
+                    "code": "NEW_RETURNING",
+                    "id": "uSMHdwhxFSV",
+                    "dataDimensionType": "DISAGGREGATION",
+                    "categoryOptions": [
+                        {
+                            "code": "NEW",
+                            "id": "KiK0FMExoqh"
+                        },
+                        {
+                            "code": "RETURNING",
+                            "id": "a6AJLXQy8vO"
+                        }
+                    ]
+                }
+            ],
+            "filterDimensions": [
+                "ou",
+                "Kyg1O6YEGa9",
+                "uSMHdwhxFSV"
+            ],
+            "rows": [
+                {
+                    "id": "dx"
+                },
+                {
+                    "id": "pe"
+                }
+            ],
+            "rowDimensions": [
+                "dx",
+                "pe"
+            ],
+            "categoryDimensions": [
+                {
+                    "category": {
+                        "id": "GIIHAr9BzzO"
+                    },
+                    "categoryOptions": [
+                        {
+                            "id": "imyqCWQ229K"
+                        },
+                        {
+                            "id": "eWeQoOlAcxV"
+                        }
+                    ]
+                },
+                {
+                    "category": {
+                        "id": "Kyg1O6YEGa9"
+                    },
+                    "categoryOptions": [
+                        {
+                            "id": "qk2FihwV6IL"
+                        }
+                    ]
+                },
+                {
+                    "category": {
+                        "id": "uSMHdwhxFSV"
+                    },
+                    "categoryOptions": [
+                        {
+                            "id": "KiK0FMExoqh"
+                        },
+                        {
+                            "id": "a6AJLXQy8vO"
+                        }
+                    ]
+                }
+            ],
+            "publicAccess": "--------",
+            "externalAccess": false,
+            "userAccesses": [
+                {
+                    "id": "M5zQapPyTZI",
+                    "displayName": "admin admin",
+                    "access": "rw------"
+                }
+            ],
+            "userGroupAccesses": [
+                {
+                    "id": "ywuI2WspUUG",
+                    "displayName": "System Admin",
+                    "access": "rw------"
+                },
+                {
+                    "id": "mKKNXzeIAJs",
+                    "displayName": "Data Management Admin",
+                    "access": "rw------"
+                }
+            ],
+            "series": [
+                {
+                    "dimensionItem": "imyqCWQ229K",
+                    "axis": 0
+                },
+                {
+                    "dimensionItem": "eWeQoOlAcxV",
+                    "axis": 0,
+                    "type": "COLUMN"
                 }
             ]
         },
