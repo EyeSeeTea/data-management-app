@@ -1106,6 +1106,17 @@
                     "y": 80
                 },
                 {
+                    "id": "OgO4mL6ovvU",
+                    "type": "CHART",
+                    "visualization": {
+                        "id": "KasxZ8vT1n0"
+                    },
+                    "width": 29,
+                    "height": 20,
+                    "x": 0,
+                    "y": 100
+                },
+                {
                     "id": "yWGKgz9vaOh",
                     "type": "REPORT_TABLE",
                     "visualization": {
@@ -1113,7 +1124,7 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 0,
+                    "x": 29,
                     "y": 100
                 },
                 {
@@ -1124,8 +1135,8 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 29,
-                    "y": 100
+                    "x": 0,
+                    "y": 120
                 },
                 {
                     "id": "qMSWdZHPjyN",
@@ -1135,7 +1146,7 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 0,
+                    "x": 29,
                     "y": 120
                 },
                 {
@@ -1146,8 +1157,8 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 29,
-                    "y": 120
+                    "x": 0,
+                    "y": 140
                 },
                 {
                     "id": "mgwFIMjbsdw",
@@ -1157,7 +1168,7 @@
                     },
                     "width": 29,
                     "height": 20,
-                    "x": 0,
+                    "x": 29,
                     "y": 140
                 },
                 {
@@ -2911,6 +2922,189 @@
                     "categoryOptions": [
                         {
                             "id": "qk2FihwV6IL"
+                        }
+                    ]
+                },
+                {
+                    "category": {
+                        "id": "uSMHdwhxFSV"
+                    },
+                    "categoryOptions": [
+                        {
+                            "id": "KiK0FMExoqh"
+                        },
+                        {
+                            "id": "a6AJLXQy8vO"
+                        }
+                    ]
+                }
+            ],
+            "publicAccess": "--------",
+            "externalAccess": false,
+            "userAccesses": [
+                {
+                    "id": "M5zQapPyTZI",
+                    "displayName": "admin admin",
+                    "access": "rw------"
+                }
+            ],
+            "userGroupAccesses": [
+                {
+                    "id": "ywuI2WspUUG",
+                    "displayName": "System Admin",
+                    "access": "rw------"
+                },
+                {
+                    "id": "mKKNXzeIAJs",
+                    "displayName": "Data Management Admin",
+                    "access": "rw------"
+                }
+            ]
+        },
+        {
+            "id": "KasxZ8vT1n0",
+            "type": "LINE",
+            "name": "12345en - MyProject - Target vs Actual - People - Line Chart - Female Only",
+            "numberType": "VALUE",
+            "legendDisplayStyle": "FILL",
+            "rowSubTotals": true,
+            "showDimensionLabels": true,
+            "showData": true,
+            "aggregationType": "DEFAULT",
+            "legendDisplayStrategy": "FIXED",
+            "rowTotals": true,
+            "digitGroupSeparator": "SPACE",
+            "dataDimensionItems": [
+                {
+                    "dataDimensionItemType": "DATA_ELEMENT",
+                    "dataElement": {
+                        "id": "K6mAC5SiO29"
+                    }
+                },
+                {
+                    "dataDimensionItemType": "DATA_ELEMENT",
+                    "dataElement": {
+                        "id": "ik0ICagvIjm"
+                    }
+                },
+                {
+                    "dataDimensionItemType": "DATA_ELEMENT",
+                    "dataElement": {
+                        "id": "GQyudNlGzkI"
+                    }
+                }
+            ],
+            "organisationUnits": [
+                {
+                    "id": "WGC0DJ0YSis"
+                }
+            ],
+            "periods": [
+                {
+                    "id": "201810"
+                },
+                {
+                    "id": "201811"
+                },
+                {
+                    "id": "201812"
+                },
+                {
+                    "id": "201901"
+                },
+                {
+                    "id": "201902"
+                },
+                {
+                    "id": "201903"
+                }
+            ],
+            "columns": [
+                {
+                    "code": "ACTUAL_TARGET",
+                    "id": "GIIHAr9BzzO",
+                    "dataDimensionType": "ATTRIBUTE",
+                    "categoryOptions": [
+                        {
+                            "code": "TARGET",
+                            "id": "imyqCWQ229K"
+                        },
+                        {
+                            "code": "ACTUAL",
+                            "id": "eWeQoOlAcxV"
+                        }
+                    ]
+                }
+            ],
+            "columnDimensions": [
+                "GIIHAr9BzzO"
+            ],
+            "filters": [
+                {
+                    "id": "ou"
+                },
+                {
+                    "id": "Kyg1O6YEGa9",
+                    "categoryOptions": [
+                        {
+                            "id": "yW2hYVS3S4u"
+                        }
+                    ]
+                },
+                {
+                    "code": "NEW_RETURNING",
+                    "id": "uSMHdwhxFSV",
+                    "dataDimensionType": "DISAGGREGATION",
+                    "categoryOptions": [
+                        {
+                            "code": "NEW",
+                            "id": "KiK0FMExoqh"
+                        },
+                        {
+                            "code": "RETURNING",
+                            "id": "a6AJLXQy8vO"
+                        }
+                    ]
+                }
+            ],
+            "filterDimensions": [
+                "ou",
+                "Kyg1O6YEGa9",
+                "uSMHdwhxFSV"
+            ],
+            "rows": [
+                {
+                    "id": "dx"
+                },
+                {
+                    "id": "pe"
+                }
+            ],
+            "rowDimensions": [
+                "dx",
+                "pe"
+            ],
+            "categoryDimensions": [
+                {
+                    "category": {
+                        "id": "GIIHAr9BzzO"
+                    },
+                    "categoryOptions": [
+                        {
+                            "id": "imyqCWQ229K"
+                        },
+                        {
+                            "id": "eWeQoOlAcxV"
+                        }
+                    ]
+                },
+                {
+                    "category": {
+                        "id": "Kyg1O6YEGa9"
+                    },
+                    "categoryOptions": [
+                        {
+                            "id": "yW2hYVS3S4u"
                         }
                     ]
                 },
