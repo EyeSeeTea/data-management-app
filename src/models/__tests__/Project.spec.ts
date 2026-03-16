@@ -61,7 +61,7 @@ describe("Project", () => {
             expect(project.name).toEqual("");
             expect(project.created).toEqual(undefined);
             expect(project.description).toEqual("");
-            expect(project.project16Code).toEqual("");
+            expect(project.peopleSoftAwardNumber).toEqual("");
             expect(project.awardNumber).toEqual("");
             expect(project.subsequentLettering).toEqual("");
             expect(project.additional).toEqual("");
@@ -91,7 +91,7 @@ describe("Project", () => {
             expect(project.id).toEqual("R3rGhxWbAI9");
             expect(project.name).toEqual("0Test1-13726c");
             expect(project.description).toEqual("Some description2");
-            expect(project.project16Code).toEqual("A1234567890BCDEF");
+            expect(project.peopleSoftAwardNumber).toEqual("A1234567890BCDEF");
             expect(project.awardNumber).toEqual("34549");
             expect(project.subsequentLettering).toEqual("fr");
             expect(project.additional).toEqual("");
@@ -222,20 +222,20 @@ describe("Project", () => {
             expect(errors3["awardNumber"]).toContain("Award Number should be a number of 5 digits");
         });
 
-        it("allows blank project16Code and requires exactly 16 characters when provided", async () => {
-            const project = await getNewProject();
-            const blankErrors = await project.validate(["project16Code"]);
-            expect(blankErrors["project16Code"]).toHaveLength(0);
+        it("allows blank peopleSoftAwardNumber and requires exactly 16 characters when provided", async () => {
+            const project = getNewProject();
+            const blankErrors = await project.validate(["peopleSoftAwardNumber"]);
+            expect(blankErrors["peopleSoftAwardNumber"]).toHaveLength(0);
 
-            const validProject = project.set("project16Code", "A1234567890BCDEF");
-            const validErrors = await validProject.validate(["project16Code"]);
-            expect(validErrors["project16Code"]).toHaveLength(0);
+            const validProject = project.set("peopleSoftAwardNumber", "A1234567890BCDEF");
+            const validErrors = await validProject.validate(["peopleSoftAwardNumber"]);
+            expect(validErrors["peopleSoftAwardNumber"]).toHaveLength(0);
 
-            const invalidProject = project.set("project16Code", "SHORTCODE");
-            const invalidErrors = await invalidProject.validate(["project16Code"]);
-            expect(invalidErrors["project16Code"]).toHaveLength(1);
-            expect(invalidErrors["project16Code"]).toContain(
-                "Project 16 Code must be greater than or equal to 16"
+            const invalidProject = project.set("peopleSoftAwardNumber", "SHORTCODE");
+            const invalidErrors = await invalidProject.validate(["peopleSoftAwardNumber"]);
+            expect(invalidErrors["peopleSoftAwardNumber"]).toHaveLength(1);
+            expect(invalidErrors["peopleSoftAwardNumber"]).toContain(
+                "PeopleSoft Award Number must be greater than or equal to 16"
             );
         });
 

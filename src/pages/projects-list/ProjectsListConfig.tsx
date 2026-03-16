@@ -58,6 +58,12 @@ export function getComponentConfig(
         },
         { name: "code", text: i18n.t("Award Number"), sortable: true },
         {
+            name: "peopleSoftAwardNumber",
+            text: i18n.t("Peoplesoft Award Number"),
+            getValue: project => project.peopleSoftAwardNumber,
+            hidden: true,
+        },
+        {
             name: "sectors",
             text: i18n.t("Sectors"),
             sortable: false,

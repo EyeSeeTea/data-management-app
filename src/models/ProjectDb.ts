@@ -335,11 +335,11 @@ export default class ProjectDb {
         );
 
         const projectOrgUnit =
-            project.project16Code ||
-            getAttributeValue(projectOrgUnitBase, config.attributes.project16Code)
+            project.peopleSoftAwardNumber ||
+            getAttributeValue(projectOrgUnitBase, config.attributes.peopleSoftAwardNumber)
                 ? addAttributeValueToObj(projectOrgUnitBase, {
-                      attribute: config.attributes.project16Code,
-                      value: project.project16Code,
+                      attribute: config.attributes.peopleSoftAwardNumber,
+                      value: project.peopleSoftAwardNumber,
                   })
                 : projectOrgUnitBase;
 
@@ -740,7 +740,8 @@ export default class ProjectDb {
 
         const code = orgUnit.code || "";
         const { startDate, endDate } = getDatesFromOrgUnit(orgUnit);
-        const project16Code = getAttributeValue(orgUnit, config.attributes.project16Code) || "";
+        const peopleSoftAwardNumber =
+            getAttributeValue(orgUnit, config.attributes.peopleSoftAwardNumber) || "";
         const sectorsById = _.keyBy(config.sectors, sector => sector.id);
         const sectorsByCode = _.keyBy(config.sectors, sector => sector.code);
         const dataElementsBySectorId = _(projectDataSets.actual.sections)
@@ -818,7 +819,7 @@ export default class ProjectDb {
             isDartApplicable: isInDartApplicableGroup,
             partner: partnerGroup,
             uniqueIndicators,
-            project16Code,
+            peopleSoftAwardNumber: peopleSoftAwardNumber,
         };
         const project = new Project(api, config, { ...projectData, initialData: projectData });
         return project;

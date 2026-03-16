@@ -136,7 +136,7 @@ class ProjectWizardImpl extends React.Component<Props, State> {
                     "subsequentLettering",
                     "code",
                     "funders",
-                    "project16Code",
+                    "peopleSoftAwardNumber",
                 ],
                 description: i18n.t(`Please fill out information below for your project:`),
                 help: helpTexts.generalInfo,
