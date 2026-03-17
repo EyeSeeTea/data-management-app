@@ -68,6 +68,7 @@ export const baseConfig = {
         awardNumberDashboard: "DM_AWARD_NUMBER_DASHBOARD_ID",
         countingMethod: "DM_COUNTING_METHOD",
         mainSector: "DM_MAIN_SECTOR",
+        peopleSoftAwardNumber: "DM_PEOPLE_SOFT_AWARD_NUMBER",
     },
     categories: {
         default: "default",

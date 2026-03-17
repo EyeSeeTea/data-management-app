@@ -53,6 +53,7 @@ export interface ProjectForList extends BaseProject {
     sharing: Sharing;
     hasAwardNumberDashboard: boolean;
     lastUpdatedData: string;
+    peopleSoftAwardNumber: string;
 }
 
 export interface Country {
@@ -155,6 +156,12 @@ export default class ProjectsList {
                 sharing,
                 hasAwardNumberDashboard,
                 lastUpdatedData,
+                peopleSoftAwardNumber:
+                    orgUnit.attributeValues.find(
+                        attributeValue =>
+                            attributeValue.attribute.id ===
+                            config.attributes.peopleSoftAwardNumber.id
+                    )?.value ?? "",
             };
             return project;
         });

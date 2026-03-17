@@ -31,7 +31,7 @@ import { ProjectInfo, getProjectStorageKey, getReportStorageKey } from "./MerRep
 import ProjectSharing from "./ProjectSharing";
 import { splitParts } from "../utils/string";
 import CountryDashboard from "./CountryDashboard";
-import { addAttributeValueToObj, addAttributeValue } from "./Attributes";
+import { addAttributeValueToObj, addAttributeValue, getAttributeValue } from "./Attributes";
 import { getSharing } from "./Sharing";
 import { DashboardSourceMetadata } from "./ProjectsListDashboard";
 import { promiseMap } from "../migrations/utils";
@@ -323,7 +323,7 @@ export default class ProjectDb {
         );
         if (!dashboards.project) throw new Error("Dashboards error");
 
-        const projectOrgUnit = addAttributeValueToObj(
+        const projectOrgUnitBase = addAttributeValueToObj(
             addAttributeValueToObj(orgUnit, {
                 attribute: config.attributes.createdByApp,
                 value: "true",
@@ -333,6 +333,15 @@ export default class ProjectDb {
                 value: dashboards.project.id,
             }
         );
+
+        const projectOrgUnit =
+            project.peopleSoftAwardNumber ||
+            getAttributeValue(projectOrgUnitBase, config.attributes.peopleSoftAwardNumber)
+                ? addAttributeValueToObj(projectOrgUnitBase, {
+                      attribute: config.attributes.peopleSoftAwardNumber,
+                      value: project.peopleSoftAwardNumber,
+                  })
+                : projectOrgUnitBase;
 
         const orgUnitGroupsMetadata = await getOrgUnitGroupsMetadata(api, project, dashboards);
 
@@ -731,6 +740,8 @@ export default class ProjectDb {
 
         const code = orgUnit.code || "";
         const { startDate, endDate } = getDatesFromOrgUnit(orgUnit);
+        const peopleSoftAwardNumber =
+            getAttributeValue(orgUnit, config.attributes.peopleSoftAwardNumber) || "";
         const sectorsById = _.keyBy(config.sectors, sector => sector.id);
         const sectorsByCode = _.keyBy(config.sectors, sector => sector.code);
         const dataElementsBySectorId = _(projectDataSets.actual.sections)
@@ -808,6 +819,7 @@ export default class ProjectDb {
             isDartApplicable: isInDartApplicableGroup,
             partner: partnerGroup,
             uniqueIndicators,
+            peopleSoftAwardNumber: peopleSoftAwardNumber,
         };
         const project = new Project(api, config, { ...projectData, initialData: projectData });
         return project;

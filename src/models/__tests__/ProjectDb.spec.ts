@@ -257,6 +257,12 @@ const expectedOrgUnitPut = {
                 id: "aywduilEjPQ",
             },
         },
+        {
+            value: "A1234567890BCDEF",
+            attribute: {
+                id: "kaZd6u5e0Ln",
+            },
+        },
     ],
 };
 
