@@ -43,7 +43,7 @@ export class ProjectInfo {
             field(fields.name, project => project.name),
             field(fields.description, project => project.description),
             field(fields.awardNumber, project => project.awardNumber),
-            field(fields.project16Code, project => project.project16Code),
+            field(fields.peopleSoftAwardNumber, project => project.peopleSoftAwardNumber),
             field(fields.subsequentLettering, project => project.subsequentLettering),
             field(fields.additional, project => project.additional),
             field(i18n.t("Period dates"), project => project.getPeriodInterval()),

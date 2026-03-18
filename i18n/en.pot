@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-03-13T15:48:15.195Z\n"
-"PO-Revision-Date: 2026-03-13T15:48:15.195Z\n"
+"POT-Creation-Date: 2026-03-16T13:43:15.193Z\n"
+"PO-Revision-Date: 2026-03-16T13:43:15.193Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -519,7 +519,7 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-msgid "Project 16 Code"
+msgid "PeopleSoft Award Number"
 msgstr ""
 
 msgid "Award Number"
@@ -1171,6 +1171,9 @@ msgid "Monthly Report"
 msgstr ""
 
 msgid "Create Project"
+msgstr ""
+
+msgid "Peoplesoft Award Number"
 msgstr ""
 
 msgid "Last Updated (metadata)"

@@ -20,7 +20,7 @@ type StringField =
     | "awardNumber"
     | "subsequentLettering"
     | "additional"
-    | "project16Code";
+    | "peopleSoftAwardNumber";
 
 type DateField = "startDate" | "endDate";
 
@@ -56,15 +56,6 @@ class GeneralInfoStep extends React.Component<StepProps> {
                     }),
                 ],
             }),
-            getTextField("project16Code", project.project16Code, {
-                validators: [
-                    validators.optionalLength({
-                        min: Project.lengths.project16Code,
-                        max: Project.lengths.project16Code,
-                        message: i18n.t("Field should be exactly 16 characters long"),
-                    }),
-                ],
-            }),
             getTextField("subsequentLettering", project.subsequentLettering, {
                 validators: [
                     validators.presence,
@@ -75,6 +66,15 @@ class GeneralInfoStep extends React.Component<StepProps> {
                 validators: [
                     validators.length({
                         max: Project.lengths.additional,
+                    }),
+                ],
+            }),
+            getTextField("peopleSoftAwardNumber", project.peopleSoftAwardNumber, {
+                validators: [
+                    validators.optionalLength({
+                        min: Project.lengths.peopleSoftAwardNumber,
+                        max: Project.lengths.peopleSoftAwardNumber,
+                        message: i18n.t("Field should be exactly 16 characters long"),
                     }),
                 ],
             }),
