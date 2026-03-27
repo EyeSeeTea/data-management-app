@@ -30,8 +30,6 @@ interface Item {
 
 export interface VisualizationDefinition {
     type: "chart" | "table";
-    // TODO: validate if having undefined for the other visualizations
-    // modify somehow the functionality
     chartType?: Exclude<D2Visualization["type"], "PIVOT_TABLE">;
     periodStrategy?: PeriodStrategy;
     key: string;
