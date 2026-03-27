@@ -21,10 +21,9 @@ const dataStoreUpdateResponse = {
 describe("ProjectDb", () => {
     describe("save", () => {
         it("posts metadata", async () => {
-            const project = (await getProject(api, { orgUnit: undefined })).updateDataElementsMERSelection(
-                "ieyBABjYyHO",
-                ["ik0ICagvIjm"]
-            ).project;
+            const project = (
+                await getProject(api, { orgUnit: undefined })
+            ).updateDataElementsMERSelection("ieyBABjYyHO", ["ik0ICagvIjm"]).project;
 
             // Validation
             mock.onGet("/metadata", {
