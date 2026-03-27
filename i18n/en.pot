@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-03-16T13:43:15.193Z\n"
-"PO-Revision-Date: 2026-03-16T13:43:15.193Z\n"
+"POT-Creation-Date: 2026-03-27T15:30:46.362Z\n"
+"PO-Revision-Date: 2026-03-27T15:30:46.362Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -594,10 +594,70 @@ msgstr ""
 msgid "Target vs Actual - Benefits"
 msgstr ""
 
+msgid "Target vs Actual - Benefits - Pivot Table"
+msgstr ""
+
+msgid "Target vs Actual - Benefits - Column Chart"
+msgstr ""
+
+msgid "Target vs Actual - People - Column Chart"
+msgstr ""
+
+msgid "MER - Target vs Actual - Benefits - Column Chart"
+msgstr ""
+
+msgid "MER - Target vs Actual - People - Column Chart"
+msgstr ""
+
+msgid "Target vs Actual - Benefits - Column Chart Disaggregated By Indicator"
+msgstr ""
+
+msgid "Target vs Actual - People - Column Chart Disaggregated By Indicator"
+msgstr ""
+
+msgid "Target vs Actual - Benefits - Line Chart"
+msgstr ""
+
+msgid "Target vs Actual - People - Line Chart"
+msgstr ""
+
+msgid "Target vs Actual - People - Line Chart - Male Only"
+msgstr ""
+
+msgid "Target vs Actual - People - Line Chart - Female Only"
+msgstr ""
+
+msgid "Target vs Actual - People - Line/Column Chart - Male Only"
+msgstr ""
+
+msgid "Target vs Actual - People - Line/Column Chart - Female Only"
+msgstr ""
+
 msgid "Target vs Actual - Benefits (Disaggregated)"
 msgstr ""
 
 msgid "Target vs Actual - People"
+msgstr ""
+
+msgid "Target vs Actual - People - Pivot Table"
+msgstr ""
+
+msgid "Target vs Actual - People - Month by Month"
+msgstr ""
+
+msgid "Target vs Actual - Benefits - Month by Month"
+msgstr ""
+
+msgid "Target vs Actual - People - Male Only - Pivot Table"
+msgstr ""
+
+msgid "Target vs Actual - People - Female Only - Pivot Table"
+msgstr ""
+
+msgid "Target vs Actual - People - Male Only - Column Chart"
+msgstr ""
+
+msgid "Target vs Actual - People - Female Only - Column Chart"
 msgstr ""
 
 msgid "Target vs Actual - Unique People"

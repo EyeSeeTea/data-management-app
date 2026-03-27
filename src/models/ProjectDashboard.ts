@@ -28,7 +28,7 @@ import {
     DashboardSourceMetadata,
     Condition,
 } from "./ProjectsListDashboard";
-import { filterPeriods } from "./Period";
+import { getVisualizationPeriods } from "./Period";
 
 export default class ProjectDashboard {
     dataElements: ProjectsListDashboard["dataElements"];
@@ -101,111 +101,10 @@ export default class ProjectDashboard {
         if (!_.isNil(minimumOrgUnits) && projectsListDashboard.orgUnits.length < minimumOrgUnits)
             return { dashboards: [], visualizations: [] };
 
-        const targetVsActualBenefitsChart_ =
-            this.dashboardType === "project" ? this.targetVsActualBenefitsChart() : undefined;
-
-        const targetVsActualPeopleChart_ =
-            this.dashboardType === "project" ? this.targetVsActualPeopleChart() : undefined;
-
-        const merTargetVsActualBenefitsChart_ =
-            this.dashboardType === "project" ? this.merTargetVsActualBenefitsChart() : undefined;
-
-        const merTargetVsActualPeopleChart_ =
-            this.dashboardType === "project" ? this.merTargetVsActualPeopleChart() : undefined;
-
-        const targetVsActualBenefitsDisaggregatedByIndicatorChart_ =
-            this.dashboardType === "project"
-                ? this.targetVsActualBenefitsDisaggregatedByIndicatorChart()
-                : undefined;
-
-        const targetVsActualPeopleDisaggregatedByIndicatorChart_ =
-            this.dashboardType === "project"
-                ? this.targetVsActualPeopleDisaggregatedByIndicatorChart()
-                : undefined;
-
-        const targetVsActualBenefitsLineChart_ =
-            this.dashboardType === "project" ? this.targetVsActualBenefitsLineChart() : undefined;
-
-        const targetVsActualPeopleLineChart_ =
-            this.dashboardType === "project" ? this.targetVsActualPeopleLineChart() : undefined;
-
-        const targetVsActualPeopleLineChartMaleOnly_ =
-            this.dashboardType === "project"
-                ? this.targetVsActualPeopleLineChartMaleOnly()
-                : undefined;
-
-        const targetVsActualPeopleLineChartFemaleOnly_ =
-            this.dashboardType === "project"
-                ? this.targetVsActualPeopleLineChartFemaleOnly()
-                : undefined;
-
-        const targetVsActualPeopleLineColumnChartMaleOnly_ =
-            this.dashboardType === "project"
-                ? this.targetVsActualPeopleLineColumnChartMaleOnly()
-                : undefined;
-
-        const targetVsActualPeopleLineColumnChartFemaleOnly_ =
-            this.dashboardType === "project"
-                ? this.targetVsActualPeopleLineColumnChartFemaleOnly()
-                : undefined;
-
-        const targetVsActualBenefitsTable_ = this.targetVsActualBenefitsTable();
-        const targetVsActualBenefitsWithDisaggregationTable_ =
-            this.targetVsActualBenefitsWithDisaggregationTable();
-        const targetVsActualPeopleTable_ = this.targetVsActualPeopleTable();
-        const achievedBenefitsToDateTable_ = this.achievedBenefitsTable({ toDate: true });
-        const achievedBenefitsTotalToDateTable_ = this.achievedBenefitsTotalToDateTable();
-        const achievedPeopleTotalToDateTable_ = this.achievedPeopleTotalTable({ toDate: true });
-        const achievedBenefitsTable_ = this.achievedBenefitsTable();
-        const achievedPeopleToDateTable_ = this.achievedPeopleTable();
-        const achievedPeopleTotalTable_ = this.achievedPeopleTotalTable();
-
-        const reportTables: Array<PartialPersistedModel<D2Visualization>> = _.compact([
-            // General Data View
-            targetVsActualBenefitsTable_,
-            targetVsActualBenefitsWithDisaggregationTable_,
-            targetVsActualPeopleTable_,
-            // Percent achieved (to date)
-            achievedBenefitsToDateTable_,
-            achievedBenefitsTotalToDateTable_,
-            achievedPeopleTotalToDateTable_,
-            // Percent achieved
-            achievedBenefitsTable_,
-            achievedPeopleToDateTable_,
-            achievedPeopleTotalTable_,
-        ]);
-
-        const charts: Array<PartialPersistedModel<D2Visualization>> = _.compact([
-            this.achievedBenefitChart(),
-            this.achievedPeopleChart(),
-            this.genderChart(),
-            this.costBenefitTable(),
-        ]);
-
-        const projectVisualizations = _.compact([
-            targetVsActualBenefitsChart_,
-            targetVsActualPeopleChart_,
-            merTargetVsActualBenefitsChart_,
-            merTargetVsActualPeopleChart_,
-            targetVsActualBenefitsTable_,
-            targetVsActualPeopleTable_,
-            targetVsActualBenefitsDisaggregatedByIndicatorChart_,
-            targetVsActualPeopleDisaggregatedByIndicatorChart_,
-            targetVsActualBenefitsLineChart_,
-            targetVsActualPeopleLineChart_,
-            targetVsActualPeopleLineChartMaleOnly_,
-            targetVsActualPeopleLineChartFemaleOnly_,
-            targetVsActualPeopleLineColumnChartMaleOnly_,
-            targetVsActualPeopleLineColumnChartFemaleOnly_,
-            achievedBenefitsToDateTable_,
-            achievedPeopleToDateTable_,
-            ...charts,
-        ]);
-
-        const defaultVisualizations = _.concat(reportTables, _.compact(charts));
-
         const visualizations =
-            this.dashboardType === "project" ? projectVisualizations : defaultVisualizations;
+            this.dashboardType === "project"
+                ? this.getProjectVisualizations()
+                : this.getAwardNumberVisualizations();
 
         const items: Array<PartialModel<D2DashboardItem>> = _(visualizations)
             .map(visualization =>
@@ -232,6 +131,58 @@ export default class ProjectDashboard {
         return { dashboards: [dashboard], visualizations };
     }
 
+    getProjectVisualizations(): PartialPersistedModel<D2Visualization>[] {
+        const targetVsActualBenefitsTable_ = this.targetVsActualBenefitsTable();
+        const targetVsActualPeopleTable_ = this.targetVsActualPeopleTable();
+        const achievedBenefitsToDateTable_ = this.achievedBenefitsTable({ toDate: true });
+        const achievedPeopleToDateTable_ = this.achievedPeopleTable();
+        const charts: Array<PartialPersistedModel<D2Visualization>> = _.compact([
+            this.achievedBenefitChart(),
+            this.achievedPeopleChart(),
+            this.genderChart(),
+            this.costBenefitTable(),
+        ]);
+
+        return _.compact([
+            this.targetVsActualBenefitsChart(),
+            this.targetVsActualPeopleChart(),
+            this.merTargetVsActualBenefitsChart(),
+            this.merTargetVsActualPeopleChart(),
+            targetVsActualBenefitsTable_,
+            targetVsActualPeopleTable_,
+            this.targetVsActualBenefitsDisaggregatedByIndicatorChart(),
+            this.targetVsActualPeopleDisaggregatedByIndicatorChart(),
+            this.targetVsActualBenefitsLineChart(),
+            this.targetVsActualPeopleLineChart(),
+            this.targetVsActualPeopleLineChartMaleOnly(),
+            this.targetVsActualPeopleLineChartFemaleOnly(),
+            this.targetVsActualPeopleLineColumnChartMaleOnly(),
+            this.targetVsActualPeopleLineColumnChartFemaleOnly(),
+            achievedBenefitsToDateTable_,
+            achievedPeopleToDateTable_,
+            ...charts,
+        ]);
+    }
+
+    getAwardNumberVisualizations(): PartialPersistedModel<D2Visualization>[] {
+        return _.compact([
+            this.awardNumberTargetVsActualPeoplePivotTable(),
+            this.awardNumberTargetVsActualPeopleColumnChart(),
+            this.awardNumberTargetVsActualBenefitsPivotTable(),
+            this.awardNumberTargetVsActualBenefitsColumnChart(),
+            this.achievedPeopleTotalTable({ toDate: true }),
+            this.achievedBenefitsTable({ toDate: true }),
+            this.targetVsActualPeopleTable(),
+            this.targetVsActualBenefitsTable(),
+            this.awardNumberTargetVsActualPeopleMonthByMonthTable(),
+            this.awardNumberTargetVsActualBenefitsMonthByMonthTable(),
+            this.awardNumberTargetVsActualPeopleMaleOnlyPivotTable(),
+            this.awardNumberTargetVsActualPeopleMaleOnlyColumnChart(),
+            this.awardNumberTargetVsActualPeopleFemaleOnlyPivotTable(),
+            this.awardNumberTargetVsActualPeopleFemaleOnlyColumnChart(),
+        ]);
+    }
+
     targetVsActualBenefitsTable(): MaybeD2Visualization {
         const { config, dataElements } = this;
         const dataElementsNoDisaggregated = dataElements.benefit.filter(
@@ -242,6 +193,24 @@ export default class ProjectDashboard {
             type: "table",
             key: "reportTable-target-actual-benefits",
             name: i18n.t("Target vs Actual - Benefits"),
+            items: dataElementItems(dataElementsNoDisaggregated),
+            filters: [dimensions.orgUnit],
+            columns: [dimensions.period],
+            rows: [dimensions.data, config.categories.targetActual],
+        });
+    }
+
+    awardNumberTargetVsActualBenefitsPivotTable(): MaybeD2Visualization {
+        const { config, dataElements } = this;
+        const dataElementsNoDisaggregated = dataElements.benefit.filter(
+            de => !de.categories.includes("newRecurring")
+        );
+
+        return this.getD2VisualizationFromDefinition({
+            type: "table",
+            key: "reportTable-target-actual-benefits-pivot-table",
+            name: i18n.t("Target vs Actual - Benefits - Pivot Table"),
+            periodStrategy: "yearly",
             items: dataElementItems(dataElementsNoDisaggregated),
             filters: [dimensions.orgUnit],
             columns: [dimensions.period],
@@ -266,6 +235,24 @@ export default class ProjectDashboard {
         });
     }
 
+    awardNumberTargetVsActualBenefitsColumnChart(): MaybeD2Visualization {
+        const { config, dataElements } = this;
+        const dataElementsNoDisaggregated = dataElements.benefit.filter(
+            de => !de.categories.includes("newRecurring")
+        );
+
+        return this.getD2VisualizationFromDefinition({
+            type: "chart",
+            key: "chart-target-actual-benefits-award-number",
+            name: i18n.t("Target vs Actual - Benefits - Column Chart"),
+            periodStrategy: "yearly",
+            items: dataElementItems(dataElementsNoDisaggregated),
+            filters: [dimensions.orgUnit],
+            columns: [dimensions.data],
+            rows: [config.categories.targetActual, dimensions.period],
+        });
+    }
+
     targetVsActualPeopleChart(): MaybeD2Visualization {
         const { config, dataElements } = this;
 
@@ -282,6 +269,21 @@ export default class ProjectDashboard {
             ],
             columns: [config.categories.targetActual],
             rows: [dimensions.period],
+        });
+    }
+
+    awardNumberTargetVsActualPeopleColumnChart(): MaybeD2Visualization {
+        const { config, dataElements } = this;
+
+        return this.getD2VisualizationFromDefinition({
+            type: "chart",
+            key: "chart-target-actual-people-award-number",
+            name: i18n.t("Target vs Actual - People - Column Chart"),
+            periodStrategy: "yearly",
+            items: dataElementItems(dataElements.people),
+            filters: [dimensions.orgUnit, config.categories.gender, config.categories.newRecurring],
+            columns: [dimensions.data],
+            rows: [config.categories.targetActual, dimensions.period],
         });
     }
 
@@ -493,6 +495,126 @@ export default class ProjectDashboard {
         });
     }
 
+    awardNumberTargetVsActualPeoplePivotTable(): MaybeD2Visualization {
+        const { config, dataElements } = this;
+
+        return this.getD2VisualizationFromDefinition({
+            type: "table",
+            key: "reportTable-target-actual-people-pivot-table",
+            name: i18n.t("Target vs Actual - People - Pivot Table"),
+            periodStrategy: "yearly",
+            items: dataElementItems(dataElements.people),
+            filters: [dimensions.orgUnit],
+            columns: [dimensions.period],
+            rows: [dimensions.data, config.categories.targetActual, config.categories.newRecurring],
+        });
+    }
+
+    awardNumberTargetVsActualPeopleMonthByMonthTable(): MaybeD2Visualization {
+        const { config, dataElements } = this;
+
+        return this.getD2VisualizationFromDefinition({
+            type: "table",
+            key: "reportTable-target-actual-people-month-by-month",
+            name: i18n.t("Target vs Actual - People - Month by Month"),
+            periodStrategy: "monthly_interleaved_by_month",
+            items: dataElementItems(dataElements.people),
+            filters: [dimensions.orgUnit, config.categories.gender, config.categories.newRecurring],
+            columns: [dimensions.period],
+            rows: [dimensions.data, config.categories.targetActual],
+        });
+    }
+
+    awardNumberTargetVsActualBenefitsMonthByMonthTable(): MaybeD2Visualization {
+        const { config, dataElements } = this;
+        const dataElementsNoDisaggregated = dataElements.benefit.filter(
+            de => !de.categories.includes("newRecurring")
+        );
+
+        return this.getD2VisualizationFromDefinition({
+            type: "table",
+            key: "reportTable-target-actual-benefits-month-by-month",
+            name: i18n.t("Target vs Actual - Benefits - Month by Month"),
+            periodStrategy: "monthly_interleaved_by_month",
+            items: dataElementItems(dataElementsNoDisaggregated),
+            filters: [dimensions.orgUnit],
+            columns: [dimensions.period],
+            rows: [dimensions.data, config.categories.targetActual],
+        });
+    }
+
+    awardNumberTargetVsActualPeopleMaleOnlyPivotTable(): MaybeD2Visualization {
+        return this.awardNumberTargetVsActualPeopleGenderPivotTable({
+            key: "reportTable-target-actual-people-male-only-pivot-table",
+            name: i18n.t("Target vs Actual - People - Male Only - Pivot Table"),
+            genderFilter: this.categoryOnlyMale,
+        });
+    }
+
+    awardNumberTargetVsActualPeopleFemaleOnlyPivotTable(): MaybeD2Visualization {
+        return this.awardNumberTargetVsActualPeopleGenderPivotTable({
+            key: "reportTable-target-actual-people-female-only-pivot-table",
+            name: i18n.t("Target vs Actual - People - Female Only - Pivot Table"),
+            genderFilter: this.categoryOnlyFemale,
+        });
+    }
+
+    awardNumberTargetVsActualPeopleMaleOnlyColumnChart(): MaybeD2Visualization {
+        return this.awardNumberTargetVsActualPeopleGenderColumnChart({
+            key: "chart-target-actual-people-male-only-award-number",
+            name: i18n.t("Target vs Actual - People - Male Only - Column Chart"),
+            genderFilter: this.categoryOnlyMale,
+        });
+    }
+
+    awardNumberTargetVsActualPeopleFemaleOnlyColumnChart(): MaybeD2Visualization {
+        return this.awardNumberTargetVsActualPeopleGenderColumnChart({
+            key: "chart-target-actual-people-female-only-award-number",
+            name: i18n.t("Target vs Actual - People - Female Only - Column Chart"),
+            genderFilter: this.categoryOnlyFemale,
+        });
+    }
+
+    awardNumberTargetVsActualPeopleGenderPivotTable(options: {
+        key: string;
+        name: string;
+        genderFilter: { id: Id; categoryOptions: Ref[] };
+    }): MaybeD2Visualization {
+        const { config, dataElements } = this;
+        const { key, name, genderFilter } = options;
+
+        return this.getD2VisualizationFromDefinition({
+            type: "table",
+            key,
+            name,
+            periodStrategy: "yearly",
+            items: dataElementItems(dataElements.people),
+            filters: [dimensions.orgUnit, genderFilter, this.categoryOnlyNew],
+            columns: [dimensions.period],
+            rows: [dimensions.data, config.categories.targetActual],
+        });
+    }
+
+    awardNumberTargetVsActualPeopleGenderColumnChart(options: {
+        key: string;
+        name: string;
+        genderFilter: { id: Id; categoryOptions: Ref[] };
+    }): MaybeD2Visualization {
+        const { config, dataElements } = this;
+        const { key, name, genderFilter } = options;
+
+        return this.getD2VisualizationFromDefinition({
+            type: "chart",
+            key,
+            name,
+            periodStrategy: "yearly",
+            items: dataElementItems(dataElements.people),
+            filters: [dimensions.orgUnit, genderFilter, this.categoryOnlyNew],
+            columns: [dimensions.period],
+            rows: [dimensions.data, config.categories.targetActual],
+        });
+    }
+
     targetVsActualUniquePeopleTable(): MaybeD2Visualization {
         const { config, dataElements } = this;
 
@@ -664,7 +786,7 @@ export default class ProjectDashboard {
             key: definition.key + projectsListDashboard.id,
             name: `${projectsListDashboard.name} - ${definition.name}`,
             organisationUnits: projectsListDashboard.orgUnits,
-            periods: filterPeriods(projectsListDashboard.periods, definition),
+            periods: getVisualizationPeriods(projectsListDashboard.periods, definition),
             sharing: new ProjectSharing(
                 config,
                 projectsListDashboard

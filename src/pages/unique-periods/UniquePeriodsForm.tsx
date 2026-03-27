@@ -10,27 +10,13 @@ import {
 import i18n from "../../locales";
 import { Maybe } from "../../types/utils";
 import { getErrors } from "../../domain/entities/generic/Errors";
+import { months } from "../../utils/date";
 
 export type UniquePeriodsFormProps = {
     existingPeriod?: UniqueBeneficiariesPeriodsAttrs;
     onClose: () => void;
     onSubmit: (uniquePeriods: UniqueBeneficiariesPeriod) => void;
 };
-
-export const months = [
-    { value: "1", text: i18n.t("January") },
-    { value: "2", text: i18n.t("February") },
-    { value: "3", text: i18n.t("March") },
-    { value: "4", text: i18n.t("April") },
-    { value: "5", text: i18n.t("May") },
-    { value: "6", text: i18n.t("June") },
-    { value: "7", text: i18n.t("July") },
-    { value: "8", text: i18n.t("August") },
-    { value: "9", text: i18n.t("September") },
-    { value: "10", text: i18n.t("October") },
-    { value: "11", text: i18n.t("November") },
-    { value: "12", text: i18n.t("December") },
-];
 
 function getValueByAttribute(
     value: string,

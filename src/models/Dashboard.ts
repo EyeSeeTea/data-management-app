@@ -10,6 +10,7 @@ import {
 import { Maybe } from "../types/utils";
 import { getUid, getRefs } from "../utils/dhis2";
 import { D2Sharing } from "./Sharing";
+import { PeriodStrategy } from "./Period";
 
 export const dimensions = {
     period: { id: "pe" },
@@ -32,6 +33,7 @@ export interface VisualizationDefinition {
     // TODO: validate if having undefined for the other visualizations
     // modify somehow the functionality
     chartType?: Exclude<D2Visualization["type"], "PIVOT_TABLE">;
+    periodStrategy?: PeriodStrategy;
     key: string;
     name: string;
     items: Item[];
