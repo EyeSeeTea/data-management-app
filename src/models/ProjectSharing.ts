@@ -95,10 +95,7 @@ export default class ProjectSharing {
                     public: "--------",
                     external: false,
                     users: getD2SharingMap(project.sharing.userAccesses, fullAccess),
-                    userGroups: getD2SharingMap(
-                        project.sharing.userGroupAccesses,
-                        fullAccess
-                    ),
+                    userGroups: getD2SharingMap(project.sharing.userGroupAccesses, fullAccess),
                 },
             },
         };
@@ -157,7 +154,9 @@ interface D2DataSetAccessFields {
     data?: { read: boolean; write: boolean };
 }
 
-export function hasCurrentUserFullAccessToDataSet(shareable: { access: D2DataSetAccessFields }): boolean {
+export function hasCurrentUserFullAccessToDataSet(shareable: {
+    access: D2DataSetAccessFields;
+}): boolean {
     const { access } = shareable;
     const metadataAccess = access.read && access.write;
     const dataAccess = access.data ? access.data.read && access.data.write : true;

@@ -103,7 +103,12 @@ export default class ProjectsList {
                           fields: {
                               code: true,
                               sections: { code: true },
-                              sharing: { public: true, external: true, users: true, userGroups: true },
+                              sharing: {
+                                  public: true,
+                                  external: true,
+                                  users: true,
+                                  userGroups: true,
+                              },
                               access: { read: true, write: true, data: true },
                               attributeValues: { attribute: { id: true }, value: true },
                           },

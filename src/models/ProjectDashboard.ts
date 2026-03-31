@@ -125,7 +125,10 @@ export default class ProjectDashboard {
             id: getUid("dashboard", projectsListDashboard.id),
             name: projectsListDashboard.name,
             dashboardItems: positionItems(items, positionItemsOptions),
-            sharing: new ProjectSharing(config, projectsListDashboard).getSharingAttributesForDashboard(),
+            sharing: new ProjectSharing(
+                config,
+                projectsListDashboard
+            ).getSharingAttributesForDashboard(),
         };
 
         return { dashboards: [dashboard], visualizations };

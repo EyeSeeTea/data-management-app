@@ -469,7 +469,8 @@ export default class ProjectDb {
             const dataSetAttrs = { ...dbDataSet, ...attrs, id: dbDataSet.id };
             const res = await this.api.models.dataSets.put(dataSetAttrs).getData();
 
-            if (res.errorReports && res.errorReports.length > 0) throw new Error("Error saving data set");
+            if (res.errorReports && res.errorReports.length > 0)
+                throw new Error("Error saving data set");
         }
     }
 
@@ -586,7 +587,8 @@ export default class ProjectDb {
 
             const res = await api.models.dataSets.put(dataSetUpdated).getData();
 
-            if (res.errorReports && res.errorReports.length > 0) console.error("Error saving data set");
+            if (res.errorReports && res.errorReports.length > 0)
+                console.error("Error saving data set");
         }
     }
 

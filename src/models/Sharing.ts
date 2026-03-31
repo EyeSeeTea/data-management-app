@@ -51,10 +51,7 @@ export const emptySharing: Sharing = {
     userGroupAccesses: [],
 };
 
-export function getD2SharingMap(
-    entitySharings: EntityAccess[],
-    access: Access
-): D2SharingMap {
+export function getD2SharingMap(entitySharings: EntityAccess[], access: Access): D2SharingMap {
     const result: D2SharingMap = {};
     entitySharings.forEach(entitySharing => {
         result[entitySharing.id] = {
