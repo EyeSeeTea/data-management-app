@@ -26,14 +26,14 @@ export class ProjectNotification {
         const { users: usersInGroup } = await api.metadata
             .get({
                 users: {
-                    fields: { email: true, userCredentials: { disabled: true } },
+                    fields: { email: true, disabled: true },
                     filter: { "userGroups.code": { eq: groupCode } },
                 },
             })
             .getData();
 
         const users = _(usersInGroup)
-            .reject(user => user.userCredentials.disabled)
+            .reject(user => user.disabled)
             .value();
 
         return _(appConfig.app.notifyEmailOnProjectSave)
@@ -63,7 +63,7 @@ export class ProjectNotification {
                         users: {
                             email: true,
                             id: true,
-                            userCredentials: { disabled: true },
+                            disabled: true,
                             userGroups: {
                                 id: true,
                                 name: true,
@@ -75,11 +75,7 @@ export class ProjectNotification {
                 dataSets: {
                     fields: {
                         id: true,
-                        userGroupAccesses: {
-                            id: true,
-                            displayName: true,
-                        },
-                        userAccesses: { id: true },
+                        sharing: { public: true, external: true, users: true, userGroups: true },
                     },
                     filter: { id: { in: [id] } },
                 },
@@ -104,20 +100,21 @@ export class ProjectNotification {
 
         const users = _(res.userRoles)
             .flatMap(userRole => userRole.users)
-            .reject(user => user.userCredentials.disabled)
+            .reject(user => user.disabled)
             .value();
+
+        const sharingUsers = dataSet.sharing.users || {};
+        const sharingUserGroups = dataSet.sharing.userGroups || {};
 
         const userAccessEmails = users
             .filter(user => {
-                return dataSet.userAccesses.some(userAccess => {
-                    return userAccess.id === user.id;
-                });
+                return sharingUsers[user.id] !== undefined;
             })
             .map(user => user.email);
 
         const userGroupEmails = users
             .filter(user => {
-                return dataSet.userGroupAccesses
+                return Object.values(sharingUserGroups)
                     .filter(ug => ug.displayName.includes("Country Admin"))
                     .some(userGroupAccess => {
                         return user.userGroups.some(userGroup => {

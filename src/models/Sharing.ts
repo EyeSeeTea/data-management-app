@@ -2,20 +2,25 @@ import _ from "lodash";
 
 export type D2Access = string;
 
-export interface D2Sharing {
-    publicAccess: D2Access;
-    externalAccess: boolean;
-    userAccesses: D2EntityAccess[];
-    userGroupAccesses: D2EntityAccess[];
-}
-
-export type D2SharingUpdate = Partial<D2Sharing>;
-
 export interface D2EntityAccess {
     access: D2Access;
     displayName: string;
     id: string;
 }
+
+export type D2SharingMap = Record<string, D2EntityAccess>;
+
+export interface D2Sharing {
+    public: D2Access;
+    external: boolean;
+    users: D2SharingMap;
+    userGroups: D2SharingMap;
+}
+
+export type D2SharingUpdate = Partial<{
+    userAccesses: D2EntityAccess[];
+    userGroupAccesses: D2EntityAccess[];
+}>;
 
 export interface Sharing {
     userAccesses: EntityAccess[];
@@ -46,15 +51,19 @@ export const emptySharing: Sharing = {
     userGroupAccesses: [],
 };
 
-export function getD2EntitiesAccess(
+export function getD2SharingMap(
     entitySharings: EntityAccess[],
     access: Access
-): D2EntityAccess[] {
-    return entitySharings.map(entitySharing => ({
-        id: entitySharing.id,
-        displayName: entitySharing.name,
-        access: getD2Access(access),
-    }));
+): D2SharingMap {
+    const result: D2SharingMap = {};
+    entitySharings.forEach(entitySharing => {
+        result[entitySharing.id] = {
+            id: entitySharing.id,
+            displayName: entitySharing.name,
+            access: getD2Access(access),
+        };
+    });
+    return result;
 }
 
 export function getD2Access(d2Access: Access): D2Access {
@@ -74,9 +83,17 @@ export function getEntitiesAccess(d2EntitySharings: D2EntityAccess[]): EntityAcc
     }));
 }
 
-export function getSharing(object: Partial<D2Sharing>): Sharing {
-    const userAccesses = getEntitiesAccess(object.userAccesses || []);
-    const userGroupAccesses = getEntitiesAccess(object.userGroupAccesses || []);
+export function getEntitiesAccessFromMap(d2SharingMap: D2SharingMap): EntityAccess[] {
+    return Object.values(d2SharingMap).map(ref => ({
+        id: ref.id,
+        name: ref.displayName,
+    }));
+}
+
+export function getSharing(object: { sharing?: Partial<D2Sharing> }): Sharing {
+    const sharing = object.sharing || {};
+    const userAccesses = getEntitiesAccessFromMap(sharing.users || {});
+    const userGroupAccesses = getEntitiesAccessFromMap(sharing.userGroups || {});
     return { userAccesses, userGroupAccesses };
 }
 

@@ -16,27 +16,6 @@
         {
             "code": "WGC0DJ0YSis_ACTUAL",
             "id": "CwUxT9UIX3z",
-            "publicAccess": "--------",
-            "externalAccess": false,
-            "userAccesses": [
-                {
-                    "id": "M5zQapPyTZI",
-                    "displayName": "admin admin",
-                    "access": "rwrw----"
-                }
-            ],
-            "userGroupAccesses": [
-                {
-                    "id": "ywuI2WspUUG",
-                    "displayName": "System Admin",
-                    "access": "rwrw----"
-                },
-                {
-                    "id": "mKKNXzeIAJs",
-                    "displayName": "Data Management Admin",
-                    "access": "rwrw----"
-                }
-            ],
             "dataSetElements": [
                 {
                     "dataElement": {
@@ -293,7 +272,30 @@
                     "closingDate": "2019-03-10T00:00:00.000",
                     "openingDate": "2018-10-01T00:00:00.000"
                 }
-            ]
+            ],
+            "sharing": {
+                "public": "--------",
+                "external": false,
+                "users": {
+                    "M5zQapPyTZI": {
+                        "id": "M5zQapPyTZI",
+                        "displayName": "admin admin",
+                        "access": "rwrw----"
+                    }
+                },
+                "userGroups": {
+                    "ywuI2WspUUG": {
+                        "id": "ywuI2WspUUG",
+                        "displayName": "System Admin",
+                        "access": "rwrw----"
+                    },
+                    "mKKNXzeIAJs": {
+                        "id": "mKKNXzeIAJs",
+                        "displayName": "Data Management Admin",
+                        "access": "rwrw----"
+                    }
+                }
+            }
         }
     ]
 }

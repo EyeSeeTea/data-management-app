@@ -12,6 +12,7 @@ const { api, mock } = getMockApi();
 const metadataResponse = {
     status: "OK",
     stats: { created: 0, updated: 0, deleted: 0, ignored: 0, total: 0 },
+    typeReports: [],
 };
 
 const dataStoreUpdateResponse = {
@@ -54,7 +55,7 @@ describe("ProjectDb", () => {
                     "organisationUnits:fields": "children[id,name,parent],id,name,parent",
                     "organisationUnits:filter": ["id:eq:WGC0DJ0YSis"],
                     "dataSets:fields":
-                        "code,dataInputPeriods[period[id]],dataSetElements[dataElement[attributeValues[attribute[id],value],code,dataElementGroups[code],id,name]],externalAccess,id,publicAccess,userAccesses[access,displayName,id],userGroupAccesses[access,displayName,id]",
+                        "code,dataInputPeriods[period[id]],dataSetElements[dataElement[attributeValues[attribute[id],value],code,dataElementGroups[code],id,name]],id,sharing[external,public,userGroups,users]",
                     "dataSets:filter": [
                         "code:like$:_ACTUAL",
                         "organisationUnits.path:like:WGC0DJ0YSis",
@@ -69,7 +70,7 @@ describe("ProjectDb", () => {
                     "organisationUnits:fields": "children[id,name,parent],id,name,parent",
                     "organisationUnits:filter": ["id:eq:eu2XF73JOzl"],
                     "dataSets:fields":
-                        "code,dataInputPeriods[period[id]],dataSetElements[dataElement[attributeValues[attribute[id],value],code,dataElementGroups[code],id,name]],externalAccess,id,publicAccess,userAccesses[access,displayName,id],userGroupAccesses[access,displayName,id]",
+                        "code,dataInputPeriods[period[id]],dataSetElements[dataElement[attributeValues[attribute[id],value],code,dataElementGroups[code],id,name]],id,sharing[external,public,userGroups,users]",
                     "dataSets:filter": [
                         "code:like$:_ACTUAL",
                         "organisationUnits.path:like:eu2XF73JOzl",
@@ -84,7 +85,7 @@ describe("ProjectDb", () => {
                     "organisationUnits:fields": "children[id,name,parent],id,name,parent",
                     "organisationUnits:filter": ["code:$like:12345"],
                     "dataSets:fields":
-                        "code,dataInputPeriods[period[id]],dataSetElements[dataElement[attributeValues[attribute[id],value],code,dataElementGroups[code],id,name]],externalAccess,id,publicAccess,userAccesses[access,displayName,id],userGroupAccesses[access,displayName,id]",
+                        "code,dataInputPeriods[period[id]],dataSetElements[dataElement[attributeValues[attribute[id],value],code,dataElementGroups[code],id,name]],id,sharing[external,public,userGroups,users]",
                     "dataSets:filter": ["code:like$:_ACTUAL", "organisationUnits.code:$like:12345"],
                 },
             }).replyOnce(200, awardNumberMetadataResponse);

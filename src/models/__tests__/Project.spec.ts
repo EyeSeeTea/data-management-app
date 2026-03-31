@@ -442,7 +442,7 @@ describe("Project", () => {
             mock.onGet("/metadata", {
                 params: {
                     "dataSets:fields":
-                        "access,attributeValues[attribute[id],value],code,sections[code],userAccesses[access,displayName,id],userGroupAccesses[access,displayName,id]",
+                        "access[data,read,write],attributeValues[attribute[id],value],code,sections[code],sharing[external,public,userGroups,users]",
                     "dataSets:filter": ["code:like$:_ACTUAL"],
                     "organisationUnitGroupSets:fields":
                         "id,organisationUnitGroups[id,organisationUnits[id]]",
@@ -457,6 +457,7 @@ describe("Project", () => {
                             { code: "SECTOR_AGRICULTURE_ds3", dataElements: [{ id: "de1" }] },
                         ],
                         access: fullAccess,
+                        sharing: { public: "--------", external: false, users: {}, userGroups: {} },
                         attributeValues: [],
                     },
                     {
@@ -466,6 +467,7 @@ describe("Project", () => {
                             { code: "SECTOR_AGRICULTURE_ds5", dataElements: [{ id: "de2" }] },
                         ],
                         access: metadataAccess,
+                        sharing: { public: "--------", external: false, users: {}, userGroups: {} },
                         attributeValues: [],
                     },
                 ],
@@ -564,10 +566,8 @@ const metadataForGet = {
         {
             code: "R3rGhxWbAI9_ACTUAL",
             id: "imYbEtdoQZx",
-            publicAccess: "--------",
-            externalAccess: false,
-            userAccesses: [],
-            userGroupAccesses: [],
+            sharing: { public: "--------", external: false, users: {}, userGroups: {} },
+            access: { read: true, write: true, data: { read: true, write: true } },
             dataSetElements: [
                 {
                     categoryCombo: {
@@ -619,10 +619,8 @@ const metadataForGet = {
         {
             code: "R3rGhxWbAI9_TARGET",
             id: "KC6gi00Jm6H",
-            publicAccess: "--------",
-            externalAccess: false,
-            userAccesses: [],
-            userGroupAccesses: [],
+            sharing: { public: "--------", external: false, users: {}, userGroups: {} },
+            access: { read: true, write: true, data: { read: true, write: true } },
             dataSetElements: [
                 {
                     categoryCombo: {
@@ -683,7 +681,7 @@ async function getProject(): Promise<Project> {
                 "attributeValues[attribute[id],value],closedDate,code,created,description,displayName,id,name,openingDate,organisationUnitGroups[attributeValues[attribute[id],value],groupSets[id],id,name],parent[attributeValues[attribute[id],value],displayName,id,name,path],path",
             "organisationUnits:filter": ["id:eq:R3rGhxWbAI9"],
             "dataSets:fields":
-                "code,dataInputPeriods[closingDate,openingDate,period],dataSetElements[categoryCombo[categoryOptionCombos[id],id],dataElement[id]],expiryDays,externalAccess,id,openFuturePeriods,publicAccess,sections[code,dataElements[id]],userAccesses[access,displayName,id],userGroupAccesses[access,displayName,id]",
+                "access[data,read,write],code,dataInputPeriods[closingDate,openingDate,period],dataSetElements[categoryCombo[categoryOptionCombos[id],id],dataElement[id]],expiryDays,id,openFuturePeriods,sections[code,dataElements[id]],sharing[external,public,userGroups,users]",
             "dataSets:filter": ["code:$like:R3rGhxWbAI9"],
         },
     }).replyOnce(200, metadataForGet);

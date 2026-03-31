@@ -1,5 +1,7 @@
-import MockAdapter from "axios-mock-adapter";
 import { logUnknownRequest } from "../../utils/tests";
+import { getMockApi } from "../../types/d2-api";
+
+type MockAdapter = ReturnType<typeof getMockApi>["mock"];
 
 function mockApiMerDataSets(mock: MockAdapter, orgUnitIds: string[]) {
     mock.onGet("/metadata", {

@@ -469,7 +469,7 @@ export default class ProjectDb {
             const dataSetAttrs = { ...dbDataSet, ...attrs, id: dbDataSet.id };
             const res = await this.api.models.dataSets.put(dataSetAttrs).getData();
 
-            if (res.status !== "OK") throw new Error("Error saving data set");
+            if (res.errorReports && res.errorReports.length > 0) throw new Error("Error saving data set");
         }
     }
 
@@ -586,7 +586,7 @@ export default class ProjectDb {
 
             const res = await api.models.dataSets.put(dataSetUpdated).getData();
 
-            if (res.status !== "OK") console.error("Error saving data set");
+            if (res.errorReports && res.errorReports.length > 0) console.error("Error saving data set");
         }
     }
 
@@ -663,7 +663,7 @@ export default class ProjectDb {
             sections: sections.map(section => ({ id: section.id, code: section.code })),
             dataSetElements,
             code: `${orgUnit.id}_${baseDataSet.code}`,
-            ...projectSharing.getSharingAttributesForDataSets(),
+            sharing: projectSharing.getSharingAttributesForDataSets(),
         };
 
         return { dataSets: [dataSet], sections };
@@ -1244,8 +1244,6 @@ export const dataSetFields = {
     sections: { code: true, dataElements: { id: true } },
     openFuturePeriods: true,
     expiryDays: true,
-    publicAccess: true,
-    externalAccess: true,
-    userAccesses: { id: true, displayName: true, access: true },
-    userGroupAccesses: { id: true, displayName: true, access: true },
+    sharing: { public: true, external: true, users: true, userGroups: true },
+    access: { read: true, write: true, data: true },
 } as const;

@@ -125,7 +125,7 @@ export default class CountryDashboard {
             id: getUid("country-dashboard", country.id),
             name: country.name,
             dashboardItems: positionItems(items, positionItemsOptions),
-            ...this.getSharing(),
+            sharing: this.getSharing(),
         };
 
         const countryUpdated = addAttributeValueToObj(d2Country, {
@@ -243,7 +243,7 @@ export default class CountryDashboard {
 
     getSharing(): Partial<D2Sharing> {
         return {
-            publicAccess: getD2Access({ meta: { read: true, write: true } }),
+            public: getD2Access({ meta: { read: true, write: true } }),
         };
     }
 }
