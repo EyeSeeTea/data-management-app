@@ -117,7 +117,9 @@ export function useValidation(hookOptions: {
 
     usePageExitConfirmation(showPromptFn, disableValidation);
 
-    useDhis2EntryEvents(iframeRef, onMessage, options, iframeKey);
+    // TODO: new data entry app does not expose any global event
+    // so we cannot apply this hook
+    // useDhis2EntryEvents(iframeRef, onMessage, options, iframeKey);
 
     return { result: validationResult, clear: clearResult, validate: validate };
 }

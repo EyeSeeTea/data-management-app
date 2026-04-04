@@ -1,7 +1,7 @@
 import { OrganisationUnit } from "./Project";
 import _ from "lodash";
 import { Config } from "./Config";
-import { D2DataSetSchema, Ref } from "../types/d2-api";
+import { Ref } from "../types/d2-api";
 import {
     Sharing,
     EntityAccess,
@@ -26,6 +26,7 @@ export default class ProjectSharing {
     constructor(private config: Config, public project: ProjectForSharing) {}
 
     static getInitialSharing(config: Config): Sharing {
+        console.log("config", config);
         const { currentUser, userGroups } = config;
         const userAccesses: EntityAccess[] = [
             { id: currentUser.id, name: currentUser.displayName },

@@ -113,6 +113,8 @@ const App: React.FC<AppProps> = props => {
         return <div>Cannot load app: {loadError}</div>;
     }
 
+    const shouldRenderHeaderBar = window.self === window.top;
+
     if (error) {
         return (
             <h3 style={{ margin: 20 }}>
@@ -147,9 +149,11 @@ const App: React.FC<AppProps> = props => {
                                     title={disableLogoNav?.title}
                                     description={disableLogoNav?.description}
                                 />
-                                <div onClick={headerClick}>
-                                    <HeaderBar appName={"Data Management"} />
-                                </div>
+                                {shouldRenderHeaderBar && (
+                                    <div onClick={headerClick}>
+                                        <HeaderBar appName={"Data Management"} />
+                                    </div>
+                                )}
 
                                 <div id="app" className="content">
                                     <ApiContext.Provider value={appContext}>

@@ -35,8 +35,8 @@ const Dashboard: React.FC<DashboardProps> = props => {
     const [state, setState] = React.useState<State>({ type: "loading", height: 10000 });
     const iframeRef: React.RefObject<HTMLIFrameElement> = React.createRef();
 
-    const dashboardUrlBase = `${baseUrl}/dhis-web-dashboard`;
-    const dashboardUrl = dashboardUrlBase + `/#/${id}`;
+    const dashboardUrlBase = `${baseUrl}/apps/dashboard`;
+    const dashboardUrl = dashboardUrlBase + `#/${id}`;
     const translations = getTranslations(name);
     const appHistory = useAppHistory(backUrl);
 
@@ -153,30 +153,11 @@ function waitforElementToLoad(iframeDocument: HTMLDocument, selector: string) {
 async function setDashboardStyling(iframe: HTMLIFrameElement) {
     if (!iframe.contentWindow) return;
     const iframeDocument = iframe.contentWindow.document;
-
-    await waitforElementToLoad(iframeDocument, ".app-wrapper,.dashboard-scroll-container");
-    const iFrameRoot = iframeDocument.querySelector<HTMLElement>("#root");
-    const iFrameWrapper = iframeDocument.querySelector<HTMLElement>(".app-wrapper");
-    const pageContainer = iframeDocument.querySelector<HTMLElement>(".page-container-top-margin");
-
-    if (iFrameWrapper?.children[0])
-        (iFrameWrapper.children[0] as HTMLElement).style.display = "none";
-    if (iFrameWrapper?.children[1])
-        (iFrameWrapper.children[1] as HTMLElement).style.display = "none";
-
-    // 2.36
-    iframeDocument.querySelectorAll("header").forEach(el => el.remove());
-    iframeDocument.querySelectorAll("[data-test='dashboards-bar']").forEach(el => el.remove());
-
-    // Hide top bar actions
-    iframeDocument
-        .querySelectorAll<HTMLElement>(
-            ".dashboard-scroll-container > div > div[class*='ViewTitleBar_container']"
-        )
-        .forEach(el => (el.style.display = "none"));
-
-    if (pageContainer) pageContainer.style.marginTop = "0px";
-    if (iFrameRoot) iFrameRoot.style.marginTop = "0px";
+    await waitforElementToLoad(iframeDocument, "header");
+    const iFrameHeader = iframeDocument.querySelector<HTMLElement>("header");
+    if (iFrameHeader) {
+        iFrameHeader.style.display = "none";
+    }
 }
 
 export default React.memo(Dashboard);

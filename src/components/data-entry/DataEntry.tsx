@@ -28,132 +28,37 @@ interface DataEntryProps {
 
 export type ValidateFn = { execute: () => Promise<boolean> };
 
-function autoResizeIframeByContent(iframe: HTMLIFrameElement) {
-    const resize = () => {
-        if (iframe.contentWindow) {
-            const height = iframe.contentWindow.document.body.scrollHeight;
-            if (height > 0) iframe.height = height.toString();
-        }
-    };
-    window.setInterval(resize, 1000);
-}
+const hideHeaderFooterCss = "header, footer { display: none !important; }";
 
-function on<T extends HTMLElement>(document: Document, selector: string, action: (el: T) => void) {
-    const el = document.querySelector(selector) as T;
-    if (el) action(el);
+function injectHideStyles(doc: Document) {
+    if (doc.querySelector("style[data-dm-hide]")) return;
+    const style = doc.createElement("style");
+    style.setAttribute("data-dm-hide", "true");
+    style.textContent = hideHeaderFooterCss;
+    doc.head.appendChild(style);
 }
 
 function setEntryStyling(iframe: HTMLIFrameElement) {
-    if (!iframe.contentWindow) return;
-    const iframeDocument = iframe.contentWindow.document;
-    autoResizeIframeByContent(iframe);
+    if (!iframe.contentWindow || showControls) return;
 
-    if (showControls) return;
+    const applyAll = () => {
+        const outerDoc = iframe.contentWindow?.document;
+        if (!outerDoc) return;
 
-    on(iframeDocument, "#currentSelection", el => el.remove());
-    on(iframeDocument, "#header", el => el.remove());
-    on(iframeDocument, "html", html => (html.style["overflowY"] = "hidden"));
-    on(iframeDocument, "#leftBar", el => (el.style.display = "none"));
-    on(iframeDocument, "#selectionBox", el => (el.style.display = "none"));
-    on(iframeDocument, "body", el => (el.style.marginTop = "-55px"));
-    on(iframeDocument, "#mainPage", el => (el.style.margin = "65px 10px 10px 10px"));
-    on(iframeDocument, "#completenessDiv", el => el.remove());
-    on(iframeDocument, "#moduleHeader", el => el.remove());
-}
+        injectHideStyles(outerDoc);
 
-export function wait(timeSecs: number) {
-    console.debug(`[data-entry] Wait ${timeSecs} seconds`);
-    return new Promise(resolve => setTimeout(resolve, 1000 * timeSecs));
-}
-
-function waitForOption(el: HTMLSelectElement, predicate: (option: HTMLOptionElement) => boolean) {
-    return new Promise(resolve => {
-        const check = () => {
-            const option = _.find(el.options, predicate);
-            if (option) {
-                resolve(undefined);
-            } else {
-                setTimeout(check, 10);
+        outerDoc.querySelectorAll<HTMLIFrameElement>("iframe").forEach(innerIframe => {
+            if (innerIframe.contentDocument) {
+                injectHideStyles(innerIframe.contentDocument);
             }
-        };
-        check();
-    });
-}
-
-async function setDataset(iframe: HTMLIFrameElement, dataSet: DataSet, onDone: () => void) {
-    const contentWindow = iframe.contentWindow as (Window & DataEntryWindow) | null;
-    if (!contentWindow) return;
-
-    const iframeDocument = contentWindow.document;
-    const dataSetSelector = iframeDocument.querySelector<HTMLSelectElement>("#selectedDataSetId");
-    if (!dataSetSelector) return;
-
-    // Avoid database errors
-    try {
-        await contentWindow.dhis2.de.storageManager.formExists(dataSet.id);
-    } catch (err) {
-        console.log("[data-entry] error", err);
-        setTimeout(() => setDataset(iframe, dataSet, onDone), 500);
-    }
-
-    await waitForOption(
-        dataSetSelector,
-        // data-multiorg is set when the country org unit is still selected
-        option => option.value === dataSet.id && !option.getAttribute("data-multiorg")
-    );
-    await wait(1);
-    selectOption(dataSetSelector, dataSet.id);
-
-    onDone();
-}
-
-const getDataEntryForm = async (
-    iframe: HTMLIFrameElement,
-    project: Project,
-    dataSet: DataSet,
-    orgUnitId: string,
-    onDone: () => void
-) => {
-    const contentWindow = iframe.contentWindow as (Window & DataEntryWindow) | null;
-    const iframeDocument = iframe.contentDocument;
-    const { parentOrgUnit } = project;
-    const iframeSelection = contentWindow ? contentWindow.selection : null;
-    if (!contentWindow || !iframeDocument || !iframeSelection || !parentOrgUnit) return;
-    const parentSelector = `#orgUnit${parentOrgUnit.id} .toggle`;
-    const ouSelector = `#orgUnit${orgUnitId} a`;
-
-    const selectDataSet = async () => {
-        console.debug("[data-entry] Select project orgunit", orgUnitId);
-        const ouLink = iframeDocument.querySelector<HTMLAnchorElement>(ouSelector);
-        if (!ouLink) {
-            console.debug("[data-entry] Project orgunit not found, retry");
-            selectOrgUnitAndOptions();
-        } else {
-            ouLink.click();
-            console.debug("[data-entry] Select options");
-            setDataset(iframe, dataSet, onDone);
-        }
+        });
     };
 
-    const selectOrgUnitAndOptions = async () => {
-        const ouEl = iframeDocument.querySelector(ouSelector);
-        if (ouEl) {
-            setTimeout(selectDataSet, 100);
-        } else {
-            const parentEl = iframeDocument.querySelector<HTMLSpanElement>(parentSelector);
-            if (parentEl) {
-                console.debug("[data-entry] Click country", parentSelector);
-                parentEl.click();
-                setTimeout(selectOrgUnitAndOptions, 100);
-            } else {
-                console.debug("[data-entry] Country orgunit not found, wait");
-                setTimeout(selectOrgUnitAndOptions, 100);
-            }
-        }
-    };
+    applyAll();
+    const intervalId = window.setInterval(applyAll, 500);
 
-    selectOrgUnitAndOptions();
-};
+    return intervalId;
+}
 
 const DataEntry = (props: DataEntryProps) => {
     const { goBack, orgUnitId, dataSet, attributes, dataSetType, onValidateFnChange } = props;
@@ -164,13 +69,21 @@ const DataEntry = (props: DataEntryProps) => {
     const [disableValidation, setDisableValidation] = React.useState(false);
     const { periodIds, currentPeriodId } = React.useMemo(() => getPeriodsData(dataSet), [dataSet]);
     const iframeRef = React.useRef<HTMLIFrameElement>(null);
-    const iFrameSrc = `${baseUrl}/dhis-web-dataentry/index.action`;
+    const categoryId = config.categories.targetActual.id;
+
+    const categoryOptionId =
+        props.dataSetType === "actual"
+            ? config.categoryOptions.actual.id
+            : config.categoryOptions.target.id;
 
     const [state, setState] = useState({
         loading: false,
         dropdownHasValues: false,
         dropdownValue: currentPeriodId,
     });
+
+    const queryParams = `?attributeOptionComboSelection=${categoryId}-${categoryOptionId}&dataSetId=${dataSet.id}&orgUnitId=${orgUnitId}&periodId=${state.dropdownValue}`;
+    const iFrameSrc = `${baseUrl}/apps/aggregate-data-entry#/${queryParams}`;
 
     function reloadIframe() {
         setState(state => ({ ...state, loading: true }));
@@ -180,24 +93,47 @@ const DataEntry = (props: DataEntryProps) => {
 
     useEffect(() => {
         if (state.dropdownValue) {
-            setDataSetOpen(setSelectPeriod(iframeRef.current, state.dropdownValue, attributes));
+            setDataSetOpen(true);
         }
     }, [state, project, iframeKey, attributes]);
 
     useEffect(() => {
         const iframe = iframeRef.current;
+        if (!iframe) return;
 
-        if (iframe) {
-            if (!showControls) iframe.style.display = "none";
-            setState(prevState => ({ ...prevState, loading: true }));
-            iframe.addEventListener("load", () => {
-                setEntryStyling(iframe);
-                getDataEntryForm(iframe, project, dataSet, orgUnitId, () =>
-                    setState(prevState => ({ ...prevState, dropdownHasValues: true }))
-                );
-            });
-        }
+        const controller = new AbortController();
+
+        if (!showControls) iframe.style.display = "none";
+        setState(prevState => ({ ...prevState, loading: true }));
+
+        iframe.addEventListener(
+            "load",
+            () => {
+                setState(prevState => ({ ...prevState, dropdownHasValues: true }));
+            },
+            { signal: controller.signal }
+        );
+
+        return () => controller.abort();
     }, [iframeKey, dataSet, orgUnitId, project]);
+
+    useEffect(() => {
+        const iframe = iframeRef.current;
+        if (!iframe || showControls) return;
+
+        let intervalId: number | undefined;
+
+        const onLoad = () => {
+            intervalId = setEntryStyling(iframe);
+        };
+
+        iframe.addEventListener("load", onLoad);
+
+        return () => {
+            iframe.removeEventListener("load", onLoad);
+            window.clearInterval(intervalId);
+        };
+    }, [iframeKey]);
 
     const period = state.dropdownValue;
 
@@ -324,7 +260,7 @@ const DataEntry = (props: DataEntryProps) => {
 };
 
 const styles = {
-    iframe: { width: "100%", border: 0, overflow: "hidden" },
+    iframe: { width: "100%", border: 0, overflow: "hidden", minHeight: "100vh" },
     iframeHidden: { maxHeight: 0, border: 0 },
     backgroundIframe: { backgroundColor: "white" },
     selector: { padding: "35px  10px 10px 5px", backgroundColor: "white" },

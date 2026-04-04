@@ -65,7 +65,16 @@ const SharingStep: React.FC<StepProps> = props => {
     return (
         <div data-cy="sharing">
             <Sharing
-                meta={sharedObject}
+                meta={{
+                    meta: sharedObject.meta,
+                    object: {
+                        id: sharedObject.object.id,
+                        publicAccess: sharedObject.object.sharing.public,
+                        externalAccess: sharedObject.object.sharing.external,
+                        userAccesses: Object.values(sharedObject.object.sharing.users),
+                        userGroupAccesses: Object.values(sharedObject.object.sharing.userGroups),
+                    },
+                }}
                 showOptions={showOptions}
                 onSearch={search}
                 onChange={setProjectSharing}
