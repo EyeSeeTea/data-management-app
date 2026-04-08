@@ -847,12 +847,10 @@ export async function getAwardNumberDashboard(
 
     if (!project) {
         return { type: "error" as const, message: "No dashboard found" };
-    } else if (project.dashboard.awardNumber) {
-        return { type: "success" as const, data: project.dashboard.awardNumber };
     } else {
         const { awardNumber } = project;
         const generator = await ProjectDashboard.buildForAwardNumber(api, config, awardNumber);
-        const metadata = generator.generate();
+        const metadata = generator.generate({ minimumOrgUnits: 2 });
         const dashboard = metadata.dashboards[0];
         if (!dashboard) return { type: "error", message: "Error generating dashboard" };
 
