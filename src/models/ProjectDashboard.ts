@@ -294,8 +294,8 @@ export default class ProjectDashboard {
             type: "chart",
             key: "chart-mer-target-actual-benefits",
             name: i18n.t("MER - Target vs Actual - Benefits - Column Chart"),
-            items: dataElementItems(merDataElements.benefit),
-            filters: [dimensions.orgUnit],
+            items: dataElementItems(merDataElements.all),
+            filters: [dimensions.data, dimensions.orgUnit],
             columns: [config.categories.targetActual],
             rows: [dimensions.period],
         });
