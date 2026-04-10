@@ -1850,10 +1850,13 @@
             "columnDimensions": ["GIIHAr9BzzO"],
             "filters": [
                 {
+                    "id": "dx"
+                },
+                {
                     "id": "ou"
                 }
             ],
-            "filterDimensions": ["ou"],
+            "filterDimensions": ["dx", "ou"],
             "rows": [
                 {
                     "id": "pe"
