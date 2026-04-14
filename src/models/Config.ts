@@ -40,8 +40,8 @@ const yes = true as const;
 
 export const baseConfig = {
     orgUnits: {
-        levelForCountries: 2,
-        levelForProjects: 3,
+        levelForCountries: 3,
+        levelForProjects: 4,
     },
     userRoles: {
         feedback: ["DM Feedback"],
@@ -485,7 +485,7 @@ function getFundersAndLocations(metadata: Metadata) {
             id: oug.id,
             displayName: oug.displayName,
             countries: oug.organisationUnits
-                .filter(ou => ou.level === 2)
+                .filter(ou => ou.level === baseConfig.orgUnits.levelForCountries)
                 .map(ou => ({ id: ou.id })),
         }))
         .sortBy(location => location.displayName)

@@ -25,6 +25,7 @@ import { useConfirmChanges } from "../report/MerReport";
 import { UniqueBeneficiariesSettings } from "../../domain/entities/UniqueBeneficiariesSettings";
 import { getYearsFromProject } from "../project-indicators-validation/ProjectIndicatorsValidation";
 import { useProjectStore } from "../../components/app/App";
+import { baseConfig } from "../../models/Config";
 
 export const CountryIndicatorReport = React.memo(() => {
     const titlePage = i18n.t("Country Project & Indicators");
@@ -129,7 +130,7 @@ export const CountryIndicatorReport = React.memo(() => {
                     <UserOrgUnits
                         onChange={updateOrgUnit}
                         selected={orgUnit}
-                        selectableLevels={[1, 2]}
+                        selectableLevels={[1, baseConfig.orgUnits.levelForCountries, 3]}
                         withElevation={false}
                         height={200}
                     />
