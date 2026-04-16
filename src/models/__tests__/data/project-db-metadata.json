@@ -1210,7 +1210,27 @@
                     "y": 90
                 }
             ],
-            "publicAccess": "rw------"
+            "publicAccess": "--------",
+            "externalAccess": false,
+            "userAccesses": [
+                {
+                    "id": "M5zQapPyTZI",
+                    "displayName": "admin admin",
+                    "access": "rw------"
+                }
+            ],
+            "userGroupAccesses": [
+                {
+                    "id": "ywuI2WspUUG",
+                    "displayName": "System Admin",
+                    "access": "rw------"
+                },
+                {
+                    "id": "mKKNXzeIAJs",
+                    "displayName": "Data Management Admin",
+                    "access": "rw------"
+                }
+            ]
         },
         {
             "id": "OiCmorbkHNf",
@@ -3112,7 +3132,27 @@
                     ]
                 }
             ],
-            "publicAccess": "rw------"
+            "publicAccess": "--------",
+            "externalAccess": false,
+            "userAccesses": [
+                {
+                    "id": "M5zQapPyTZI",
+                    "displayName": "admin admin",
+                    "access": "rw------"
+                }
+            ],
+            "userGroupAccesses": [
+                {
+                    "id": "ywuI2WspUUG",
+                    "displayName": "System Admin",
+                    "access": "rw------"
+                },
+                {
+                    "id": "mKKNXzeIAJs",
+                    "displayName": "Data Management Admin",
+                    "access": "rw------"
+                }
+            ]
         },
         {
             "id": "CS7csnUtibF",
@@ -3230,7 +3270,27 @@
                     ]
                 }
             ],
-            "publicAccess": "rw------"
+            "publicAccess": "--------",
+            "externalAccess": false,
+            "userAccesses": [
+                {
+                    "id": "M5zQapPyTZI",
+                    "displayName": "admin admin",
+                    "access": "rw------"
+                }
+            ],
+            "userGroupAccesses": [
+                {
+                    "id": "ywuI2WspUUG",
+                    "displayName": "System Admin",
+                    "access": "rw------"
+                },
+                {
+                    "id": "mKKNXzeIAJs",
+                    "displayName": "Data Management Admin",
+                    "access": "rw------"
+                }
+            ]
         },
         {
             "id": "GqYJDh6asM8",
@@ -3378,7 +3438,27 @@
                     ]
                 }
             ],
-            "publicAccess": "rw------"
+            "publicAccess": "--------",
+            "externalAccess": false,
+            "userAccesses": [
+                {
+                    "id": "M5zQapPyTZI",
+                    "displayName": "admin admin",
+                    "access": "rw------"
+                }
+            ],
+            "userGroupAccesses": [
+                {
+                    "id": "ywuI2WspUUG",
+                    "displayName": "System Admin",
+                    "access": "rw------"
+                },
+                {
+                    "id": "mKKNXzeIAJs",
+                    "displayName": "Data Management Admin",
+                    "access": "rw------"
+                }
+            ]
         },
         {
             "id": "me6p7L8VHXl",
@@ -3490,7 +3570,27 @@
                     ]
                 }
             ],
-            "publicAccess": "rw------"
+            "publicAccess": "--------",
+            "externalAccess": false,
+            "userAccesses": [
+                {
+                    "id": "M5zQapPyTZI",
+                    "displayName": "admin admin",
+                    "access": "rw------"
+                }
+            ],
+            "userGroupAccesses": [
+                {
+                    "id": "ywuI2WspUUG",
+                    "displayName": "System Admin",
+                    "access": "rw------"
+                },
+                {
+                    "id": "mKKNXzeIAJs",
+                    "displayName": "Data Management Admin",
+                    "access": "rw------"
+                }
+            ]
         },
         {
             "id": "uqMTlezGj0I",
