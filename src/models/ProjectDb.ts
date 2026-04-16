@@ -37,6 +37,7 @@ import { DashboardSourceMetadata } from "./ProjectsListDashboard";
 import { promiseMap } from "../migrations/utils";
 import { ProjectDocument } from "./ProjectDocument";
 import { ProjectDocumentRepository } from "./ProjectDocumentRepository";
+import { DataSetCustomForm } from "../data/DataSetCustomForm";
 
 const expiryDaysInMonthActual = 10;
 
@@ -313,6 +314,7 @@ export default class ProjectDb {
             workflow: { id: config.dataApprovalWorkflows.project.id },
             ...this.getDataSetOpenAttributes("actual"),
         });
+
         const dataSetActual = _(dataSetActualMetadata.dataSets).getOrFail(0);
 
         const projectMetadata = this.getProjectMetadataForDashboard(orgUnit, dataSetActual);
@@ -393,7 +395,19 @@ export default class ProjectDb {
 
         await this.updateOrgUnit(response, orgUnit);
 
+        if (response && response.status === "OK") {
+            await this.saveCustomForms(savedProject);
+        }
+
         return { payload, response, project: savedProject };
+    }
+
+    private async saveCustomForms(savedProject: Project) {
+        const dataSets = savedProject.dataSets;
+        if (!dataSets) return;
+        const customForm = new DataSetCustomForm(this.api);
+        await customForm.saveCustomForm(dataSets.actual.id, savedProject, "actual");
+        await customForm.saveCustomForm(dataSets.target.id, savedProject, "target");
     }
 
     getProjectMetadataForDashboard(
@@ -626,7 +640,7 @@ export default class ProjectDb {
         baseDataSet: PartialModel<D2DataSet> & Pick<D2DataSet, "code" | OpenProperties>
     ) {
         const { config, project } = this;
-        const dataSetId = getUid("dataSet", project.uid + baseDataSet.code);
+        const dataSetId = this.getDataSetId(project.uid, baseDataSet.code);
         const selectedDataElements = project.getSelectedDataElements();
 
         const dataSetElements = _.uniqBy(selectedDataElements, de => de.id).map(dataElement => ({
@@ -669,6 +683,11 @@ export default class ProjectDb {
         };
 
         return { dataSets: [dataSet], sections };
+    }
+
+    private getDataSetId(projectId: Id, dataSetCode: string) {
+        const dataSetId = getUid("dataSet", projectId + dataSetCode);
+        return dataSetId;
     }
 
     static getCodeInfo(code: string) {

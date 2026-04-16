@@ -12,6 +12,8 @@ import { Config } from "../../models/Config";
 import { link } from "../../utils/form";
 import { useAppHistory } from "../../utils/use-app-history";
 import { generateUrl } from "../../router";
+import { DataSetCustomForm } from "../../data/DataSetCustomForm";
+import { Id } from "../../domain/entities/Ref";
 
 interface DataValuesProps {
     type: DataSetType;
@@ -32,6 +34,10 @@ const DataValues: React.FC<DataValuesProps> = ({ type }) => {
     const { api, config } = useAppContext();
     const appHistory = useAppHistory(generateUrl("projects"));
     const match = useRouteMatch<RouterParams>();
+    const [cfState, setCfState] = useState<GetState<{ customFormId: Id }>>({
+        loading: false,
+        error: "",
+    });
     const [state, setState] = useState<State>({ loading: true });
     const { data, loading, error } = state;
     const translations = getTranslations(type, data?.project);
@@ -41,6 +47,33 @@ const DataValues: React.FC<DataValuesProps> = ({ type }) => {
     useEffect(() => {
         return loadData(projectId, type, api, config, setState);
     }, [api, config, type, projectId]);
+
+    useEffect(() => {
+        if (!state.data?.dataSet) return;
+
+        function generateCustomForm() {
+            if (!state.data?.dataSet) return;
+
+            setCfState({ loading: true });
+
+            new DataSetCustomForm(api)
+                .saveCustomForm(state.data.dataSet.id, state.data.project, type)
+                .then(customFormId => {
+                    if (customFormId) {
+                        setCfState({ data: { customFormId }, loading: false });
+                    }
+                })
+                .catch(() => {
+                    setCfState({
+                        data: undefined,
+                        loading: false,
+                        error: i18n.t("Error generating custom form"),
+                    });
+                });
+        }
+
+        generateCustomForm();
+    }, [api, type, state.data]);
 
     const [validateFn, setValidateFn] = React.useState<ValidateFn>();
 
@@ -58,7 +91,7 @@ const DataValues: React.FC<DataValuesProps> = ({ type }) => {
 
             {loading && <LinearProgress />}
 
-            {data && (
+            {data && cfState.data?.customFormId && (
                 <DataEntry
                     project={data.project}
                     dataSetType={type}
@@ -69,7 +102,7 @@ const DataValues: React.FC<DataValuesProps> = ({ type }) => {
                     goBack={goBack}
                 />
             )}
-            {error && <p>{error}</p>}
+            {(error || cfState.error) && <p>{error || cfState.error}</p>}
         </React.Fragment>
     );
 };

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import moment from "moment";
-import _ from "lodash";
 import Spinner from "../spinner/Spinner";
 import Dropdown from "../../components/dropdown/Dropdown";
 import Project, { DataSet, monthFormat, getPeriodsData, DataSetType } from "../../models/Project";
@@ -69,7 +68,90 @@ const DataEntry = (props: DataEntryProps) => {
     const [disableValidation, setDisableValidation] = React.useState(false);
     const { periodIds, currentPeriodId } = React.useMemo(() => getPeriodsData(dataSet), [dataSet]);
     const iframeRef = React.useRef<HTMLIFrameElement>(null);
+    const [pluginIframe, setPluginIframe] = React.useState<HTMLIFrameElement | null>(null);
     const categoryId = config.categories.targetActual.id;
+
+    React.useEffect(() => {
+        const outer = iframeRef.current;
+        if (!outer) return;
+
+        const observers: MutationObserver[] = [];
+        const loadListeners: Array<{ el: HTMLIFrameElement; fn: () => void }> = [];
+        const tracked = new WeakSet<HTMLIFrameElement>();
+        let cancelled = false;
+        let found: HTMLIFrameElement | null = null;
+
+        const isLegacyCustomFormPlugin = (ifr: HTMLIFrameElement) => {
+            const doc = ifr.contentDocument;
+            if (!doc) return false;
+            return Boolean(doc.querySelector(".plugin-legacy-custom-forms-wrapper"));
+        };
+
+        const setFound = (ifr: HTMLIFrameElement) => {
+            if (found === ifr) return;
+            found = ifr;
+            console.debug("[data-entry] legacy custom form plugin iframe found:", ifr);
+            setPluginIframe(ifr);
+        };
+
+        const checkPluginCandidate = (ifr: HTMLIFrameElement) => {
+            if (found || cancelled) return;
+            if (!ifr.src.includes("plugin.html")) return;
+            if (isLegacyCustomFormPlugin(ifr)) setFound(ifr);
+        };
+
+        const trackIframe = (ifr: HTMLIFrameElement) => {
+            if (tracked.has(ifr)) return;
+            tracked.add(ifr);
+
+            const onLoad = () => {
+                checkPluginCandidate(ifr);
+
+                if (ifr.contentDocument) watch(ifr.contentDocument);
+            };
+
+            if (ifr.contentDocument && ifr.contentDocument.location.href !== "about:blank") {
+                onLoad();
+            }
+
+            ifr.addEventListener("load", onLoad);
+            loadListeners.push({ el: ifr, fn: onLoad });
+        };
+
+        const watch = (doc: Document) => {
+            if (cancelled) return;
+
+            doc.querySelectorAll<HTMLIFrameElement>("iframe").forEach(checkPluginCandidate);
+
+            const obs = new MutationObserver(() => {
+                if (cancelled || found) return;
+                doc.querySelectorAll<HTMLIFrameElement>("iframe").forEach(ifr => {
+                    checkPluginCandidate(ifr);
+                    trackIframe(ifr);
+                });
+            });
+            obs.observe(doc, { childList: true, subtree: true });
+            observers.push(obs);
+
+            doc.querySelectorAll<HTMLIFrameElement>("iframe").forEach(trackIframe);
+        };
+
+        const start = () => {
+            const doc = outer.contentDocument;
+            if (doc) watch(doc);
+        };
+
+        outer.addEventListener("load", start);
+        start();
+
+        return () => {
+            cancelled = true;
+            observers.forEach(o => o.disconnect());
+            loadListeners.forEach(({ el, fn }) => el.removeEventListener("load", fn));
+            outer.removeEventListener("load", start);
+            setPluginIframe(null);
+        };
+    }, [iframeKey]);
 
     const categoryOptionId =
         props.dataSetType === "actual"
@@ -150,7 +232,7 @@ const DataEntry = (props: DataEntryProps) => {
         Boolean(isDataSetOpen) && state.dropdownHasValues && Boolean(dataSetInfo?.isOpen);
 
     const validation = useValidation({
-        iframeRef,
+        iframe: pluginIframe,
         project,
         dataSetType,
         period,
@@ -202,7 +284,6 @@ const DataEntry = (props: DataEntryProps) => {
                     onClose={validation.clear}
                 />
             )}
-
             <HeaderLogoBlocker
                 isActive={Boolean(period && dataSetInfo?.isOpen)}
                 onActivated={() => setDisableValidation(true)}
@@ -214,7 +295,6 @@ const DataEntry = (props: DataEntryProps) => {
                     }
                 }}
             />
-
             <div style={styles.selector}>
                 {!state.dropdownHasValues && <Spinner isLoading={state.loading} />}
 
@@ -245,7 +325,6 @@ const DataEntry = (props: DataEntryProps) => {
                     </div>
                 )}
             </div>
-
             <iframe
                 data-cy="data-entry"
                 key={iframeKey.getTime()}
@@ -267,76 +346,6 @@ const styles = {
     buttons: { display: "inline", marginLeft: 20 },
     dropdown: { display: "inline-block" },
 };
-
-function isOptionInSelect(select: HTMLSelectElement, value: string): boolean {
-    return Array.from(select.options)
-        .map(opt => opt.value)
-        .includes(value);
-}
-
-function selectOption(select: HTMLSelectElement, value: string) {
-    console.debug("[data-entry] selectOption", value, select.options);
-    const stubEvent = new Event("stub");
-    select.value = value;
-    if (select.onchange) select.onchange(stubEvent);
-}
-
-/* Globals variables used to interact with the data-entry form */
-interface DataEntryWindow {
-    dhis2: {
-        de: {
-            currentPeriodOffset: number;
-            storageManager: { formExists: (dataSetId: string) => boolean };
-        };
-        util: { on: Function };
-    };
-    displayPeriods: () => void;
-    selection: { select: (orgUnitId: string) => void; isBusy(): boolean };
-}
-
-function setSelectPeriod(
-    iframe: HTMLIFrameElement | null,
-    periodKey: string | undefined,
-    attributes: Attributes
-): boolean {
-    if (!iframe || !iframe.contentWindow) return false;
-
-    const iframeWindow = iframe.contentWindow as Window & DataEntryWindow;
-    const periodSelector =
-        iframeWindow.document.querySelector<HTMLSelectElement>("#selectedPeriodId");
-
-    if (periodSelector && periodKey) {
-        const now = moment();
-        const selectedDate = moment(periodKey, monthFormat);
-        const iframeDocument = iframe.contentWindow.document;
-        iframeWindow.dhis2.de.currentPeriodOffset = selectedDate.year() - now.year();
-        try {
-            iframeWindow.displayPeriods();
-        } catch (err) {
-            console.error("setSelectPeriod", err);
-        }
-
-        if (isOptionInSelect(periodSelector, periodKey)) {
-            selectOption(periodSelector, periodKey);
-
-            _(attributes).each((categoryOptionId, categoryId) => {
-                const selector = iframeDocument.querySelector("#category-" + categoryId);
-                if (!selector) {
-                    console.error(`Cannot find attribute selector with categoryId=${categoryId}`);
-                } else {
-                    selectOption(selector as HTMLSelectElement, categoryOptionId);
-                }
-            });
-
-            return true;
-        } else {
-            console.error("Period is not selectable", periodKey);
-            return false;
-        }
-    } else {
-        return false;
-    }
-}
 
 const validationOptions = { interceptSave: true, getOnSaveEvent: true };
 
