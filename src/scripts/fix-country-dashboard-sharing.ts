@@ -14,8 +14,8 @@ import { Config, getConfig } from "../models/Config";
     on every existing country dashboard and its visualizations, using the sharing
     computed by CountryDashboard.getSharing().
 
-    yarn ts-node src/scripts/fix-country-dashboard-sharing.ts \
-            --url="http://server.com" [--auth=user:pass] [--country-ids=id1,id2] [--dry-run]
+    npx tsx src/scripts/fix-country-dashboard-sharing.ts \
+            --url="http://server.com" [--auth=user:pass] [--country-ids=id1,id2] [--persist]
 */
 
 type D2Dashboard = MetadataPick<{
@@ -49,14 +49,14 @@ async function main() {
             url: {},
             auth: {},
             "country-ids": {},
-            "dry-run": { switch: true },
+            persist: { switch: true },
         },
     });
     const { opts } = parser(process.argv);
-    const { url, auth, "country-ids": countryIdsRaw, "dry-run": dryRun } = opts;
+    const { url, auth, "country-ids": countryIdsRaw, persist } = opts;
 
     const usage =
-        "fix-country-dashboard-sharing --url=<DHIS2 URL> [--auth=user:pass] [--country-ids=id1,id2] [--dry-run]";
+        "fix-country-dashboard-sharing --url=<DHIS2 URL> [--auth=user:pass] [--country-ids=id1,id2] [--persist]";
     if (!url) {
         console.error(usage);
         process.exit(1);
@@ -69,16 +69,16 @@ async function main() {
     const filterIds = countryIdsRaw ? countryIdsRaw.split(",").map(s => s.trim()) : undefined;
 
     const countries = await getCountries(api, config, filterIds);
-    console.log(`Countries: ${countries.length}`);
+    console.debug(`Countries: ${countries.length}`);
     if (countries.length === 0) return;
 
     const dashboardIds = countries.map(c => getUid("country-dashboard", c.id));
     const dashboards = await fetchDashboards(api, dashboardIds);
-    console.log(`Existing country dashboards: ${dashboards.length} / ${dashboardIds.length}`);
+    console.debug(`Existing country dashboards: ${dashboards.length} / ${dashboardIds.length}`);
 
     const vizIds = extractVizIds(dashboards);
     const visualizations = await fetchVisualizations(api, vizIds);
-    console.log(`Visualizations: ${visualizations.length} / ${vizIds.length}`);
+    console.debug(`Visualizations: ${visualizations.length} / ${vizIds.length}`);
 
     const { sharingByCountryId, failedCountries } = await computeSharingPerCountry(
         api,
@@ -98,7 +98,7 @@ async function main() {
         countries,
         sharingByCountryId
     );
-    console.log(
+    console.debug(
         `Payload: dashboards=${updatedDashboards.length}, visualizations=${updatedVisualizations.length}`
     );
 
@@ -107,17 +107,13 @@ async function main() {
         visualizations: updatedVisualizations,
     };
 
-    if (dryRun) {
-        writeDataFilePath("sharing-payload", payload);
-        console.log("Dry run — payload written via writeDataFilePath('sharing-payload').");
-        return;
-    }
+    writeDataFilePath("sharing-payload", payload);
+    console.debug("payload saved to disk");
 
     const res = await api.metadata
-        .post(payload, { importStrategy: "UPDATE", importMode: "VALIDATE" })
+        .post(payload, { importStrategy: "UPDATE", importMode: persist ? "COMMIT" : "VALIDATE" })
         .getData();
-    console.log(`Import status: ${res.status}`);
-    console.log(`Stats: ${JSON.stringify(res.stats)}`);
+    console.debug(`Import status: ${JSON.stringify(res.status)}`);
     if (res.status !== "OK") throw new Error(JSON.stringify(res, null, 2));
 }
 
@@ -200,13 +196,13 @@ async function computeSharingPerCountry(
     countries: Country[]
 ): Promise<SharingComputation> {
     const results = await promiseMap(countries, async country => {
-        console.debug(`Computing sharing for ${country.displayName} (${country.id})...`);
+        console.debug(`Generating sharing for ${country.displayName} (${country.id})...`);
         try {
             const cd = await CountryDashboard.build(api, config, country.id);
             return { country, sharing: cd.getSharing() };
         } catch (e) {
-            console.error(`Cannot compute sharing for ${country.displayName} (${country.id}):`, e);
-            return { country, sharing: null as D2Sharing | null };
+            console.error(`Cannot generate sharing for ${country.displayName} (${country.id}):`, e);
+            return { country, sharing: null };
         }
     });
 
