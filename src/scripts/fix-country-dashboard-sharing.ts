@@ -72,7 +72,7 @@ async function main() {
     console.debug(`Countries: ${countries.length}`);
     if (countries.length === 0) return;
 
-    const dashboardIds = countries.map(c => getUid("country-dashboard", c.id));
+    const dashboardIds = countries.map(c => c.displayName);
     const dashboards = await fetchDashboards(api, dashboardIds);
     console.debug(`Existing country dashboards: ${dashboards.length} / ${dashboardIds.length}`);
 
@@ -150,7 +150,7 @@ async function fetchDashboards(api: D2Api, ids: Id[]): Promise<D2Dashboard[]> {
             .get({
                 dashboards: {
                     fields: { $owner: true },
-                    filter: { id: { in: chunk } },
+                    filter: { name: { in: chunk } },
                 },
             })
             .getData();
