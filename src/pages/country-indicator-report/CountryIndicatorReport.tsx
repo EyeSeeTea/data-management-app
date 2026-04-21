@@ -130,7 +130,7 @@ export const CountryIndicatorReport = React.memo(() => {
                     <UserOrgUnits
                         onChange={updateOrgUnit}
                         selected={orgUnit}
-                        selectableLevels={[1, baseConfig.orgUnits.levelForCountries, 3]}
+                        selectableLevels={[1, baseConfig.orgUnits.levelForCountries]}
                         withElevation={false}
                         height={200}
                     />
