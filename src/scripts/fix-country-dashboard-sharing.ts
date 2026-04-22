@@ -31,6 +31,7 @@ type D2DashboardItem = D2Dashboard["dashboardItems"][number];
 interface Country {
     readonly id: Id;
     readonly displayName: string;
+    readonly dashboardId: Id;
 }
 
 interface SharingComputation {
@@ -125,13 +126,41 @@ async function getCountries(
     const { objects } = await api.models.organisationUnits
         .get({
             paging: false,
-            fields: { id: true, displayName: true },
-            filter: { level: { eq: String(config.base.orgUnits.levelForCountries) } },
+            fields: {
+                id: true,
+                displayName: true,
+                attributeValues: { attribute: { id: true, name: true }, value: true },
+            },
+            filter: { level: { in: ["2", "3"] } },
         })
         .getData();
 
-    const sorted = _(objects)
-        .map(c => ({ id: c.id, displayName: c.displayName }))
+    const notCreatedByDmApp = _(objects)
+        .map((ou): Country | undefined => {
+            const createdByDmApp = ou.attributeValues.find(
+                av => av.attribute.id === config.attributes.createdByApp.id
+            );
+
+            const dashboardId = ou.attributeValues.find(
+                av => av.attribute.id === config.attributes.projectDashboard.id
+            );
+
+            const createdValue = createdByDmApp?.value === "true";
+            const dashboardValue = dashboardId?.value;
+
+            if (createdValue) return undefined;
+            if (!dashboardValue) return undefined;
+
+            return {
+                id: ou.id,
+                displayName: ou.displayName,
+                dashboardId: dashboardValue,
+            };
+        })
+        .compact()
+        .value();
+
+    const sorted = _(notCreatedByDmApp)
         .sortBy(c => c.displayName)
         .value();
 
