@@ -1,5 +1,5 @@
 import moment, { Moment } from "moment";
-import { months } from "../pages/unique-periods/UniquePeriodsForm";
+import i18n from "../locales";
 
 export function toISOString(date: Moment) {
     return date.format("YYYY-MM-DDTHH:mm:ss");
@@ -58,3 +58,18 @@ export function buildMonthYearFormatDate(dateIsoString: string): string {
 export function getMonthNameFromNumber(monthNumber: string | number): string {
     return months.find(month => month.value === monthNumber.toString())?.text || "";
 }
+
+export const months = [
+    { value: "1", text: i18n.t("January") },
+    { value: "2", text: i18n.t("February") },
+    { value: "3", text: i18n.t("March") },
+    { value: "4", text: i18n.t("April") },
+    { value: "5", text: i18n.t("May") },
+    { value: "6", text: i18n.t("June") },
+    { value: "7", text: i18n.t("July") },
+    { value: "8", text: i18n.t("August") },
+    { value: "9", text: i18n.t("September") },
+    { value: "10", text: i18n.t("October") },
+    { value: "11", text: i18n.t("November") },
+    { value: "12", text: i18n.t("December") },
+];
