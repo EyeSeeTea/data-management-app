@@ -73,7 +73,7 @@ async function main() {
     console.debug(`Countries: ${countries.length}`);
     if (countries.length === 0) return;
 
-    const dashboardIds = countries.map(c => c.displayName);
+    const dashboardIds = countries.map(c => c.dashboardId);
     const dashboards = await fetchDashboards(api, dashboardIds);
     console.debug(`Existing country dashboards: ${dashboards.length} / ${dashboardIds.length}`);
 
@@ -86,6 +86,7 @@ async function main() {
         config,
         countries
     );
+
     if (failedCountries.length > 0) {
         console.error(
             `Sharing computation failed for ${failedCountries.length}/${countries.length} countries: ` +
@@ -99,6 +100,7 @@ async function main() {
         countries,
         sharingByCountryId
     );
+
     console.debug(
         `Payload: dashboards=${updatedDashboards.length}, visualizations=${updatedVisualizations.length}`
     );
@@ -114,7 +116,9 @@ async function main() {
     const res = await api.metadata
         .post(payload, { importStrategy: "UPDATE", importMode: persist ? "COMMIT" : "VALIDATE" })
         .getData();
+
     console.debug(`Import status: ${JSON.stringify(res.status)}`);
+
     if (res.status !== "OK") throw new Error(JSON.stringify(res, null, 2));
 }
 
@@ -131,10 +135,14 @@ async function getCountries(
                 displayName: true,
                 attributeValues: { attribute: { id: true, name: true }, value: true },
             },
+            // after org. unit reorganization, some country dashboards might be attached to level 3 org. units
+            // instead of level 2
             filter: { level: { in: ["2", "3"] } },
         })
         .getData();
 
+    // exclude org. units created by the app
+    // and without reference to a country dashboard
     const notCreatedByDmApp = _(objects)
         .map((ou): Country | undefined => {
             const createdByDmApp = ou.attributeValues.find(
@@ -176,12 +184,7 @@ async function fetchChunked<T>(ids: Id[], fetchChunk: (chunk: Id[]) => Promise<T
 async function fetchDashboards(api: D2Api, ids: Id[]): Promise<D2Dashboard[]> {
     return fetchChunked(ids, async chunk => {
         const { dashboards } = await api.metadata
-            .get({
-                dashboards: {
-                    fields: { $owner: true },
-                    filter: { name: { in: chunk } },
-                },
-            })
+            .get({ dashboards: { fields: { $owner: true }, filter: { id: { in: chunk } } } })
             .getData();
         return dashboards;
     });
@@ -190,12 +193,7 @@ async function fetchDashboards(api: D2Api, ids: Id[]): Promise<D2Dashboard[]> {
 async function fetchVisualizations(api: D2Api, ids: Id[]): Promise<D2Visualization[]> {
     return fetchChunked(ids, async chunk => {
         const { visualizations } = await api.metadata
-            .get({
-                visualizations: {
-                    fields: { $owner: true },
-                    filter: { id: { in: chunk } },
-                },
-            })
+            .get({ visualizations: { fields: { $owner: true }, filter: { id: { in: chunk } } } })
             .getData();
         return visualizations;
     });
@@ -307,5 +305,10 @@ function applySharing(
         .compact()
         .value();
 
-    return { updatedDashboards, updatedVisualizations };
+    return {
+        updatedDashboards: _(updatedDashboards)
+            .uniqBy(dashboard => dashboard.id)
+            .value(),
+        updatedVisualizations,
+    };
 }
