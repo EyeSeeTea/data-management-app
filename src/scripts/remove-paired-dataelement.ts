@@ -18,7 +18,7 @@ async function main() {
     const { url, auth, codes, persist } = opts;
 
     const usage =
-        "npx tsx remove-paired-dataelement --url=<DHIS2 URL> [--auth=user:pass] [--codes=deCode1,deCode2] [--persist]";
+        "npx tsx src/scripts/remove-paired-dataelement.ts --url=<DHIS2 URL> [--auth=user:pass] [--codes=deCode1,deCode2] [--persist]";
     if (!url) {
         console.error(usage);
         process.exit(1);
