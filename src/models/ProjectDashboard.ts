@@ -29,10 +29,11 @@ import {
     Condition,
 } from "./ProjectsListDashboard";
 import { getVisualizationPeriods } from "./Period";
+import { DataElement as MerDataElement } from "./dataElementsSet";
 
 export default class ProjectDashboard {
     dataElements: ProjectsListDashboard["dataElements"];
-    merDataElements: Record<"all" | "people" | "benefit", Ref[]>;
+    merDataElements: Record<"all" | "people" | "benefit", MerDataElement[]>;
     categoryOnlyNew: { id: Id; categoryOptions: Ref[] };
     categoryOnlyMale: { id: Id; categoryOptions: Ref[] };
     categoryOnlyFemale: { id: Id; categoryOptions: Ref[] };
@@ -148,13 +149,13 @@ export default class ProjectDashboard {
             this.merTargetVsActualPeopleChart(),
             targetVsActualBenefitsTable_,
             targetVsActualPeopleTable_,
+            this.targetVsActualPeopleLineChartMaleOnly(),
+            this.targetVsActualPeopleLineColumnChartMaleOnly(),
             this.targetVsActualBenefitsDisaggregatedByIndicatorChart(),
             this.targetVsActualPeopleDisaggregatedByIndicatorChart(),
             this.targetVsActualBenefitsLineChart(),
             this.targetVsActualPeopleLineChart(),
-            this.targetVsActualPeopleLineChartMaleOnly(),
             this.targetVsActualPeopleLineChartFemaleOnly(),
-            this.targetVsActualPeopleLineColumnChartMaleOnly(),
             this.targetVsActualPeopleLineColumnChartFemaleOnly(),
             achievedBenefitsToDateTable_,
             achievedPeopleToDateTable_,
@@ -251,15 +252,18 @@ export default class ProjectDashboard {
 
     merTargetVsActualBenefitsChart(): MaybeD2Visualization {
         const { config, merDataElements } = this;
+        const dataElementsNoDisaggregated = merDataElements.all.filter(
+            de => !de.categories.includes("newRecurring")
+        );
 
         return this.getD2VisualizationFromDefinition({
             type: "chart",
             key: "chart-mer-target-actual-benefits",
             name: i18n.t("MER - Target vs Actual - Benefits - Column Chart"),
-            items: dataElementItems(merDataElements.all),
-            filters: [dimensions.data, dimensions.orgUnit],
-            columns: [config.categories.targetActual],
-            rows: [dimensions.period],
+            items: dataElementItems(dataElementsNoDisaggregated),
+            filters: [dimensions.orgUnit],
+            columns: [dimensions.data],
+            rows: [dimensions.period, config.categories.targetActual],
         });
     }
 
@@ -271,14 +275,9 @@ export default class ProjectDashboard {
             key: "chart-mer-target-actual-people",
             name: i18n.t("MER - Target vs Actual - People - Column Chart"),
             items: dataElementItems(merDataElements.people),
-            filters: [
-                dimensions.data,
-                dimensions.orgUnit,
-                config.categories.gender,
-                config.categories.newRecurring,
-            ],
-            columns: [config.categories.targetActual],
-            rows: [dimensions.period],
+            filters: [dimensions.orgUnit, config.categories.gender, config.categories.newRecurring],
+            columns: [dimensions.data],
+            rows: [dimensions.period, config.categories.targetActual],
         });
     }
 
