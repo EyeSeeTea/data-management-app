@@ -144,8 +144,6 @@ export default class ProjectDashboard {
         ]);
 
         return _.compact([
-            this.targetVsActualBenefitsChart(),
-            this.targetVsActualPeopleChart(),
             this.merTargetVsActualBenefitsChart(),
             this.merTargetVsActualPeopleChart(),
             targetVsActualBenefitsTable_,
@@ -218,23 +216,6 @@ export default class ProjectDashboard {
         });
     }
 
-    targetVsActualBenefitsChart(): MaybeD2Visualization {
-        const { config, dataElements } = this;
-        const dataElementsNoDisaggregated = dataElements.benefit.filter(
-            de => !de.categories.includes("newRecurring")
-        );
-
-        return this.getD2VisualizationFromDefinition({
-            type: "chart",
-            key: "chart-target-actual-benefits",
-            name: i18n.t("Target vs Actual - Benefits - Column Chart"),
-            items: dataElementItems(dataElementsNoDisaggregated),
-            filters: [dimensions.data, dimensions.orgUnit],
-            columns: [config.categories.targetActual],
-            rows: [dimensions.period],
-        });
-    }
-
     awardNumberTargetVsActualBenefitsColumnChart(): MaybeD2Visualization {
         const { config, dataElements } = this;
         const dataElementsNoDisaggregated = dataElements.benefit.filter(
@@ -250,25 +231,6 @@ export default class ProjectDashboard {
             filters: [dimensions.orgUnit],
             columns: [dimensions.data],
             rows: [config.categories.targetActual, dimensions.period],
-        });
-    }
-
-    targetVsActualPeopleChart(): MaybeD2Visualization {
-        const { config, dataElements } = this;
-
-        return this.getD2VisualizationFromDefinition({
-            type: "chart",
-            key: "chart-target-actual-people",
-            name: i18n.t("Target vs Actual - People - Column Chart"),
-            items: dataElementItems(dataElements.people),
-            filters: [
-                dimensions.data,
-                dimensions.orgUnit,
-                config.categories.gender,
-                config.categories.newRecurring,
-            ],
-            columns: [config.categories.targetActual],
-            rows: [dimensions.period],
         });
     }
 
@@ -340,11 +302,15 @@ export default class ProjectDashboard {
     targetVsActualPeopleDisaggregatedByIndicatorChart(): MaybeD2Visualization {
         const { config, dataElements } = this;
 
+        const dePeopleSortedByCode = _(dataElements.people)
+            .sortBy(de => de.code)
+            .value();
+
         return this.getD2VisualizationFromDefinition({
             type: "chart",
             key: "chart-target-actual-people-disaggregated-by-indicator",
             name: i18n.t("Target vs Actual - People - Column Chart Disaggregated By Indicator"),
-            items: dataElementItems(dataElements.people),
+            items: dataElementItems(dePeopleSortedByCode),
             filters: [dimensions.orgUnit, config.categories.gender, config.categories.newRecurring],
             columns: [dimensions.data],
             rows: [dimensions.period, config.categories.targetActual],
