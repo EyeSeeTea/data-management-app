@@ -252,9 +252,10 @@ export default class ProjectDashboard {
 
     merTargetVsActualBenefitsChart(): MaybeD2Visualization {
         const { config, merDataElements } = this;
-        const dataElementsNoDisaggregated = merDataElements.all.filter(
-            de => !de.categories.includes("newRecurring")
-        );
+        const dataElementsNoDisaggregated = _(merDataElements.all)
+            .filter(de => !de.categories.includes("newRecurring"))
+            .sortBy(de => de.code)
+            .value();
 
         return this.getD2VisualizationFromDefinition({
             type: "chart",
@@ -270,11 +271,15 @@ export default class ProjectDashboard {
     merTargetVsActualPeopleChart(): MaybeD2Visualization {
         const { config, merDataElements } = this;
 
+        const sortedItems = _(merDataElements.people)
+            .sortBy(de => de.code)
+            .value();
+
         return this.getD2VisualizationFromDefinition({
             type: "chart",
             key: "chart-mer-target-actual-people",
             name: i18n.t("MER - Target vs Actual - People - Column Chart"),
-            items: dataElementItems(merDataElements.people),
+            items: dataElementItems(sortedItems),
             filters: [dimensions.orgUnit, config.categories.gender, config.categories.newRecurring],
             columns: [dimensions.data],
             rows: [dimensions.period, config.categories.targetActual],
