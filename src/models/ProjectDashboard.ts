@@ -283,9 +283,10 @@ export default class ProjectDashboard {
 
     targetVsActualBenefitsDisaggregatedByIndicatorChart(): MaybeD2Visualization {
         const { config, dataElements } = this;
-        const dataElementsNoDisaggregated = dataElements.benefit.filter(
-            de => !de.categories.includes("newRecurring")
-        );
+        const dataElementsNoDisaggregated = _(dataElements.benefit)
+            .filter(de => !de.categories.includes("newRecurring"))
+            .sortBy(de => de.code)
+            .value();
 
         return this.getD2VisualizationFromDefinition({
             type: "chart",
