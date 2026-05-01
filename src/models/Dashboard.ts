@@ -175,9 +175,10 @@ export function positionItems(items: DashboardItem[], options: PositionItemsOpti
 
     return items.reduce<{ pos: Pos; outputItems: DashboardItem[] }>(
         ({ pos, outputItems }, item) => {
+            const isText = item.type === "TEXT";
             const width = Math.min(item.width || defaultWidth, maxWidth);
             const itemPos = pos.x + width > maxWidth ? { x: 0, y: pos.y + defaultHeight } : pos;
-            const newItem = { ...item, width, height: defaultHeight, ...itemPos };
+            const newItem = { ...item, width, height: isText ? 6 : defaultHeight, ...itemPos };
             const newPos = { x: itemPos.x + newItem.width, y: itemPos.y };
             return { pos: newPos, outputItems: [...outputItems, newItem] };
         },

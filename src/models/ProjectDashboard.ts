@@ -122,10 +122,37 @@ export default class ProjectDashboard {
             defaultHeight: 20, // 20 vertical units ~ 50% of viewport height
         };
 
+        const title =
+            "*Comparison of Target vs Actual Benefit and People Indicators* \n _(Used to compare make comparison between the target and actual of an indicator, comparison of actuals between activities that go together, used to look at the distribution (shape) of an activity (does the actual shape match the target shape? If not, should there be a discussion? Is this ok?)_";
+
+        const firstTextItem: PartialModel<D2DashboardItem> = {
+            id: getUid("first", "text-project-dashboard"),
+            type: "TEXT",
+            text: i18n.t(title),
+            width: toItemWidth(100),
+        };
+
+        const eigthTitle =
+            "*Comparison of Target vs Actual Benefit and People Disaggregated by Indicator* \n _(Better to analyze trends by indicator or up to 5 indicators across time, does the actual shape match the target shape? If not, should there be a discussion? Is this ok?)_";
+
+        const eighthTextItem: PartialModel<D2DashboardItem> = {
+            id: getUid("eighth", "text-project-dashboard"),
+            type: "TEXT",
+            text: i18n.t(eigthTitle),
+            width: toItemWidth(100),
+        };
+
+        const dashboardItemsToSave = [
+            firstTextItem,
+            ...items.slice(0, 8),
+            eighthTextItem,
+            ...items.slice(8),
+        ];
+
         const dashboard = {
             id: getUid("dashboard", projectsListDashboard.id),
             name: projectsListDashboard.name,
-            dashboardItems: positionItems(items, positionItemsOptions),
+            dashboardItems: positionItems(dashboardItemsToSave, positionItemsOptions),
             ...new ProjectSharing(config, projectsListDashboard).getSharingAttributesForDashboard(),
         };
 
@@ -149,6 +176,8 @@ export default class ProjectDashboard {
             this.merTargetVsActualPeopleChart(),
             targetVsActualBenefitsTable_,
             targetVsActualPeopleTable_,
+            this.targetVsActualPeopleLineChartGenderNewOnly(),
+            this.targetVsActualPeopleLineChartNewOnly(),
             this.targetVsActualBenefitsDisaggregatedByIndicatorChart(),
             this.targetVsActualPeopleDisaggregatedByIndicatorChart(),
             this.targetVsActualBenefitsLineChart(),
@@ -367,6 +396,36 @@ export default class ProjectDashboard {
             filters: [dimensions.orgUnit, this.categoryOnlyMale, config.categories.newRecurring],
             columns: [config.categories.targetActual],
             rows: [dimensions.data, dimensions.period],
+        });
+    }
+
+    targetVsActualPeopleLineChartGenderNewOnly(): MaybeD2Visualization {
+        const { config, dataElements } = this;
+
+        return this.getD2VisualizationFromDefinition({
+            type: "chart",
+            chartType: "LINE",
+            key: "chart-target-actual-people-line-gender-new",
+            name: i18n.t("Target vs Actual - People - Line Chart - Gender New Only"),
+            items: dataElementItems(dataElements.people),
+            filters: [dimensions.orgUnit, this.categoryOnlyNew, dimensions.period],
+            columns: [config.categories.gender],
+            rows: [config.categories.targetActual, dimensions.data],
+        });
+    }
+
+    targetVsActualPeopleLineChartNewOnly(): MaybeD2Visualization {
+        const { config, dataElements } = this;
+
+        return this.getD2VisualizationFromDefinition({
+            type: "chart",
+            chartType: "LINE",
+            key: "chart-target-actual-people-line-new-only",
+            name: i18n.t("Target vs Actual - People - Line Chart - New Only"),
+            items: dataElementItems(dataElements.people),
+            filters: [dimensions.orgUnit, this.categoryOnlyNew, dimensions.period],
+            columns: [config.categories.targetActual],
+            rows: [config.categories.gender, dimensions.data],
         });
     }
 
