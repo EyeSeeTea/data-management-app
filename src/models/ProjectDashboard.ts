@@ -103,19 +103,32 @@ export default class ProjectDashboard {
         if (!_.isNil(minimumOrgUnits) && projectsListDashboard.orgUnits.length < minimumOrgUnits)
             return { dashboards: [], visualizations: [] };
 
-        const visualizations =
+        const rawVisualizations =
             this.dashboardType === "project"
                 ? this.getProjectVisualizations()
                 : this.getAwardNumberVisualizations();
 
-        const items: Array<PartialModel<D2DashboardItem>> = _(visualizations)
-            .map(visualization =>
-                visualization.type === "PIVOT_TABLE"
-                    ? getReportTableItem(visualization)
-                    : getChartDashboardItem(visualization)
-            )
+        let spacerIndex = 0;
+        const items: Array<PartialModel<D2DashboardItem>> = _(rawVisualizations)
+            .map(visualization => {
+                if (visualization) {
+                    return visualization.type === "PIVOT_TABLE"
+                        ? getReportTableItem(visualization)
+                        : getChartDashboardItem(visualization);
+                }
+                const spacer: PartialModel<D2DashboardItem> = {
+                    id: getUid(`spacer-${spacerIndex}`, projectsListDashboard.id),
+                    type: "TEXT",
+                    text: "SPACER_ITEM_FOR_DASHBOARD_LAYOUT_CONVENIENCE",
+                    height: 20,
+                };
+                spacerIndex++;
+                return spacer;
+            })
             .compact()
             .value();
+
+        const visualizations = _.compact(rawVisualizations);
 
         const positionItemsOptions: PositionItemsOptions = {
             maxWidth: toItemWidth(100),
@@ -160,19 +173,19 @@ export default class ProjectDashboard {
         return { dashboards: [dashboard], visualizations };
     }
 
-    getProjectVisualizations(): PartialPersistedModel<D2Visualization>[] {
+    getProjectVisualizations(): MaybeD2Visualization[] {
         const targetVsActualBenefitsTable_ = this.targetVsActualBenefitsTable();
         const targetVsActualPeopleTable_ = this.targetVsActualPeopleTable();
         const achievedBenefitsToDateTable_ = this.achievedBenefitsTable({ toDate: true });
         const achievedPeopleToDateTable_ = this.achievedPeopleTable();
-        const charts: Array<PartialPersistedModel<D2Visualization>> = _.compact([
+        const charts: MaybeD2Visualization[] = [
             this.achievedBenefitChart(),
             this.achievedPeopleChart(),
             this.genderChart(),
             this.costBenefitTable(),
-        ]);
+        ];
 
-        return _.compact([
+        return [
             this.merTargetVsActualBenefitsChart(),
             this.merTargetVsActualPeopleChart(),
             targetVsActualBenefitsTable_,
@@ -190,7 +203,7 @@ export default class ProjectDashboard {
             achievedBenefitsToDateTable_,
             achievedPeopleToDateTable_,
             ...charts,
-        ]);
+        ];
     }
 
     getAwardNumberVisualizations(): PartialPersistedModel<D2Visualization>[] {
