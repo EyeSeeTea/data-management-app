@@ -8,7 +8,7 @@ import { TableSorting } from "@eyeseetea/d2-ui-components";
 
 import i18n from "../locales";
 import DataElementsSet, { PeopleOrBenefit, DataElement, SelectionInfo } from "./dataElementsSet";
-import ProjectDb from "./ProjectDb";
+import ProjectDb, { SaveOptions } from "./ProjectDb";
 import { toISOString, getMonthsRange } from "../utils/date";
 import ProjectDownload from "./ProjectDownload";
 import ProjectList, { ProjectForList, FiltersForList } from "./ProjectsList";
@@ -523,8 +523,8 @@ class Project {
         return new ProjectDownload(this).generate();
     }
 
-    save() {
-        return new ProjectDb(this).save();
+    save(options: SaveOptions = {}) {
+        return new ProjectDb(this).save(options);
     }
 
     saveFiles() {

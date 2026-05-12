@@ -67,8 +67,8 @@ export default class ProjectDb {
         this.config = project.config;
     }
 
-    async save() {
-        return await this.saveMetadata();
+    async save(options: SaveOptions = {}) {
+        return await this.saveMetadata(options);
     }
 
     async saveFiles() {
@@ -227,13 +227,15 @@ export default class ProjectDb {
         return { id: orgUnit.id, name: orgUnit.name, metadata, data, dataValues };
     }
 
-    async getMetadata() {
+    async getMetadata(options: SaveOptions = {}) {
         const { project, api, config } = this;
         const { startDate, endDate } = project;
 
         const country = project.parentOrgUnit;
 
-        const validationErrors = _.flatten(_.values(await project.validate()));
+        const validationErrors = options.skipValidation
+            ? []
+            : _.flatten(_.values(await project.validate()));
         if (!_.isEmpty(validationErrors)) {
             throw new Error("Validation errors:\n" + validationErrors.join("\n"));
         } else if (!startDate || !endDate || !project.parentOrgUnit) {
@@ -383,8 +385,8 @@ export default class ProjectDb {
         );
     }
 
-    async saveMetadata() {
-        const { payload, orgUnit, project: projectUpdated } = await this.getMetadata();
+    async saveMetadata(options: SaveOptions = {}) {
+        const { payload, orgUnit, project: projectUpdated } = await this.getMetadata(options);
 
         await this.saveDocuments();
 
@@ -1249,3 +1251,5 @@ export const dataSetFields = {
     userAccesses: { id: true, displayName: true, access: true },
     userGroupAccesses: { id: true, displayName: true, access: true },
 } as const;
+
+export type SaveOptions = { skipValidation?: boolean };
