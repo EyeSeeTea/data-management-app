@@ -190,8 +190,8 @@ export default class ProjectDb {
             throwResponseError(dataValueRes, "Error importing data values");
     }
 
-    async toJSON(): Promise<ProjectJson> {
-        const { payload: metadata, orgUnit, project } = await this.getMetadata();
+    async toJSON(options: SaveOptions = {}): Promise<ProjectJson> {
+        const { payload: metadata, orgUnit, project } = await this.getMetadata(options);
 
         const dataStore = getDataStore(this.api);
         const countryId = project.parentOrgUnit?.id;
