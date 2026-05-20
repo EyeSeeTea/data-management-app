@@ -100,6 +100,7 @@ async function run(app: App, options: { persist: boolean; filterIds: Set<Id> | n
 
     let changedCount = 0;
     let totalRemoved = 0;
+    const updatedProjects: Array<{ id: Id; name: string }> = [];
 
     await promiseMap(projectIds, async projectId => {
         const project = await Project.get(api, config, projectId);
@@ -122,6 +123,7 @@ async function run(app: App, options: { persist: boolean; filterIds: Set<Id> | n
         if (persist) {
             await updatedProject.save({ skipValidation: true });
             await new ProjectDashboardSave(updatedProject).execute();
+            updatedProjects.push({ id: project.id, name: project.name });
         } else {
             const json = await new ProjectDb(updatedProject).toJSON({ skipValidation: true });
             fs.writeFileSync(`project-${project.id}.json`, JSON.stringify(json, null, 2), "utf-8");
@@ -134,6 +136,13 @@ async function run(app: App, options: { persist: boolean; filterIds: Set<Id> | n
     );
 
     await removeSubsFromDataElementGroups(api, config, subIdsToRemove, persist);
+
+    if (persist && updatedProjects.length > 0) {
+        console.info(`\nUpdated projects (${updatedProjects.length}):`);
+        for (const p of updatedProjects) {
+            console.info(`  - ${p.name} (${p.id})`);
+        }
+    }
 
     if (!persist) {
         console.info("Re-run with --persist to apply the changes.");
@@ -306,10 +315,26 @@ function removeSubsFromProject(
     const mer = computeFilteredSelection(dataElementsMER, sectors, subIdsToRemove);
     const unique = computeFilteredSelection(uniqueIndicators, sectors, subIdsToRemove);
 
+    const cleanedSelection = stripSubsFromDataElementsBySector(
+        project.config,
+        dataElementsSelection.updateSelected(selection.next),
+        subIdsToRemove
+    );
+    const cleanedMER = stripSubsFromDataElementsBySector(
+        project.config,
+        dataElementsMER.updateSelected(mer.next),
+        subIdsToRemove
+    );
+    const cleanedUnique = stripSubsFromDataElementsBySector(
+        project.config,
+        uniqueIndicators.updateSelected(unique.next),
+        subIdsToRemove
+    );
+
     const updated = project.setObj({
-        dataElementsSelection: dataElementsSelection.updateSelected(selection.next),
-        dataElementsMER: dataElementsMER.updateSelected(mer.next),
-        uniqueIndicators: uniqueIndicators.updateSelected(unique.next),
+        dataElementsSelection: cleanedSelection,
+        dataElementsMER: cleanedMER,
+        uniqueIndicators: cleanedUnique,
     });
 
     return {
@@ -320,6 +345,40 @@ function removeSubsFromProject(
             unique: unique.removed,
         },
     };
+}
+
+/**
+ * Returns a copy of the DataElementsSet where the sub ids are removed from:
+ *  - dataElementsBySector[sectorId] top-level entries.
+ *  - Each remaining DE's pairedDataElements (nested).
+ *
+ * This is required because Project.getSelectedDataElements() runs
+ * `set.get({ onlySelected: true, includePaired: true })`, and the
+ * `includePaired` expansion uses `de.pairedDataElements` to re-inflate
+ * sub/paired ids that point at the sub via DM_PAIRED_DE. Without stripping
+ * those references, the subs reappear in dataSet sections, dataSetElements
+ * and dashboard visualizations on the next save.
+ */
+function stripSubsFromDataElementsBySector(
+    config: Config,
+    set: DataElementsSet,
+    subIdsToRemove: Set<Id>
+): DataElementsSet {
+    const cleanedBySector = _.mapValues(set.data.dataElementsBySector, dataElements =>
+        dataElements
+            .filter(de => !subIdsToRemove.has(de.id))
+            .map(de => ({
+                ...de,
+                pairedDataElements: de.pairedDataElements.filter(
+                    paired => !subIdsToRemove.has(paired.id)
+                ),
+            }))
+    );
+
+    return new DataElementsSet(config, {
+        ...set.data,
+        dataElementsBySector: cleanedBySector,
+    });
 }
 
 function computeFilteredSelection(
