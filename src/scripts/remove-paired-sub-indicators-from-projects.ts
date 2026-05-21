@@ -121,8 +121,12 @@ async function run(app: App, options: { persist: boolean; filterIds: Set<Id> | n
         logRemovedDetail(removed, config);
 
         if (persist) {
-            await updatedProject.save({ skipValidation: true });
-            await new ProjectDashboardSave(updatedProject).execute();
+            await updatedProject.save({ skipValidation: true }).catch(err => {
+                console.error(`ERROR saving project ${project.id}:`, err);
+            });
+            await new ProjectDashboardSave(updatedProject).execute().catch(err => {
+                console.error(`ERROR updating dashboards for project ${project.id}:`, err);
+            });
             updatedProjects.push({ id: project.id, name: project.name });
         } else {
             const json = await new ProjectDb(updatedProject).toJSON({ skipValidation: true });
