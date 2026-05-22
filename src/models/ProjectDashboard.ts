@@ -32,15 +32,16 @@ import { getVisualizationPeriods } from "./Period";
 import { DataElement as MerDataElement } from "./dataElementsSet";
 import * as texts from "./ProjectDashboardTexts";
 
-const INTRODUCTION_TEXT_HEIGHT = 16;
-const SPACER_HEIGHT = 6;
+const INTRODUCTION_TEXT_HEIGHT = 12;
+const SPACER_HEIGHT = 4;
 const MIN_TEXT_HEIGHT = 4;
-const GRID_UNITS_PER_LINE = 2;
-const MAX_TEXT_HEIGHT = 10;
+const MAX_TEXT_HEIGHT = 6;
+const CHARS_PER_GRID_UNIT = 50;
 
 function computeTextHeight(text: string): number {
-    const lineCount = text.split("\n").length;
-    return Math.max(MIN_TEXT_HEIGHT, lineCount * GRID_UNITS_PER_LINE);
+    const heightByChars = Math.ceil(text.length / CHARS_PER_GRID_UNIT);
+    // multiply by 2 to convert to vertical grid units (1 unit ~ 2 lines of text)
+    return Math.max(MIN_TEXT_HEIGHT, Math.min(MAX_TEXT_HEIGHT, heightByChars));
 }
 
 export default class ProjectDashboard {
@@ -194,6 +195,15 @@ export default class ProjectDashboard {
             width: fullWidth,
         });
 
+        let emptyVizIndex = 0;
+        const emptyVizPlaceholder = (): PartialModel<D2DashboardItem> => ({
+            id: getUid(`project-empty-viz-${emptyVizIndex++}`, dashboardId),
+            type: "TEXT",
+            text: "SPACER_ITEM_FOR_DASHBOARD_LAYOUT_CONVENIENCE",
+            width: halfWidth,
+            height: 20,
+        });
+
         const text = (
             keyName: string,
             content: string,
@@ -207,12 +217,14 @@ export default class ProjectDashboard {
             height: height ?? computeTextHeight(content),
         });
 
-        const viz = (visualization: MaybeD2Visualization): PartialModel<D2DashboardItem> | null =>
-            visualization
-                ? visualization.type === "PIVOT_TABLE"
+        const viz = (visualization: MaybeD2Visualization): PartialModel<D2DashboardItem> => {
+            if (!visualization) return emptyVizPlaceholder();
+            const item =
+                visualization.type === "PIVOT_TABLE"
                     ? getReportTableItem(visualization)
-                    : getChartDashboardItem(visualization)
-                : null;
+                    : getChartDashboardItem(visualization);
+            return item ?? emptyVizPlaceholder();
+        };
 
         const dashboardItemsToSave = _.compact([
             text(
