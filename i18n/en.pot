@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-05-04T13:11:15.065Z\n"
-"PO-Revision-Date: 2026-05-04T13:11:15.065Z\n"
+"POT-Creation-Date: 2026-05-22T01:50:48.521Z\n"
+"PO-Revision-Date: 2026-05-22T01:50:48.521Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -72,6 +72,52 @@ msgstr ""
 msgid "Cannot load dashboard"
 msgstr ""
 
+msgid "Purpose of Platform Dashboards"
+msgstr ""
+
+msgid "Encourage data informed decisions."
+msgstr ""
+
+msgid ""
+"Help implementers identify phenomena in data that can initiate "
+"opportunities for conversations and decision-making on how to engage in "
+"adaptive program management."
+msgstr ""
+
+msgid ""
+"Be incorporated into the monthly quality process. Ideally, this check "
+"should be happening when preparing MERs for your regional teams."
+msgstr ""
+
+msgid "Conversions by topic"
+msgstr ""
+
+msgid "Errors identified"
+msgstr ""
+
+msgid "Divergence from targets"
+msgstr ""
+
+msgid "Bullets on what to highlight in the MER with mitigation measures"
+msgstr ""
+
+msgid "Potential points to escalate"
+msgstr ""
+
+msgid "Determining if site visits should be made"
+msgstr ""
+
+msgid "Reviewing budget for spent, pending, and remaining"
+msgstr ""
+
+msgid ""
+"If there is anything that can be improved, please let us know by sending an "
+"email to pmt@samaritan.org."
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
 msgid "Data Entry"
 msgstr ""
 
@@ -127,9 +173,6 @@ msgid "Ask for Data Review"
 msgstr ""
 
 msgid "Validation results"
-msgstr ""
-
-msgid "Close"
 msgstr ""
 
 msgid "Comments saved"
