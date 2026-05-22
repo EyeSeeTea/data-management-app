@@ -30,6 +30,18 @@ import {
 } from "./ProjectsListDashboard";
 import { getVisualizationPeriods } from "./Period";
 import { DataElement as MerDataElement } from "./dataElementsSet";
+import * as texts from "./ProjectDashboardTexts";
+
+const INTRODUCTION_TEXT_HEIGHT = 16;
+const SPACER_HEIGHT = 6;
+const MIN_TEXT_HEIGHT = 4;
+const GRID_UNITS_PER_LINE = 2;
+const MAX_TEXT_HEIGHT = 10;
+
+function computeTextHeight(text: string): number {
+    const lineCount = text.split("\n").length;
+    return Math.max(MIN_TEXT_HEIGHT, lineCount * GRID_UNITS_PER_LINE);
+}
 
 export default class ProjectDashboard {
     dataElements: ProjectsListDashboard["dataElements"];
@@ -103,107 +115,273 @@ export default class ProjectDashboard {
         if (!_.isNil(minimumOrgUnits) && projectsListDashboard.orgUnits.length < minimumOrgUnits)
             return { dashboards: [], visualizations: [] };
 
-        const rawVisualizations =
-            this.dashboardType === "project"
-                ? this.getProjectVisualizations()
-                : this.getAwardNumberVisualizations();
-
-        let spacerIndex = 0;
-        const items: Array<PartialModel<D2DashboardItem>> = _(rawVisualizations)
-            .map(visualization => {
-                if (visualization) {
-                    return visualization.type === "PIVOT_TABLE"
-                        ? getReportTableItem(visualization)
-                        : getChartDashboardItem(visualization);
-                }
-                const spacer: PartialModel<D2DashboardItem> = {
-                    id: getUid(`spacer-${spacerIndex}`, projectsListDashboard.id),
-                    type: "TEXT",
-                    text: "SPACER_ITEM_FOR_DASHBOARD_LAYOUT_CONVENIENCE",
-                    height: 20,
-                };
-                spacerIndex++;
-                return spacer;
-            })
-            .compact()
-            .value();
-
-        const visualizations = _.compact(rawVisualizations);
-
         const positionItemsOptions: PositionItemsOptions = {
             maxWidth: toItemWidth(100),
             defaultWidth: toItemWidth(50),
             defaultHeight: 20, // 20 vertical units ~ 50% of viewport height
         };
 
-        const title =
-            "*Comparison of Target vs Actual Benefit and People Indicators* \n _(Used to compare make comparison between the target and actual of an indicator, comparison of actuals between activities that go together, used to look at the distribution (shape) of an activity (does the actual shape match the target shape? If not, should there be a discussion? Is this ok?)_";
+        if (this.dashboardType === "project") {
+            const { dashboardItemsToSave, visualizations } = this.buildProjectDashboard();
+            const dashboard = {
+                id: getUid("dashboard", projectsListDashboard.id),
+                name: projectsListDashboard.name,
+                dashboardItems: positionItems(dashboardItemsToSave, positionItemsOptions),
+                ...new ProjectSharing(
+                    config,
+                    projectsListDashboard
+                ).getSharingAttributesForDashboard(),
+            };
+            return { dashboards: [dashboard], visualizations };
+        }
 
-        const firstTextItem: PartialModel<D2DashboardItem> = {
-            id: getUid("first-text-project-dashboard", this.projectsListDashboard.id),
-            type: "TEXT",
-            text: i18n.t(title),
-            width: toItemWidth(100),
-        };
+        const rawVisualizations = this.getAwardNumberVisualizations();
 
-        const eigthTitle =
-            "*Comparison of Target vs Actual Benefit and People Disaggregated by Indicator* \n _(Better to analyze trends by indicator or up to 5 indicators across time, does the actual shape match the target shape? If not, should there be a discussion? Is this ok?)_";
+        const items: Array<PartialModel<D2DashboardItem>> = _(rawVisualizations)
+            .map(visualization => {
+                return visualization.type === "PIVOT_TABLE"
+                    ? getReportTableItem(visualization)
+                    : getChartDashboardItem(visualization);
+            })
+            .compact()
+            .value();
 
-        const eighthTextItem: PartialModel<D2DashboardItem> = {
-            id: getUid("eighth-text-project-dashboard", this.projectsListDashboard.id),
-            type: "TEXT",
-            text: i18n.t(eigthTitle),
-            width: toItemWidth(100),
-        };
-
-        const dashboardItemsToSave = [
-            firstTextItem,
-            ...items.slice(0, 8),
-            eighthTextItem,
-            ...items.slice(8),
-        ];
+        const visualizations = _.compact(rawVisualizations);
 
         const dashboard = {
             id: getUid("dashboard", projectsListDashboard.id),
             name: projectsListDashboard.name,
-            dashboardItems: positionItems(dashboardItemsToSave, positionItemsOptions),
+            dashboardItems: positionItems(items, positionItemsOptions),
             ...new ProjectSharing(config, projectsListDashboard).getSharingAttributesForDashboard(),
         };
 
         return { dashboards: [dashboard], visualizations };
     }
 
-    getProjectVisualizations(): MaybeD2Visualization[] {
-        const targetVsActualBenefitsTable_ = this.targetVsActualBenefitsTable();
-        const targetVsActualPeopleTable_ = this.targetVsActualPeopleTable();
-        const achievedBenefitsToDateTable_ = this.achievedBenefitsTable({ toDate: true });
-        const achievedPeopleToDateTable_ = this.achievedPeopleTable();
-        const charts: MaybeD2Visualization[] = [
-            this.achievedBenefitChart(),
-            this.achievedPeopleChart(),
-            this.genderChart(),
-            this.costBenefitTable(),
-        ];
+    private buildProjectDashboard(): {
+        dashboardItemsToSave: Array<PartialModel<D2DashboardItem>>;
+        visualizations: D2Visualization[];
+    } {
+        const dashboardId = this.projectsListDashboard.id;
+        const fullWidth = toItemWidth(100);
+        const halfWidth = toItemWidth(50);
 
-        return [
-            this.merTargetVsActualBenefitsChart(),
-            this.merTargetVsActualPeopleChart(),
-            targetVsActualBenefitsTable_,
-            targetVsActualPeopleTable_,
-            this.targetVsActualPeopleLineChartGenderNewOnly(),
-            this.targetVsActualPeopleLineChartNewOnly(),
-            this.targetVsActualBenefitsDisaggregatedByIndicatorChart(),
-            this.targetVsActualPeopleDisaggregatedByIndicatorChart(),
-            this.targetVsActualBenefitsLineChart(),
-            this.targetVsActualPeopleLineChart(),
-            this.targetVsActualPeopleLineChartMaleOnly(),
-            this.targetVsActualPeopleLineChartFemaleOnly(),
-            this.targetVsActualPeopleLineColumnChartMaleOnly(),
-            this.targetVsActualPeopleLineColumnChartFemaleOnly(),
-            achievedBenefitsToDateTable_,
-            achievedPeopleToDateTable_,
-            ...charts,
-        ];
+        const merBenefitsChart = this.merTargetVsActualBenefitsChart();
+        const merPeopleChart = this.merTargetVsActualPeopleChart();
+        const benefitsTable = this.targetVsActualBenefitsTable();
+        const peopleTable = this.targetVsActualPeopleTable();
+        const benefitsLineChart = this.targetVsActualBenefitsLineChart();
+        const peopleLineChart = this.targetVsActualPeopleLineChart();
+        const genderNewLineChart = this.targetVsActualPeopleLineChartGenderNewOnly();
+        const newOnlyLineChart = this.targetVsActualPeopleLineChartNewOnly();
+        const maleLineChart = this.targetVsActualPeopleLineChartMaleOnly();
+        const femaleLineChart = this.targetVsActualPeopleLineChartFemaleOnly();
+        const maleLineColumn = this.targetVsActualPeopleLineColumnChartMaleOnly();
+        const femaleLineColumn = this.targetVsActualPeopleLineColumnChartFemaleOnly();
+        const achievedBenefitsToDate = this.achievedBenefitsTable({ toDate: true });
+        const achievedPeopleToDate = this.achievedPeopleTable();
+        const achievedBenefitChartViz = this.achievedBenefitChart();
+        const achievedPeopleChartViz = this.achievedPeopleChart();
+        const genderChartViz = this.genderChart();
+        const costBenefitTableViz = this.costBenefitTable();
+
+        let spacerIndex = 0;
+        const spacer = (): PartialModel<D2DashboardItem> => ({
+            id: getUid(`project-spacer-${spacerIndex++}`, dashboardId),
+            type: "TEXT",
+            text: "SPACER_ITEM_FOR_DASHBOARD_LAYOUT_CONVENIENCE",
+            height: SPACER_HEIGHT,
+            width: fullWidth,
+        });
+
+        const text = (
+            keyName: string,
+            content: string,
+            width: number,
+            height?: number
+        ): PartialModel<D2DashboardItem> => ({
+            id: getUid(keyName, dashboardId),
+            type: "TEXT",
+            text: i18n.t(content),
+            width,
+            height: height ?? computeTextHeight(content),
+        });
+
+        const viz = (visualization: MaybeD2Visualization): PartialModel<D2DashboardItem> | null =>
+            visualization
+                ? visualization.type === "PIVOT_TABLE"
+                    ? getReportTableItem(visualization)
+                    : getChartDashboardItem(visualization)
+                : null;
+
+        const dashboardItemsToSave = _.compact([
+            text(
+                "introduction-text-project-dashboard",
+                texts.introductionText,
+                fullWidth,
+                INTRODUCTION_TEXT_HEIGHT
+            ),
+            text("comparison-mer-section-project", texts.comparisonMerSectionText, fullWidth),
+            text(
+                "mer-benefits-chart-desc-project",
+                texts.merBenefitsChartDescription,
+                halfWidth,
+                MAX_TEXT_HEIGHT
+            ),
+            text(
+                "mer-people-chart-desc-project",
+                texts.merPeopleChartDescription,
+                halfWidth,
+                MAX_TEXT_HEIGHT
+            ),
+            viz(merBenefitsChart),
+            viz(merPeopleChart),
+            text(
+                "target-actual-benefits-table-desc-project",
+                texts.targetVsActualBenefitsTableDescription,
+                halfWidth,
+                MAX_TEXT_HEIGHT
+            ),
+            text(
+                "target-actual-people-table-desc-project",
+                texts.targetVsActualPeopleTableDescription,
+                halfWidth,
+                MAX_TEXT_HEIGHT
+            ),
+            viz(benefitsTable),
+            viz(peopleTable),
+            spacer(),
+            text("line-charts-section-project", texts.lineChartsSectionText, fullWidth),
+            text(
+                "benefits-line-chart-desc-project",
+                texts.benefitsLineChartDescription,
+                halfWidth,
+                MAX_TEXT_HEIGHT
+            ),
+            text(
+                "people-line-chart-desc-project",
+                texts.peopleLineChartDescription,
+                halfWidth,
+                MAX_TEXT_HEIGHT
+            ),
+            viz(benefitsLineChart),
+            viz(peopleLineChart),
+            spacer(),
+            text(
+                "gender-disaggregation-section-project",
+                texts.genderDisaggregationSectionText,
+                fullWidth
+            ),
+            text(
+                "gender-trends-desc-project",
+                texts.genderTrendsDescription,
+                halfWidth,
+                MAX_TEXT_HEIGHT
+            ),
+            text(
+                "gender-overall-trends-desc-project",
+                texts.genderOverallAndTrendsDescription,
+                halfWidth,
+                MAX_TEXT_HEIGHT
+            ),
+            viz(genderNewLineChart),
+            viz(newOnlyLineChart),
+            text(
+                "male-only-trend-desc-project",
+                texts.maleOnlyTrendDescription,
+                halfWidth,
+                MAX_TEXT_HEIGHT
+            ),
+            text(
+                "female-only-trend-desc-project",
+                texts.femaleOnlyTrendDescription,
+                halfWidth,
+                MAX_TEXT_HEIGHT
+            ),
+            viz(maleLineChart),
+            viz(femaleLineChart),
+            text(
+                "male-line-column-desc-project",
+                texts.maleLineColumnDescription,
+                halfWidth,
+                MAX_TEXT_HEIGHT
+            ),
+            text(
+                "female-line-column-desc-project",
+                texts.femaleLineColumnDescription,
+                halfWidth,
+                MAX_TEXT_HEIGHT
+            ),
+            viz(maleLineColumn),
+            viz(femaleLineColumn),
+            spacer(),
+            text("achieved-to-date-section-project", texts.achievedToDateSectionText, fullWidth),
+            text(
+                "achieved-benefits-table-desc-project",
+                texts.achievedBenefitsTableDescription,
+                halfWidth,
+                MAX_TEXT_HEIGHT
+            ),
+            text(
+                "achieved-people-table-desc-project",
+                texts.achievedPeopleTableDescription,
+                halfWidth,
+                MAX_TEXT_HEIGHT
+            ),
+            viz(achievedBenefitsToDate),
+            viz(achievedPeopleToDate),
+            text(
+                "achieved-benefit-chart-desc-project",
+                texts.achievedBenefitChartDescription,
+                halfWidth,
+                MAX_TEXT_HEIGHT
+            ),
+            text(
+                "achieved-people-chart-desc-project",
+                texts.achievedPeopleChartDescription,
+                halfWidth,
+                MAX_TEXT_HEIGHT
+            ),
+            viz(achievedBenefitChartViz),
+            viz(achievedPeopleChartViz),
+            text(
+                "gender-achievement-desc-project",
+                texts.genderAchievementDescription,
+                halfWidth,
+                MAX_TEXT_HEIGHT
+            ),
+            text(
+                "cost-benefit-desc-project",
+                texts.costBenefitDescription,
+                halfWidth,
+                MAX_TEXT_HEIGHT
+            ),
+            viz(genderChartViz),
+            viz(costBenefitTableViz),
+        ]);
+
+        const visualizations = _.compact([
+            merBenefitsChart,
+            merPeopleChart,
+            benefitsTable,
+            peopleTable,
+            benefitsLineChart,
+            peopleLineChart,
+            genderNewLineChart,
+            newOnlyLineChart,
+            maleLineChart,
+            femaleLineChart,
+            maleLineColumn,
+            femaleLineColumn,
+            achievedBenefitsToDate,
+            achievedPeopleToDate,
+            achievedBenefitChartViz,
+            achievedPeopleChartViz,
+            genderChartViz,
+            costBenefitTableViz,
+        ]) as D2Visualization[];
+
+        return { dashboardItemsToSave, visualizations };
     }
 
     getAwardNumberVisualizations(): PartialPersistedModel<D2Visualization>[] {
@@ -323,42 +501,6 @@ export default class ProjectDashboard {
             key: "chart-mer-target-actual-people",
             name: i18n.t("MER - Target vs Actual - People - Column Chart"),
             items: dataElementItems(sortedItems),
-            filters: [dimensions.orgUnit, config.categories.gender, config.categories.newRecurring],
-            columns: [dimensions.data],
-            rows: [dimensions.period, config.categories.targetActual],
-        });
-    }
-
-    targetVsActualBenefitsDisaggregatedByIndicatorChart(): MaybeD2Visualization {
-        const { config, dataElements } = this;
-        const dataElementsNoDisaggregated = _(dataElements.benefit)
-            .filter(de => !de.categories.includes("newRecurring"))
-            .sortBy(de => de.code)
-            .value();
-
-        return this.getD2VisualizationFromDefinition({
-            type: "chart",
-            key: "chart-target-actual-benefits-disaggregated-by-indicator",
-            name: i18n.t("Target vs Actual - Benefits - Column Chart Disaggregated By Indicator"),
-            items: dataElementItems(dataElementsNoDisaggregated),
-            filters: [dimensions.orgUnit],
-            columns: [dimensions.data],
-            rows: [dimensions.period, config.categories.targetActual],
-        });
-    }
-
-    targetVsActualPeopleDisaggregatedByIndicatorChart(): MaybeD2Visualization {
-        const { config, dataElements } = this;
-
-        const dePeopleSortedByCode = _(dataElements.people)
-            .sortBy(de => de.code)
-            .value();
-
-        return this.getD2VisualizationFromDefinition({
-            type: "chart",
-            key: "chart-target-actual-people-disaggregated-by-indicator",
-            name: i18n.t("Target vs Actual - People - Column Chart Disaggregated By Indicator"),
-            items: dataElementItems(dePeopleSortedByCode),
             filters: [dimensions.orgUnit, config.categories.gender, config.categories.newRecurring],
             columns: [dimensions.data],
             rows: [dimensions.period, config.categories.targetActual],
