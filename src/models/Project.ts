@@ -4,14 +4,13 @@ import _ from "lodash";
 import { D2Api, Id, Ref } from "../types/d2-api";
 // @ts-ignore
 import { generateUid } from "d2/uid";
-import { TableSorting } from "@eyeseetea/d2-ui-components";
 
 import i18n from "../locales";
 import DataElementsSet, { PeopleOrBenefit, DataElement, SelectionInfo } from "./dataElementsSet";
 import ProjectDb, { SaveOptions } from "./ProjectDb";
 import { toISOString, getMonthsRange } from "../utils/date";
 import ProjectDownload from "./ProjectDownload";
-import ProjectList, { ProjectForList, FiltersForList } from "./ProjectsList";
+import ProjectList, { ProjectForList, FiltersForList, TableSorting } from "./ProjectsList";
 import ProjectDataSet from "./ProjectDataSet";
 import ProjectDelete from "./ProjectDelete";
 import {
