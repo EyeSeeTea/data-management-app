@@ -5,7 +5,6 @@ import { promiseMap } from "../migrations/utils";
 import { Config } from "../models/Config";
 import DataElementsSet from "../models/dataElementsSet";
 import Project from "../models/Project";
-import ProjectDashboardSave from "../models/ProjectDashboardSave";
 import ProjectDb from "../models/ProjectDb";
 import ProjectsList from "../models/ProjectsList";
 import { D2Api, Id } from "../types/d2-api";
