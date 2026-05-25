@@ -53,7 +53,7 @@ export const DashboardInfoModal: React.FC<DashboardInfoModalProps> = props => {
                     {i18n.t(
                         "If there is anything that can be improved, please let us know by sending an email to "
                     )}
-                    <a href="mailto:pmb@samaritan.org">pmb@samaritan.org</a>.
+                    <a href="mailto:pmt@samaritan.org">pmt@samaritan.org</a>.
                 </p>
             </DialogContent>
             <DialogActions>
