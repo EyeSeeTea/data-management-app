@@ -7,6 +7,7 @@ import { DataElementBase, PeopleOrBenefit } from "../dataElementsSet";
 import { DataSet, DataSetType, ProjectBasic } from "../Project";
 import { getDataValuesFromD2, getDataValueId, Id } from "./GlobalValidator";
 import { DataValue, ValidationItem } from "./validator-common";
+import { Maybe } from "../../types/utils";
 
 /*
     Validate that paired people/benefit indicators are filled together.
@@ -19,27 +20,27 @@ import { DataValue, ValidationItem } from "./validator-common";
 
 type IndexedDataValues = Record<string, DataValue>;
 
-interface IndicatorRef {
+type IndicatorRef = {
     id: Id;
     name: string;
     peopleOrBenefit: PeopleOrBenefit;
-}
+};
 
-interface PairedIndicators {
+type PairedIndicators = {
     benefit: IndicatorRef;
     people: IndicatorRef;
-}
+};
 
-interface Data {
+type ValidationData = {
     pairs: PairedIndicators[];
     dataValues: IndexedDataValues;
     period: string;
     orgUnitId: Id;
     attributeOptionComboId: Id;
-}
+};
 
 export class PairedValidator {
-    constructor(private data: Data) {}
+    constructor(private data: ValidationData) {}
 
     static async build(
         api: D2Api,
@@ -83,29 +84,20 @@ export class PairedValidator {
             dataSet.dataSetElements.map(dse => dse.dataElement.id)
         );
 
-        const seen = new Set<string>();
-        const pairs: PairedIndicators[] = [];
-
-        for (const id of projectDataElementIds) {
-            const de = dataElementsById[id];
-            if (!de) continue;
-
-            for (const pairedRef of de.pairedDataElements) {
-                if (!projectDataElementIds.has(pairedRef.id)) continue;
-                const pairedDe = dataElementsById[pairedRef.id];
-                if (!pairedDe) continue;
-
-                const pair = toPair(de, pairedDe);
-                if (!pair) continue;
-
-                const key = [pair.benefit.id, pair.people.id].join(":");
-                if (seen.has(key)) continue;
-                seen.add(key);
-                pairs.push(pair);
-            }
-        }
-
-        return pairs;
+        return _(dataSet.dataSetElements)
+            .map(dse => dataElementsById[dse.dataElement.id])
+            .compact()
+            .flatMap(de =>
+                _(de.pairedDataElements)
+                    .filter(pairedRef => projectDataElementIds.has(pairedRef.id))
+                    .map(pairedRef => dataElementsById[pairedRef.id])
+                    .compact()
+                    .map(pairedDe => toPair(de, pairedDe))
+                    .compact()
+                    .value()
+            )
+            .uniqBy(pair => [pair.benefit.id, pair.people.id].join(":"))
+            .value();
     }
 
     onSave(dataValue: DataValue): PairedValidator {
@@ -163,16 +155,25 @@ export class PairedValidator {
     }
 }
 
-function toPair(a: DataElementBase, b: DataElementBase): PairedIndicators | null {
-    const aRef: IndicatorRef = { id: a.id, name: a.name, peopleOrBenefit: a.peopleOrBenefit };
-    const bRef: IndicatorRef = { id: b.id, name: b.name, peopleOrBenefit: b.peopleOrBenefit };
+function toPair(dataElement: DataElementBase, pairedDe: DataElementBase): Maybe<PairedIndicators> {
+    const aRef: IndicatorRef = {
+        id: dataElement.id,
+        name: dataElement.name,
+        peopleOrBenefit: dataElement.peopleOrBenefit,
+    };
 
-    if (a.peopleOrBenefit === "benefit" && b.peopleOrBenefit === "people") {
+    const bRef: IndicatorRef = {
+        id: pairedDe.id,
+        name: pairedDe.name,
+        peopleOrBenefit: pairedDe.peopleOrBenefit,
+    };
+
+    if (dataElement.peopleOrBenefit === "benefit" && pairedDe.peopleOrBenefit === "people") {
         return { benefit: aRef, people: bRef };
-    } else if (a.peopleOrBenefit === "people" && b.peopleOrBenefit === "benefit") {
+    } else if (dataElement.peopleOrBenefit === "people" && pairedDe.peopleOrBenefit === "benefit") {
         return { benefit: bRef, people: aRef };
     } else {
-        return null;
+        return undefined;
     }
 }
 
