@@ -5,6 +5,7 @@ import i18n from "../../locales";
 import PageHeader from "../../components/page-header/PageHeader";
 import { useAppHistory } from "../../utils/use-app-history";
 import { useAppContext } from "../../contexts/api-context";
+import { DashboardInfoModal } from "../dashboard-info-modal/DashboardInfoModal";
 
 function getTranslations(name: string) {
     return {
@@ -39,6 +40,7 @@ const Dashboard: React.FC<DashboardProps> = props => {
     const dashboardUrl = dashboardUrlBase + `/#/${id}`;
     const translations = getTranslations(name);
     const appHistory = useAppHistory(backUrl);
+    const [openModal, setOpenModal] = React.useState(true);
 
     React.useEffect(() => {
         const iframe = iframeRef.current;
@@ -73,6 +75,8 @@ const Dashboard: React.FC<DashboardProps> = props => {
                     <LinearProgress />
                 </div>
             )}
+
+            <DashboardInfoModal isOpen={openModal} onClose={() => setOpenModal(false)} />
 
             <div style={isLoading ? styles.wrapperHidden : styles.wrapperVisible}>
                 <iframe

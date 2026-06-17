@@ -1,5 +1,4 @@
 import _ from "lodash";
-import { TableSorting } from "@eyeseetea/d2-ui-components";
 import { D2Api, D2OrganisationUnitSchema, SelectedPick, Id, Pager, Ref } from "../types/d2-api";
 import { Config } from "./Config";
 import moment, { Moment } from "moment";
@@ -399,3 +398,8 @@ function getOrgUnitsFilter(filters: FiltersForList, currentUser: User) {
         : userCountryIds;
     return filterCountryIds ? { "parent.id": { in: filterCountryIds } } : {};
 }
+
+export type TableSorting<T> = {
+    field: keyof T;
+    order: "asc" | "desc";
+};
