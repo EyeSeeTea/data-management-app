@@ -4,14 +4,13 @@ import _ from "lodash";
 import { D2Api, Id, Ref } from "../types/d2-api";
 // @ts-ignore
 import { generateUid } from "d2/uid";
-import { TableSorting } from "@eyeseetea/d2-ui-components";
 
 import i18n from "../locales";
 import DataElementsSet, { PeopleOrBenefit, DataElement, SelectionInfo } from "./dataElementsSet";
-import ProjectDb from "./ProjectDb";
+import ProjectDb, { SaveOptions } from "./ProjectDb";
 import { toISOString, getMonthsRange } from "../utils/date";
 import ProjectDownload from "./ProjectDownload";
-import ProjectList, { ProjectForList, FiltersForList } from "./ProjectsList";
+import ProjectList, { ProjectForList, FiltersForList, TableSorting } from "./ProjectsList";
 import ProjectDataSet from "./ProjectDataSet";
 import ProjectDelete from "./ProjectDelete";
 import {
@@ -113,6 +112,7 @@ export interface ProjectData {
     documents: ProjectDocument[];
     isDartApplicable: boolean;
     partner: boolean;
+    peopleSoftAwardNumber: string;
 }
 
 export interface Dashboard {
@@ -170,6 +170,7 @@ const defaultProjectData = {
     dataSets: undefined,
     dashboard: {},
     documents: [],
+    peopleSoftAwardNumber: "",
 };
 
 function defineGetters(sourceObject: any, targetObject: any) {
@@ -203,6 +204,7 @@ class Project {
     fundersById: Record<Id, Config["funders"][number]>;
 
     static lengths = {
+        peopleSoftAwardNumber: 16,
         awardNumber: 5,
         additional: 40,
     };
@@ -224,6 +226,7 @@ class Project {
         dataElementsMER: i18n.t("Data Elements MER"),
         disaggregation: i18n.t("Disaggregation"),
         description: i18n.t("Description"),
+        peopleSoftAwardNumber: i18n.t("PeopleSoft Award Number"),
         awardNumber: i18n.t("Award Number"),
         subsequentLettering: i18n.t("Subsequent Lettering"),
         additional: i18n.t("Additional Designation (Funder, Location, Sector, etc)"),
@@ -258,6 +261,17 @@ class Project {
         endDateAfterStartDate: this.endDateAfterStartDate.bind(this),
         endDate: () => validatePresence(this.endDate, this.f("endDate")),
         code: () => this.validateCodeUniqueness(),
+        peopleSoftAwardNumber: () =>
+            this.peopleSoftAwardNumber
+                ? validateNumber(
+                      this.peopleSoftAwardNumber.length,
+                      this.f("peopleSoftAwardNumber"),
+                      {
+                          min: Project.lengths.peopleSoftAwardNumber,
+                          max: Project.lengths.peopleSoftAwardNumber,
+                      }
+                  )
+                : [],
         awardNumber: () =>
             validateRegexp(
                 this.awardNumber,
@@ -508,8 +522,8 @@ class Project {
         return new ProjectDownload(this).generate();
     }
 
-    save() {
-        return new ProjectDb(this).save();
+    save(options: SaveOptions = {}) {
+        return new ProjectDb(this).save(options);
     }
 
     saveFiles() {

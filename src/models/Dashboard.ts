@@ -10,6 +10,7 @@ import {
 import { Maybe } from "../types/utils";
 import { getUid, getRefs } from "../utils/dhis2";
 import { D2Sharing } from "./Sharing";
+import { PeriodStrategy } from "./Period";
 
 export const dimensions = {
     period: { id: "pe" },
@@ -29,6 +30,8 @@ interface Item {
 
 export interface VisualizationDefinition {
     type: "chart" | "table";
+    chartType?: Exclude<D2Visualization["type"], "PIVOT_TABLE">;
+    periodStrategy?: PeriodStrategy;
     key: string;
     name: string;
     items: Item[];
@@ -84,7 +87,7 @@ export function getD2Visualization(visualization: Visualization): MaybeD2Visuali
 
     const d2Table: PartialPersistedModel<D2Visualization> = {
         id: getUid(visualization.key, ""),
-        type: visualization.type === "table" ? "PIVOT_TABLE" : "COLUMN",
+        type: visualization.type === "table" ? "PIVOT_TABLE" : visualization.chartType || "COLUMN",
         name: visualization.name,
         numberType: "VALUE",
         legendDisplayStyle: "FILL",
@@ -172,9 +175,11 @@ export function positionItems(items: DashboardItem[], options: PositionItemsOpti
 
     return items.reduce<{ pos: Pos; outputItems: DashboardItem[] }>(
         ({ pos, outputItems }, item) => {
+            const isText = item.type === "TEXT";
             const width = Math.min(item.width || defaultWidth, maxWidth);
             const itemPos = pos.x + width > maxWidth ? { x: 0, y: pos.y + defaultHeight } : pos;
-            const newItem = { ...item, width, height: defaultHeight, ...itemPos };
+            const height = item.height ?? (isText ? 6 : defaultHeight);
+            const newItem = { ...item, width, height, ...itemPos };
             const newPos = { x: itemPos.x + newItem.width, y: itemPos.y };
             return { pos: newPos, outputItems: [...outputItems, newItem] };
         },

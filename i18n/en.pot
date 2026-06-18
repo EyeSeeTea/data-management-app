@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-08-20T11:32:44.779Z\n"
-"PO-Revision-Date: 2025-08-20T11:32:44.779Z\n"
+"POT-Creation-Date: 2026-05-22T20:15:03.101Z\n"
+"PO-Revision-Date: 2026-05-22T20:15:03.101Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -72,6 +72,52 @@ msgstr ""
 msgid "Cannot load dashboard"
 msgstr ""
 
+msgid "Purpose of Platform Dashboards"
+msgstr ""
+
+msgid "Encourage data informed decisions."
+msgstr ""
+
+msgid ""
+"Help implementers identify phenomena in data that can initiate "
+"opportunities for conversations and decision-making on how to engage in "
+"adaptive program management."
+msgstr ""
+
+msgid ""
+"Be incorporated into the monthly quality process. Ideally, this check "
+"should be happening when preparing MERs for your regional teams."
+msgstr ""
+
+msgid "Conversions by topic"
+msgstr ""
+
+msgid "Errors identified"
+msgstr ""
+
+msgid "Divergence from targets"
+msgstr ""
+
+msgid "Bullets on what to highlight in the MER with mitigation measures"
+msgstr ""
+
+msgid "Potential points to escalate"
+msgstr ""
+
+msgid "Determining if site visits should be made"
+msgstr ""
+
+msgid "Reviewing budget for spent, pending, and remaining"
+msgstr ""
+
+msgid ""
+"If there is anything that can be improved, please let us know by sending an "
+"email to "
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
 msgid "Data Entry"
 msgstr ""
 
@@ -127,9 +173,6 @@ msgid "Ask for Data Review"
 msgstr ""
 
 msgid "Validation results"
-msgstr ""
-
-msgid "Close"
 msgstr ""
 
 msgid "Comments saved"
@@ -300,6 +343,9 @@ msgid "Would you like to use the funder code in the additional designation field
 msgstr ""
 
 msgid "Field should be a 5-digit number"
+msgstr ""
+
+msgid "Field should be exactly 16 characters long"
 msgstr ""
 
 msgid "Field cannot be blank"
@@ -516,6 +562,9 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
+msgid "PeopleSoft Award Number"
+msgstr ""
+
 msgid "Award Number"
 msgstr ""
 
@@ -588,10 +637,70 @@ msgstr ""
 msgid "Target vs Actual - Benefits"
 msgstr ""
 
+msgid "Target vs Actual - Benefits - Pivot Table"
+msgstr ""
+
+msgid "Target vs Actual - Benefits - Column Chart"
+msgstr ""
+
+msgid "Target vs Actual - People - Column Chart"
+msgstr ""
+
+msgid "MER - Target vs Actual - Benefits - Column Chart"
+msgstr ""
+
+msgid "MER - Target vs Actual - People - Column Chart"
+msgstr ""
+
+msgid "Target vs Actual - Benefits - Line Chart"
+msgstr ""
+
+msgid "Target vs Actual - People - Line Chart"
+msgstr ""
+
+msgid "Target vs Actual - People - Line Chart - Male Only"
+msgstr ""
+
+msgid "Target vs Actual - People - Line Chart - Gender New Only"
+msgstr ""
+
+msgid "Target vs Actual - People - Line Chart - New Only"
+msgstr ""
+
+msgid "Target vs Actual - People - Line Chart - Female Only"
+msgstr ""
+
+msgid "Target vs Actual - People - Line/Column Chart - Male Only"
+msgstr ""
+
+msgid "Target vs Actual - People - Line/Column Chart - Female Only"
+msgstr ""
+
 msgid "Target vs Actual - Benefits (Disaggregated)"
 msgstr ""
 
 msgid "Target vs Actual - People"
+msgstr ""
+
+msgid "Target vs Actual - People - Pivot Table"
+msgstr ""
+
+msgid "Target vs Actual - People - Month by Month"
+msgstr ""
+
+msgid "Target vs Actual - Benefits - Month by Month"
+msgstr ""
+
+msgid "Target vs Actual - People - Male Only - Pivot Table"
+msgstr ""
+
+msgid "Target vs Actual - People - Female Only - Pivot Table"
+msgstr ""
+
+msgid "Target vs Actual - People - Male Only - Column Chart"
+msgstr ""
+
+msgid "Target vs Actual - People - Female Only - Column Chart"
 msgstr ""
 
 msgid "Target vs Actual - Unique People"
@@ -603,7 +712,7 @@ msgstr ""
 msgid "Achieved (%) - Benefits"
 msgstr ""
 
-msgid "Achieved (%) - People"
+msgid "Achieved to date (%) - People"
 msgstr ""
 
 msgid "Achieved total to date (%) - People"
@@ -863,6 +972,18 @@ msgid "Global data elements reported count: {{dataElementsCount}} "
 msgstr ""
 
 msgid "Projects with global validations reported ({{projectsCount}}): {{-projects}}"
+msgstr ""
+
+msgid ""
+"Paired indicator missing values: benefit indicator {{-benefitName}} has "
+"values but its paired people indicator {{-peopleName}} is empty. Both must "
+"be filled before leaving the page."
+msgstr ""
+
+msgid ""
+"Paired indicator missing values: people indicator {{-peopleName}} has "
+"values but its paired benefit indicator {{-benefitName}} is empty. Both "
+"must be filled before leaving the page."
 msgstr ""
 
 msgid ""
@@ -1165,6 +1286,9 @@ msgid "Monthly Report"
 msgstr ""
 
 msgid "Create Project"
+msgstr ""
+
+msgid "Peoplesoft Award Number"
 msgstr ""
 
 msgid "Last Updated (metadata)"

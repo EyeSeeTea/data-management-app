@@ -31,7 +31,7 @@ import { ProjectInfo, getProjectStorageKey, getReportStorageKey } from "./MerRep
 import ProjectSharing from "./ProjectSharing";
 import { splitParts } from "../utils/string";
 import CountryDashboard from "./CountryDashboard";
-import { addAttributeValueToObj, addAttributeValue } from "./Attributes";
+import { addAttributeValueToObj, addAttributeValue, getAttributeValue } from "./Attributes";
 import { getSharing } from "./Sharing";
 import { DashboardSourceMetadata } from "./ProjectsListDashboard";
 import { promiseMap } from "../migrations/utils";
@@ -67,8 +67,8 @@ export default class ProjectDb {
         this.config = project.config;
     }
 
-    async save() {
-        return await this.saveMetadata();
+    async save(options: SaveOptions = {}) {
+        return await this.saveMetadata(options);
     }
 
     async saveFiles() {
@@ -190,8 +190,8 @@ export default class ProjectDb {
             throwResponseError(dataValueRes, "Error importing data values");
     }
 
-    async toJSON(): Promise<ProjectJson> {
-        const { payload: metadata, orgUnit, project } = await this.getMetadata();
+    async toJSON(options: SaveOptions = {}): Promise<ProjectJson> {
+        const { payload: metadata, orgUnit, project } = await this.getMetadata(options);
 
         const dataStore = getDataStore(this.api);
         const countryId = project.parentOrgUnit?.id;
@@ -227,13 +227,15 @@ export default class ProjectDb {
         return { id: orgUnit.id, name: orgUnit.name, metadata, data, dataValues };
     }
 
-    async getMetadata() {
+    async getMetadata(options: SaveOptions = {}) {
         const { project, api, config } = this;
         const { startDate, endDate } = project;
 
         const country = project.parentOrgUnit;
 
-        const validationErrors = _.flatten(_.values(await project.validate()));
+        const validationErrors = options.skipValidation
+            ? []
+            : _.flatten(_.values(await project.validate()));
         if (!_.isEmpty(validationErrors)) {
             throw new Error("Validation errors:\n" + validationErrors.join("\n"));
         } else if (!startDate || !endDate || !project.parentOrgUnit) {
@@ -323,7 +325,7 @@ export default class ProjectDb {
         );
         if (!dashboards.project) throw new Error("Dashboards error");
 
-        const projectOrgUnit = addAttributeValueToObj(
+        const projectOrgUnitBase = addAttributeValueToObj(
             addAttributeValueToObj(orgUnit, {
                 attribute: config.attributes.createdByApp,
                 value: "true",
@@ -333,6 +335,15 @@ export default class ProjectDb {
                 value: dashboards.project.id,
             }
         );
+
+        const projectOrgUnit =
+            project.peopleSoftAwardNumber ||
+            getAttributeValue(projectOrgUnitBase, config.attributes.peopleSoftAwardNumber)
+                ? addAttributeValueToObj(projectOrgUnitBase, {
+                      attribute: config.attributes.peopleSoftAwardNumber,
+                      value: project.peopleSoftAwardNumber,
+                  })
+                : projectOrgUnitBase;
 
         const orgUnitGroupsMetadata = await getOrgUnitGroupsMetadata(api, project, dashboards);
 
@@ -374,8 +385,8 @@ export default class ProjectDb {
         );
     }
 
-    async saveMetadata() {
-        const { payload, orgUnit, project: projectUpdated } = await this.getMetadata();
+    async saveMetadata(options: SaveOptions = {}) {
+        const { payload, orgUnit, project: projectUpdated } = await this.getMetadata(options);
 
         await this.saveDocuments();
 
@@ -731,6 +742,8 @@ export default class ProjectDb {
 
         const code = orgUnit.code || "";
         const { startDate, endDate } = getDatesFromOrgUnit(orgUnit);
+        const peopleSoftAwardNumber =
+            getAttributeValue(orgUnit, config.attributes.peopleSoftAwardNumber) || "";
         const sectorsById = _.keyBy(config.sectors, sector => sector.id);
         const sectorsByCode = _.keyBy(config.sectors, sector => sector.code);
         const dataElementsBySectorId = _(projectDataSets.actual.sections)
@@ -808,6 +821,7 @@ export default class ProjectDb {
             isDartApplicable: isInDartApplicableGroup,
             partner: partnerGroup,
             uniqueIndicators,
+            peopleSoftAwardNumber: peopleSoftAwardNumber,
         };
         const project = new Project(api, config, { ...projectData, initialData: projectData });
         return project;
@@ -1237,3 +1251,5 @@ export const dataSetFields = {
     userAccesses: { id: true, displayName: true, access: true },
     userGroupAccesses: { id: true, displayName: true, access: true },
 } as const;
+
+export type SaveOptions = { skipValidation?: boolean };

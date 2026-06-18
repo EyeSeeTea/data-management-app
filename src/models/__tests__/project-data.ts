@@ -37,6 +37,7 @@ export const projectData = {
         .compact()
         .value(),
     awardNumber: "12345",
+    peopleSoftAwardNumber: "A1234567890BCDEF",
     subsequentLettering: "en",
     sectors: _(config.sectors)
         .filter(sector => ["Agriculture", "Livelihoods"].includes(sector.displayName))

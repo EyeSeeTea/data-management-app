@@ -21,7 +21,9 @@ const dataStoreUpdateResponse = {
 describe("ProjectDb", () => {
     describe("save", () => {
         it("posts metadata", async () => {
-            const project = await getProject(api, { orgUnit: undefined });
+            const project = (
+                await getProject(api, { orgUnit: undefined })
+            ).updateDataElementsMERSelection("ieyBABjYyHO", ["ik0ICagvIjm"]).project;
 
             // Validation
             mock.onGet("/metadata", {
@@ -140,7 +142,7 @@ describe("ProjectDb", () => {
 
             mock.onGet("/metadata", {
                 params: {
-                    filter: "id:in:[WGC0DJ0YSis,eu2XF73JOzl,GG0k0oNhgS7,em8NIwi0KvM,OKEZCrPzqph,WIEp6vpQw6n,OUGGW1cHaYy,SCS4Dusnfdd,CwUxT9UIX3z,WgOMVlwSV2i,qyG6foGIKEx,OiCmorbkHNf,i07AWJAND8a,iqqgnCj9DQj,GycLEG8dPPO,iOk52Z42bjp,SQSYgZjfA3z,aeGIpbJkZAX,GM6SxObVwI3,GEe8ZzUkVwG,uG9C9z46CNK,qmsj4FqnVPX,uiyYMLiDaK2,u6Sin4Fy1Wt,ukewRkZsyCI,KOiGcdA4JjD,CS7csnUtibF,GqYJDh6asM8,me6p7L8VHXl,uqMTlezGj0I,OS2K2s8VIIq,ayOoqqk9Rnb,ew6e1j5HwkE,mUCwcWSsa9T,KeWVSa2rbYm,i6CWRJp61Hp,eYaYrZfbJT1,CYYNLjxd96q,Gi2PegQJhbu,Ww2X5s48uQx,CMqisHj7sP9,WGWGaYtwJzp]",
+                    filter: "id:in:[WGC0DJ0YSis,eu2XF73JOzl,GG0k0oNhgS7,em8NIwi0KvM,OKEZCrPzqph,WIEp6vpQw6n,OUGGW1cHaYy,SCS4Dusnfdd,CwUxT9UIX3z,WgOMVlwSV2i,qyG6foGIKEx,OiCmorbkHNf,yWq2ZBWiK8T,uYWdSMZQ1LH,i07AWJAND8a,iqqgnCj9DQj,KiUTxsMMYde,GkoTRBEmIQt,mwCW9Tw2EGo,yGi6VuebV62,S2kJHgM41El,KasxZ8vT1n0,W2SCFrHCiEm,OuKm5zK7l53,iOk52Z42bjp,GM6SxObVwI3,qmsj4FqnVPX,uiyYMLiDaK2,u6Sin4Fy1Wt,ukewRkZsyCI,KOiGcdA4JjD,CS7csnUtibF,GqYJDh6asM8,me6p7L8VHXl,CAEdMM5XM5T,GiUz1pZI2Rq,uwoFl2upiOM,ui6nUS98GBM,mUCwcWSsa9T,ew6e1j5HwkE,OS2K2s8VIIq,uqMTlezGj0I,i8TrzIkXGrG,aGYruOfBtaD,KoIzyX81ZVL,WikhmLU9agJ,yamOXKh6Vok,yaQ772dtmLb]",
                     fields: "id,created",
                 },
             }).replyOnce(200, {});
@@ -226,7 +228,7 @@ const orgUnitsMetadata = {
 };
 
 const expectedDataStoreMer = {
-    merDataElementIds: ["yMqK9DKbA3X"],
+    merDataElementIds: ["ik0ICagvIjm", "yMqK9DKbA3X"],
     documents: [],
     uniqueBeneficiaries: { periods: [], indicatorsIds: [] },
 };
@@ -255,6 +257,12 @@ const expectedOrgUnitPut = {
             value: "WgOMVlwSV2i",
             attribute: {
                 id: "aywduilEjPQ",
+            },
+        },
+        {
+            value: "A1234567890BCDEF",
+            attribute: {
+                id: "kaZd6u5e0Ln",
             },
         },
     ],
