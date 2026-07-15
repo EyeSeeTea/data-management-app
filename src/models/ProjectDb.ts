@@ -68,8 +68,8 @@ export default class ProjectDb {
         this.config = project.config;
     }
 
-    async save() {
-        return await this.saveMetadata();
+    async save(options: SaveOptions = {}) {
+        return await this.saveMetadata(options);
     }
 
     async saveFiles() {
@@ -191,8 +191,8 @@ export default class ProjectDb {
             throwResponseError(dataValueRes, "Error importing data values");
     }
 
-    async toJSON(): Promise<ProjectJson> {
-        const { payload: metadata, orgUnit, project } = await this.getMetadata();
+    async toJSON(options: SaveOptions = {}): Promise<ProjectJson> {
+        const { payload: metadata, orgUnit, project } = await this.getMetadata(options);
 
         const dataStore = getDataStore(this.api);
         const countryId = project.parentOrgUnit?.id;
@@ -228,13 +228,15 @@ export default class ProjectDb {
         return { id: orgUnit.id, name: orgUnit.name, metadata, data, dataValues };
     }
 
-    async getMetadata() {
+    async getMetadata(options: SaveOptions = {}) {
         const { project, api, config } = this;
         const { startDate, endDate } = project;
 
         const country = project.parentOrgUnit;
 
-        const validationErrors = _.flatten(_.values(await project.validate()));
+        const validationErrors = options.skipValidation
+            ? []
+            : _.flatten(_.values(await project.validate()));
         if (!_.isEmpty(validationErrors)) {
             throw new Error("Validation errors:\n" + validationErrors.join("\n"));
         } else if (!startDate || !endDate || !project.parentOrgUnit) {
@@ -385,8 +387,8 @@ export default class ProjectDb {
         );
     }
 
-    async saveMetadata() {
-        const { payload, orgUnit, project: projectUpdated } = await this.getMetadata();
+    async saveMetadata(options: SaveOptions = {}) {
+        const { payload, orgUnit, project: projectUpdated } = await this.getMetadata(options);
 
         await this.saveDocuments();
 
@@ -1268,3 +1270,5 @@ export const dataSetFields = {
     sharing: { public: true, external: true, users: true, userGroups: true },
     access: { read: true, write: true, data: true },
 } as const;
+
+export type SaveOptions = { skipValidation?: boolean };
