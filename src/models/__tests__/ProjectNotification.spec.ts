@@ -68,7 +68,7 @@ function getDataSetSharing(attributes: Partial<DataSetSharing> = {}): DataSetSha
 
 function getIdsFromFilter(filters: string[]): Id[] {
     const idFilter = filters.find(filter => filter.startsWith("id:in:")) || "";
-    const ids = idFilter.replace("id:in:[", "").replace("]", "");
+    const ids = idFilter.match(/^id:in:\[(.*)\]$/)?.[1] || "";
     return _.compact(ids.split(","));
 }
 
