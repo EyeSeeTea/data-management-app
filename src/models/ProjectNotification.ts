@@ -4,14 +4,28 @@ import Project, { DataSetType, ProjectAction } from "./Project";
 import i18n from "../locales";
 import User from "./user";
 import { generateUrl } from "../router";
-import { D2Api } from "../types/d2-api";
+import { D2Api, Id } from "../types/d2-api";
 import ProjectDb, { ExistingData, getStringDataValue } from "./ProjectDb";
 import { baseConfig } from "./Config";
 import moment from "moment";
 import { appConfig } from "../app-config";
+import { promiseMap } from "../migrations/utils";
+import { Maybe } from "../types/utils";
 
 type Email = string;
 type Action = ProjectAction;
+
+// Keeps the id filter of the users requests within URL length limits.
+const usersPerRequest = 100;
+
+const countryAdminGroupName = "Country Admin";
+
+type DataReviewer = Readonly<{
+    id: Id;
+    email: Maybe<Email>;
+    isDisabled: boolean;
+    userGroupIds: ReadonlyArray<Id>;
+}>;
 
 export class ProjectNotification {
     constructor(
@@ -32,9 +46,7 @@ export class ProjectNotification {
             })
             .getData();
 
-        const users = _(usersInGroup)
-            .reject(user => user.userCredentials.disabled)
-            .value();
+        const users = _(usersInGroup).reject(isUserDisabled).value();
 
         return _(appConfig.app.notifyEmailOnProjectSave)
             .concat(users.map(user => user.email))
@@ -58,18 +70,8 @@ export class ProjectNotification {
         const res = await this.api.metadata
             .get({
                 userRoles: {
-                    fields: {
-                        id: true,
-                        users: {
-                            email: true,
-                            id: true,
-                            userCredentials: { disabled: true },
-                            userGroups: {
-                                id: true,
-                                name: true,
-                            },
-                        },
-                    },
+                    // Only ids are requested: any other field would be silently dropped by the API.
+                    fields: { id: true, users: { id: true } },
                     filter: { name: { in: baseConfig.userRoles.dataReviewer } },
                 },
                 dataSets: {
@@ -86,6 +88,9 @@ export class ProjectNotification {
             })
             .getData();
 
+        const dataSet = res.dataSets[0];
+        if (!dataSet) return false;
+
         const { displayName: user, username } = this.currentUser.data;
 
         const subject = i18n.t("[SP Platform] Request for Data Review: {{-name}} ({{code}})", {
@@ -100,34 +105,36 @@ export class ProjectNotification {
         const projectId = this.project.id;
         const path = generateUrl("dataApproval", { id: projectId, dataSetType, period });
         const dataApprovalLink = getFullUrl(path);
-        const dataSet = res.dataSets[0];
 
-        const users = _(res.userRoles)
+        const reviewerIds = _(res.userRoles)
             .flatMap(userRole => userRole.users)
-            .reject(user => user.userCredentials.disabled)
+            .map(reviewer => reviewer.id)
+            .uniq()
             .value();
+        const reviewers = await this.getDataReviewers(reviewerIds);
 
-        const userAccessEmails = users
-            .filter(user => {
-                return dataSet.userAccesses.some(userAccess => {
-                    return userAccess.id === user.id;
-                });
-            })
-            .map(user => user.email);
+        const sharedUserIds = new Set(dataSet.userAccesses.map(userAccess => userAccess.id));
+        const sharedCountryAdminGroupIds = new Set(
+            dataSet.userGroupAccesses
+                .filter(userGroupAccess =>
+                    userGroupAccess.displayName.includes(countryAdminGroupName)
+                )
+                .map(userGroupAccess => userGroupAccess.id)
+        );
 
-        const userGroupEmails = users
-            .filter(user => {
-                return dataSet.userGroupAccesses
-                    .filter(ug => ug.displayName.includes("Country Admin"))
-                    .some(userGroupAccess => {
-                        return user.userGroups.some(userGroup => {
-                            return userGroupAccess.id === userGroup.id;
-                        });
-                    });
-            })
-            .map(user => user.email);
-
-        const recipients = _.union(userAccessEmails, userGroupEmails);
+        const recipients = _(reviewers)
+            .reject(reviewer => reviewer.isDisabled)
+            .filter(
+                reviewer =>
+                    sharedUserIds.has(reviewer.id) ||
+                    reviewer.userGroupIds.some(userGroupId =>
+                        sharedCountryAdminGroupIds.has(userGroupId)
+                    )
+            )
+            .map(reviewer => reviewer.email)
+            .compact()
+            .uniq()
+            .value();
 
         const text = i18n.t(
             `
@@ -152,6 +159,40 @@ Go to approval screen: {{- projectUrl}}`,
         );
 
         return this.sendMessage({ recipients, subject, text: text.trim() });
+    }
+
+    /* DHIS2 serializes users nested in other metadata objects (userRoles.users) with basic fields
+       only (id, code, name, displayName, username), whichever fields are requested, so the details
+       needed to notify them must be requested on the top-level users collection. */
+    private async getDataReviewers(userIds: Id[]): Promise<DataReviewer[]> {
+        const usersByChunk = await promiseMap(_.chunk(userIds, usersPerRequest), ids =>
+            this.getUsersDetails(ids)
+        );
+
+        return _.flatten(usersByChunk);
+    }
+
+    private async getUsersDetails(userIds: Id[]): Promise<DataReviewer[]> {
+        const { users } = await this.api.metadata
+            .get({
+                users: {
+                    fields: {
+                        id: true,
+                        email: true,
+                        userCredentials: { disabled: true },
+                        userGroups: { id: true },
+                    },
+                    filter: { id: { in: userIds } },
+                },
+            })
+            .getData();
+
+        return users.map(user => ({
+            id: user.id,
+            email: user.email,
+            isDisabled: isUserDisabled(user),
+            userGroupIds: user.userGroups.map(userGroup => userGroup.id),
+        }));
     }
 
     async sendMessageForIndicatorsRemoval(options: {
@@ -274,11 +315,15 @@ The reason provided by the user was:
             await api.email.sendMessage({ ...options, recipients }).getData();
             return true;
         } catch (err) {
-            // If the message could not be sent, just log to the console and continue the process.
+            // If the message could not be sent, log to the console and let the caller report it.
             console.error(err);
-            return true;
+            return false;
         }
     }
+}
+
+function isUserDisabled(user: { userCredentials?: { disabled?: boolean } }): boolean {
+    return user.userCredentials?.disabled ?? true;
 }
 
 function getProjectUrl(project: Project) {
