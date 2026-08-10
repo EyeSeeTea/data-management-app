@@ -90,12 +90,13 @@ export function getD2Visualization(visualization: Visualization): MaybeD2Visuali
         type: visualization.type === "table" ? "PIVOT_TABLE" : visualization.chartType || "COLUMN",
         name: visualization.name,
         numberType: "VALUE",
-        legendDisplayStyle: "FILL",
+        // Comment out field not present in v40:
+        // legendDisplayStyle: "FILL",
+        // legendDisplayStrategy: "FIXED",
         rowSubTotals: true,
         showDimensionLabels: true,
         showData: true,
         aggregationType: "DEFAULT",
-        legendDisplayStrategy: "FIXED",
         rowTotals: visualization.rowTotals ?? true,
         digitGroupSeparator: "SPACE",
         dataDimensionItems,
@@ -131,7 +132,7 @@ export function getCategoryDimensions(dimensions: Dimension[]) {
 export function getReportTableItem(
     reportTable: MaybeD2Visualization,
     dashboardItemAttributes?: PartialModel<D2DashboardItem>
-) {
+): D2DashboardItem | null {
     if (!reportTable) return null;
     return {
         id: getUid("dashboardItem", reportTable.id),
@@ -144,7 +145,7 @@ export function getReportTableItem(
 export function getChartDashboardItem(
     chart: MaybeD2Visualization,
     dashboardItemAttributes?: PartialModel<D2DashboardItem>
-) {
+): D2DashboardItem | null {
     if (!chart) return null;
     return {
         id: getUid("dashboardItem", chart.id),

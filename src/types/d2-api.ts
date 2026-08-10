@@ -1,7 +1,7 @@
-import { D2Api, D2ModelSchemas, MetadataPayloadBase } from "@eyeseetea/d2-api/2.36";
+import { D2Api, D2ModelSchemas, MetadataPayloadBase } from "@eyeseetea/d2-api/2.40";
 import MockAdapter from "axios-mock-adapter/types";
 
-export * from "@eyeseetea/d2-api/2.36";
+export * from "@eyeseetea/d2-api/2.40";
 
 export function getMockApi(): { api: D2Api; mock: MockAdapter } {
     const api = new D2Api({ backend: "xhr" });
@@ -10,3 +10,5 @@ export function getMockApi(): { api: D2Api; mock: MockAdapter } {
 }
 
 export type D2Payload = Partial<MetadataPayloadBase<D2ModelSchemas>>;
+
+export type { CancelableResponse } from "@eyeseetea/d2-api";
