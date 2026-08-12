@@ -46,7 +46,9 @@ export class ProjectNotification {
             })
             .getData();
 
-        const users = _(usersInGroup).reject(isUserDisabled).value();
+        const users = _(usersInGroup)
+            .reject(user => user.disabled)
+            .value();
 
         return _(appConfig.app.notifyEmailOnProjectSave)
             .concat(users.map(user => user.email))
@@ -189,7 +191,7 @@ Go to approval screen: {{- projectUrl}}`,
         return users.map(user => ({
             id: user.id,
             email: user.email,
-            isDisabled: isUserDisabled(user),
+            isDisabled: user.disabled,
             userGroupIds: user.userGroups.map(userGroup => userGroup.id),
         }));
     }
@@ -319,10 +321,6 @@ The reason provided by the user was:
             return false;
         }
     }
-}
-
-function isUserDisabled(user: { disabled?: boolean }): boolean {
-    return user.disabled ?? true;
 }
 
 function getProjectUrl(project: Project) {
