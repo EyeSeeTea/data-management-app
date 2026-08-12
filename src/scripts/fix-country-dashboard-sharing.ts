@@ -244,11 +244,16 @@ async function computeSharingPerCountry(
 }
 
 function withSharing<T>(obj: T, sharing: D2Sharing): T {
+    // this script was written for a migration in v40, so we can ignore type errors here
     return {
         ...obj,
+        // @ts-ignore
         publicAccess: sharing.publicAccess,
+        // @ts-ignore
         externalAccess: sharing.externalAccess,
+        // @ts-ignore
         userAccesses: sharing.userAccesses,
+        // @ts-ignore
         userGroupAccesses: sharing.userGroupAccesses,
     };
 }
