@@ -9,7 +9,7 @@ import i18n from "../../locales";
 import { ValidationDialog } from "./ValidationDialog";
 import { useValidation } from "./validation-hooks";
 import { DataSetOpenInfo } from "../../models/ProjectDataSet";
-import { HeaderLogoBlocker } from "../header-block/HeaderBlock";
+import { navigateTop, useHeaderLogoInterceptor } from "../../utils/app-shell";
 
 const showControls = false;
 
@@ -273,6 +273,24 @@ const DataEntry = (props: DataEntryProps) => {
         });
     }, [isValidationEnabled, onValidateFnChange, validate]);
 
+    const isDataSetInUse = Boolean(period && dataSetInfo?.isOpen);
+
+    const exitFromHeaderLogo = React.useCallback(async () => {
+        if (await validate({ showValidation: false })) {
+            navigateTop(baseUrl);
+        } else {
+            goBack();
+        }
+    }, [baseUrl, goBack, validate]);
+
+    const disableExitConfirmation = React.useCallback(() => setDisableValidation(true), []);
+
+    useHeaderLogoInterceptor({
+        isActive: isDataSetInUse,
+        onIntercept: exitFromHeaderLogo,
+        onActivated: disableExitConfirmation,
+    });
+
     return (
         <React.Fragment>
             {period && dataSetInfo?.isOpen && (
@@ -284,17 +302,6 @@ const DataEntry = (props: DataEntryProps) => {
                     onClose={validation.clear}
                 />
             )}
-            <HeaderLogoBlocker
-                isActive={Boolean(period && dataSetInfo?.isOpen)}
-                onActivated={() => setDisableValidation(true)}
-                onCancelClick={async () => {
-                    if (await validate({ showValidation: false })) {
-                        window.location.href = baseUrl;
-                    } else {
-                        goBack();
-                    }
-                }}
-            />
             <div style={styles.selector}>
                 {!state.dropdownHasValues && <Spinner isLoading={state.loading} />}
 

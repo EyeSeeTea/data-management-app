@@ -1,6 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { useLastLocation } from "react-router-last-location";
+import { generateUrl } from "../router";
 
 export function useAppHistory(defaultBackUrl: string) {
     const history = useHistory();
@@ -14,5 +15,10 @@ export function useAppHistory(defaultBackUrl: string) {
         }
     }, [defaultBackUrl, history, lastLocation]);
 
-    return { goBack: goBackOrToDefaultUrlIfOriginOutsideApp };
+    return {
+        goBack: goBackOrToDefaultUrlIfOriginOutsideApp,
+        goToProjects: () => {
+            history.push(generateUrl("projects"));
+        },
+    };
 }
