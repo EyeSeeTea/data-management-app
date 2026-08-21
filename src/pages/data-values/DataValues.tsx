@@ -79,7 +79,7 @@ const DataValues: React.FC<DataValuesProps> = ({ type }) => {
 
     const goBack = React.useCallback(async () => {
         if (!validateFn || (await validateFn.execute())) {
-            appHistory.goBack();
+            appHistory.goToProjects();
         }
     }, [validateFn, appHistory]);
 
