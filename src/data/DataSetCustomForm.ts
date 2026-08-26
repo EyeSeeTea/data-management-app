@@ -50,7 +50,10 @@ export class DataSetCustomForm {
             dataEntryForms: [
                 {
                     id: customFormId,
-                    name: `${project.name} ${labelType}`,
+                    /* DHIS2 requires the name of a data entry form to be unique, and two projects
+                       may share the same name (only the code is validated as unique), so include the
+                       project id, as the short name of the data set does. */
+                    name: `${project.name} [${project.code}] ${labelType}`,
                     style: "NORMAL" as const,
                     htmlCode: dataEntryForm,
                 },

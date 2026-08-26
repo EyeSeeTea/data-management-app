@@ -16,6 +16,7 @@ import Project, {
     getOrgUnitDatesFromProject,
     getDatesFromOrgUnit,
     DataSetType,
+    dataSetTypes,
     Dashboards,
     Dashboard,
     getProjectFromOrgUnit,
@@ -680,11 +681,20 @@ export default class ProjectDb {
             ...baseDataSet,
             sections: sections.map(section => ({ id: section.id, code: section.code })),
             dataSetElements,
-            code: `${orgUnit.id}_${baseDataSet.code}`,
+            code: getDataSetCode(orgUnit.id, baseDataSet.code),
             sharing: projectSharing.getSharingAttributesForDataSets(),
         };
 
         return { dataSets: [dataSet], sections };
+    }
+
+    /* The data sets of a project are identified by a code built from its organisation unit, so they
+       can be fetched without depending on their metadata attributes, which cannot be used as a
+       filter path in the metadata API. */
+    static getDataSetCodes(orgUnitId: Id): string[] {
+        return dataSetTypes.map(dataSetType =>
+            getDataSetCode(orgUnitId, dataSetType.toUpperCase())
+        );
     }
 
     private getDataSetId(projectId: Id, dataSetCode: string) {
@@ -1082,6 +1092,10 @@ function getOrgUnitId(orgUnit: { path: string }): string {
 }
 
 type AttributeValue = { attribute: { id: Id }; value: string };
+
+export function getDataSetCode(orgUnitId: Id, dataSetCode: string): string {
+    return `${orgUnitId}_${dataSetCode}`;
+}
 
 export function getDashboardId<OrgUnit extends { attributeValues: AttributeValue[] }>(
     config: Config,
