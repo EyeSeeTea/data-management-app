@@ -128,12 +128,13 @@ export class DataSetCustomForm {
     private renderSection(section: Section, active: boolean): string {
         const groups = groupByCategoryCombo(section.dataElements);
         const tbodies = groups.map(g => this.renderGroup(g)).join("");
+        /* The section title and the filter are rendered outside of the table: as full-width rows
+           they made the server-side data set report (used by the data approval screen) read the
+           table as a single column and discard every data element row. */
         return `<div class="cf-panel${active ? " active" : ""}" data-section="${section.id}">
+  <div class="cf-section-header">${escapeHtml(section.name)}</div>
+  <div class="cf-filter-cell"><input type="text" class="cf-filter" placeholder="Type here to filter rows in this section"/></div>
   <table class="cf-table">
-    <thead>
-      <tr><th colspan="100%" class="cf-section-header">${escapeHtml(section.name)}</th></tr>
-      <tr><th colspan="100%" class="cf-filter-cell"><input type="text" class="cf-filter" placeholder="Type here to filter rows in this section"/></th></tr>
-    </thead>
     ${tbodies}
   </table>
 </div>`;
@@ -240,8 +241,8 @@ export class DataSetCustomForm {
 .cf-panel { display: none; }
 .cf-panel.active { display: block; }
 .cf-table { min-width: 100%; border-collapse: collapse; table-layout: fixed; }
-.cf-section-header { background-color: #404b5a; color: #fff; text-align: left; padding: 10px 14px; font-weight: 500; font-size: 14px; }
-.cf-filter-cell { padding: 8px; background: #fff; border: 1px solid #e8edf2; }
+.cf-section-header { display: block; background-color: #404b5a; color: #fff; text-align: left; padding: 10px 14px; font-weight: 500; font-size: 14px; }
+.cf-filter-cell { display: block; padding: 8px; background: #fff; border: 1px solid #e8edf2; border-bottom: 0; }
 .cf-filter { width: 100%; padding: 6px 10px; border: 1px solid #d5dae0; border-radius: 3px; font-size: 13px; font-family: Roboto, sans-serif; }
 .cf-cat-header, .cf-cat-name, .cf-cat-corner { background-color: #f3f5f7; color: #000; font-weight: 500; padding: 8px 10px; border: 1px solid #e8edf2; font-size: 13px; }
 .cf-cat-header { text-align: center; }
