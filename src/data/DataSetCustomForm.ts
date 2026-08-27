@@ -21,6 +21,11 @@ type Section = { id: Id; name: string; dataElements: DataElement[] };
 type DataSet = { id: Id; name: string; sections: Section[] };
 
 type Group = { categoryCombo: CategoryCombo; elements: DataElement[] };
+type GroupOptions = { sectionName: string; valueColumns: number; maxValueColumns: number };
+
+/* Width of the column of names, as a percentage of the width of the section. */
+const nameColumnWidth = 45;
+const valueColumnName = "Value";
 
 export class DataSetCustomForm {
     constructor(private api: D2Api) {}
@@ -128,23 +133,62 @@ export class DataSetCustomForm {
         ].join("\n");
     }
 
+    /* The server-side data set report (used by the data approval screen) builds one grid per table,
+       taking its first row as the header and discarding every row with a different number of
+       columns. So each category combo needs a table of its own, and the title of the section and
+       the filter are rendered outside of them: otherwise the data elements of every group but the
+       first are dropped from the report. */
     private renderSection(section: Section, active: boolean): string {
         const groups = groupByCategoryCombo(section.dataElements);
-        const tbodies = groups.map(g => this.renderGroup(g)).join("");
-        /* The section title and the filter are rendered outside of the table: as full-width rows
-           they made the server-side data set report (used by the data approval screen) read the
-           table as a single column and discard every data element row. */
+        const columnsByGroup = groups.map(group => this.getValueColumns(group));
+        const maxColumns = Math.max(...columnsByGroup);
+        const tables = groups
+            .map((group, index) =>
+                this.renderGroup(group, {
+                    sectionName: section.name,
+                    valueColumns: columnsByGroup[index],
+                    maxValueColumns: maxColumns,
+                })
+            )
+            .join("\n  ");
         return `<div class="cf-panel${active ? " active" : ""}" data-section="${section.id}">
   <div class="cf-section-header">${escapeHtml(section.name)}</div>
   <div class="cf-filter-cell"><input type="text" class="cf-filter" placeholder="Type here to filter rows in this section"/></div>
-  <table class="cf-table">
-    ${tbodies}
-  </table>
+  ${tables}
 </div>`;
     }
 
-    private renderGroup(group: Group): string {
+    private getValueColumns(group: Group): number {
+        const { categoryCombo: cc } = group;
+        return cc.name === "default" ? 1 : this.orderedCocs(cc).length;
+    }
+
+    /* All the groups of a section show their values in columns of the same width, as if they still
+       shared a single table: the table of a group with fewer values is narrower instead of
+       stretching its columns to fill the section. */
+    private getGroupWidths(valueColumns: number, maxValueColumns: number) {
+        const valueWidth = (100 - nameColumnWidth) / maxValueColumns;
+        const tableWidth = nameColumnWidth + valueWidth * valueColumns;
+
+        return {
+            table: percent(tableWidth),
+            nameCell: percent((nameColumnWidth / tableWidth) * 100),
+        };
+    }
+
+    /* The report takes the first row of the table as the header of its grid, so a row naming the
+       section and its columns is added before the visible ones and hidden by the styles: the data
+       entry form is rendered by a browser and never shows it, while the report parses the HTML
+       and does show it. */
+    private renderReportHeader(sectionName: string, columnNames: string[]): string {
+        const columns = columnNames.map(name => `<th>${escapeHtml(name)}</th>`).join("");
+        return `<tr class="cf-report-header"><th>${escapeHtml(sectionName)}</th>${columns}</tr>`;
+    }
+
+    private renderGroup(group: Group, options: GroupOptions): string {
+        const { sectionName, valueColumns, maxValueColumns } = options;
         const { categoryCombo: cc, elements } = group;
+        const widths = this.getGroupWidths(valueColumns, maxValueColumns);
         const isDefault = cc.name === "default";
         if (isDefault) {
             const coc = cc.categoryOptionCombos[0];
@@ -158,13 +202,16 @@ export class DataSetCustomForm {
                         }-val" name="entryfield" title="${escapeHtml(de.name)}"/></td></tr>`
                 )
                 .join("");
-            return `<tbody class="cf-group">
-  <tr><th class="cf-cat-corner"></th><th class="cf-cat-header">Value</th></tr>
+            return `<table class="cf-table" style="width:${widths.table}">
+  ${this.renderReportHeader(sectionName, [valueColumnName])}
+  <tr><th class="cf-cat-corner" style="width:${
+      widths.nameCell
+  }"></th><th class="cf-cat-header">${valueColumnName}</th></tr>
   ${rows}
-</tbody>`;
+</table>`;
         }
         const cats = cc.categories;
-        const headerRows = this.renderCategoryHeaders(cats);
+        const headerRows = this.renderCategoryHeaders(cats, widths.nameCell);
         const colCocs = this.orderedCocs(cc);
         const rows = elements
             .map(de => {
@@ -181,31 +228,33 @@ export class DataSetCustomForm {
                 )}</td>${cells}</tr>`;
             })
             .join("");
-        return `<tbody class="cf-group">
+        return `<table class="cf-table" style="width:${widths.table}">
+  ${this.renderReportHeader(sectionName, colCocs.map(getName))}
   ${headerRows}
   ${rows}
-</tbody>`;
+</table>`;
     }
 
-    private renderCategoryHeaders(cats: Category[]): string {
+    private renderCategoryHeaders(cats: Category[], nameCellWidth: string): string {
         const counts = cats.map(c => c.categoryOptions.length);
         return cats
             .map((cat, i) => {
                 const colspan = counts.slice(i + 1).reduce((a, b) => a * b, 1);
                 const repeats = counts.slice(0, i).reduce((a, b) => a * b, 1);
-                const cells: string[] = [];
-                for (let r = 0; r < repeats; r++) {
-                    for (const opt of cat.categoryOptions) {
-                        cells.push(
+                const cells = Array.from({ length: repeats })
+                    .flatMap(() => cat.categoryOptions)
+                    .map(
+                        opt =>
                             `<th class="cf-cat-header" colspan="${colspan}">${escapeHtml(
                                 opt.name
                             )}</th>`
-                        );
-                    }
-                }
-                return `<tr><th class="cf-cat-name">${escapeHtml(cat.name)}</th>${cells.join(
-                    ""
-                )}</tr>`;
+                    )
+                    .join("");
+                /* The table has a fixed layout, so only the first row defines the columns. */
+                const width = i === 0 ? ` style="width:${nameCellWidth}"` : "";
+                return `<tr><th class="cf-cat-name"${width}>${escapeHtml(
+                    cat.name
+                )}</th>${cells}</tr>`;
             })
             .join("");
     }
@@ -243,7 +292,13 @@ export class DataSetCustomForm {
 .cf-tabs .cf-tab.selected { color: #2c6693; border-bottom-color: #2c6693; font-weight: 500; }
 .cf-panel { display: none; }
 .cf-panel.active { display: block; }
-.cf-table { min-width: 100%; border-collapse: collapse; table-layout: fixed; }
+/* The width of each table and of its first column are set when the form is generated, so that the
+   columns of values of a section are all of the same width. */
+.cf-table { border-collapse: collapse; table-layout: fixed; }
+.cf-table + .cf-table { margin-top: -1px; }
+/* Read by the data set report, never shown in data entry: it must be display none, as a hidden row
+   that still generated a box would take part in the layout of the table. */
+.cf-report-header { display: none; }
 .cf-section-header { display: block; background-color: #404b5a; color: #fff; text-align: left; padding: 10px 14px; font-weight: 500; font-size: 14px; }
 .cf-filter-cell { display: block; padding: 8px; background: #fff; border: 1px solid #e8edf2; border-bottom: 0; }
 .cf-filter { width: 100%; padding: 6px 10px; border: 1px solid #d5dae0; border-radius: 3px; font-size: 13px; font-family: Roboto, sans-serif; }
@@ -291,6 +346,14 @@ export class DataSetCustomForm {
 })();
 `;
     }
+}
+
+function getName(obj: { name: string }): string {
+    return obj.name;
+}
+
+function percent(value: number): string {
+    return `${Math.round(value * 100) / 100}%`;
 }
 
 function formNameOf(de: DataElement): string {
