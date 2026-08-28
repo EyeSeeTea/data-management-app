@@ -43,6 +43,9 @@ export const DataApprovalTable: React.FunctionComponent<DataApprovalTableProps> 
         wf: config.dataApprovalWorkflows.project.id,
         hideSelectors: "true",
         filter: `ao:${props.attributeOptionComboId}`,
+        /* The report generated from the custom form of a data set has no section names, no column
+           headers and no totals, so the plugin is asked for the one generated from its sections. */
+        ignoreCustomForm: "true",
     };
     const pluginUrl = pluginBaseUrl + "#/?" + new URLSearchParams(params).toString();
 

@@ -18,7 +18,6 @@ import { DataApprovalMessage } from "./DataApprovalMessage";
 import { useGoTo } from "../../router";
 import { useHistory } from "react-router-dom";
 import DataApprovalTable from "./DataApprovalTable";
-import { DataSetCustomForm } from "../../data/DataSetCustomForm";
 
 const monthFormat = "YYYYMM";
 
@@ -99,8 +98,6 @@ const DataApproval: React.FC = () => {
 
     useDebugValuesOnDev(project, setState);
 
-    const isReportReady = useCustomFormRemoval(projectDataSet);
-
     const dataApprovalDialog = useDialog();
 
     const setDate = React.useCallback(
@@ -167,14 +164,12 @@ const DataApproval: React.FC = () => {
 
             {projectDataSet && (
                 <Paper style={{ marginBottom: 20, padding: 20 }}>
-                    {isReportReady && (
-                        <DataApprovalTable
-                            dataSetId={projectDataSet.getDataSet().id}
-                            orgUnit={projectDataSet.getOrgUnit()}
-                            attributeOptionComboId={projectDataSet.getAttributeOptionCombo().id}
-                            period={periodStartEnd}
-                        />
-                    )}
+                    <DataApprovalTable
+                        dataSetId={projectDataSet.getDataSet().id}
+                        orgUnit={projectDataSet.getOrgUnit()}
+                        attributeOptionComboId={projectDataSet.getAttributeOptionCombo().id}
+                        period={periodStartEnd}
+                    />
 
                     {state.showApproveButton && (
                         <Button
@@ -337,37 +332,6 @@ function getHelp(): string {
     return i18n.t(`Please choose the month and type of data (target or actual) you wish to approve.
 
     Once you approve the data, scroll down to the bottom of the screen and click the blue "Approve" button.`);
-}
-
-/* The custom form of the data set is detached before showing the report, which is generated from it
-   and is much poorer than the one generated from the sections. Data entry saves the form again
-   whenever it is opened, so nothing is lost: if the removal fails, the report is shown as it was. */
-function useCustomFormRemoval(projectDataSet: ProjectDataSet | undefined): boolean {
-    const { api } = useAppContext();
-    const [isReportReady, setReportReady] = React.useState(false);
-    const dataSetId = projectDataSet?.getDataSet().id;
-
-    React.useEffect(() => {
-        if (!dataSetId) return;
-
-        function removeCustomForm(dataSetId: string) {
-            setReportReady(false);
-
-            new DataSetCustomForm(api)
-                .removeCustomForm(dataSetId)
-                .then(() => {
-                    setReportReady(true);
-                })
-                .catch(err => {
-                    console.error("Error while deleting custom form", err);
-                    setReportReady(true);
-                });
-        }
-
-        removeCustomForm(dataSetId);
-    }, [api, dataSetId]);
-
-    return isReportReady;
 }
 
 function useDebugValuesOnDev(
