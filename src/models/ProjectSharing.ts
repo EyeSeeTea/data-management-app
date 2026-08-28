@@ -1,14 +1,14 @@
 import { OrganisationUnit } from "./Project";
 import _ from "lodash";
 import { Config } from "./Config";
-import { D2DataSetSchema, Ref } from "../types/d2-api";
+import { Ref } from "../types/d2-api";
 import {
     Sharing,
     EntityAccess,
     D2SharingUpdate,
     mergeSharing,
     D2Sharing,
-    getD2EntitiesAccess,
+    getD2SharingMap,
     fullAccess,
     fullMetadataAccess,
     getEntitiesAccess,
@@ -26,6 +26,7 @@ export default class ProjectSharing {
     constructor(private config: Config, public project: ProjectForSharing) {}
 
     static getInitialSharing(config: Config): Sharing {
+        console.log("config", config);
         const { currentUser, userGroups } = config;
         const userAccesses: EntityAccess[] = [
             { id: currentUser.id, name: currentUser.displayName },
@@ -63,10 +64,10 @@ export default class ProjectSharing {
         const { userAccesses, userGroupAccesses } = this.project.sharing;
 
         return {
-            publicAccess: "--------",
-            externalAccess: false,
-            userAccesses: getD2EntitiesAccess(userAccesses, fullAccess),
-            userGroupAccesses: getD2EntitiesAccess(userGroupAccesses, fullAccess),
+            public: "--------",
+            external: false,
+            users: getD2SharingMap(userAccesses, fullAccess),
+            userGroups: getD2SharingMap(userGroupAccesses, fullAccess),
         };
     }
 
@@ -74,10 +75,10 @@ export default class ProjectSharing {
         const { userAccesses, userGroupAccesses } = this.project.sharing;
 
         return {
-            publicAccess: "--------",
-            externalAccess: false,
-            userAccesses: getD2EntitiesAccess(userAccesses, fullMetadataAccess),
-            userGroupAccesses: getD2EntitiesAccess(userGroupAccesses, fullMetadataAccess),
+            public: "--------",
+            external: false,
+            users: getD2SharingMap(userAccesses, fullMetadataAccess),
+            userGroups: getD2SharingMap(userGroupAccesses, fullMetadataAccess),
         };
     }
 
@@ -91,13 +92,12 @@ export default class ProjectSharing {
             },
             object: {
                 id: project.id,
-                publicAccess: "--------",
-                externalAccess: false,
-                userAccesses: getD2EntitiesAccess(project.sharing.userAccesses, fullAccess),
-                userGroupAccesses: getD2EntitiesAccess(
-                    project.sharing.userGroupAccesses,
-                    fullAccess
-                ),
+                sharing: {
+                    public: "--------",
+                    external: false,
+                    users: getD2SharingMap(project.sharing.userAccesses, fullAccess),
+                    userGroups: getD2SharingMap(project.sharing.userGroupAccesses, fullAccess),
+                },
             },
         };
     }
@@ -149,11 +149,15 @@ export default class ProjectSharing {
     }
 }
 
-type D2DataSetAccess = D2DataSetSchema["fields"]["access"] & {
-    data?: { read: boolean; write: boolean }; // Currently not in d2-api, add manually
-};
+interface D2DataSetAccessFields {
+    read: boolean;
+    write: boolean;
+    data?: { read: boolean; write: boolean };
+}
 
-export function hasCurrentUserFullAccessToDataSet(shareable: { access: D2DataSetAccess }): boolean {
+export function hasCurrentUserFullAccessToDataSet(shareable: {
+    access: D2DataSetAccessFields;
+}): boolean {
     const { access } = shareable;
     const metadataAccess = access.read && access.write;
     const dataAccess = access.data ? access.data.read && access.data.write : true;

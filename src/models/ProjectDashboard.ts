@@ -153,7 +153,10 @@ export default class ProjectDashboard {
             id: getUid("dashboard", projectsListDashboard.id),
             name: projectsListDashboard.name,
             dashboardItems: positionItems(items, positionItemsOptions),
-            ...new ProjectSharing(config, projectsListDashboard).getSharingAttributesForDashboard(),
+            sharing: new ProjectSharing(
+                config,
+                projectsListDashboard
+            ).getSharingAttributesForDashboard(),
         };
 
         return { dashboards: [dashboard], visualizations };
@@ -859,7 +862,7 @@ export default class ProjectDashboard {
             filters: [dimensions.orgUnit],
             columns: [dimensions.period],
             rows: [dimensions.data],
-            extra: { legendSet: config.legendSets.achieved },
+            extra: { legend: { set: config.legendSets.achieved } },
             ...options,
         });
     }
@@ -876,7 +879,7 @@ export default class ProjectDashboard {
             filters: [dimensions.orgUnit],
             columns: [dimensions.period],
             rows: [dimensions.data],
-            extra: { legendSet: config.legendSets.achieved },
+            extra: { legend: { set: config.legendSets.achieved } },
             rowTotals: false,
         });
     }
@@ -894,7 +897,7 @@ export default class ProjectDashboard {
             filters: [dimensions.orgUnit, dimensions.period],
             columns: [this.categoryOnlyNew],
             rows: [dimensions.data],
-            extra: { legendSet: config.legendSets.achieved },
+            extra: { legend: { set: config.legendSets.achieved } },
             rowTotals: false,
             ...options,
         });
@@ -917,7 +920,7 @@ export default class ProjectDashboard {
             filters: [dimensions.orgUnit, dimensions.period],
             columns: [this.categoryOnlyNew],
             rows: [dimensions.data],
-            extra: { legendSet: config.legendSets.achieved },
+            extra: { legend: { set: config.legendSets.achieved } },
             rowTotals: false,
         });
     }

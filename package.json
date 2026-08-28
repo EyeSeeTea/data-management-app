@@ -1,7 +1,7 @@
 {
     "name": "data-management-app",
     "description": "DHIS2 Data Management App",
-    "version": "2.2.1",
+    "version": "2.3.1",
     "license": "GPL-3.0",
     "author": "EyeSeeTea team",
     "homepage": ".",
@@ -18,7 +18,7 @@
         "@dhis2/d2-ui-forms": "^6.5.3",
         "@dhis2/ui": "6.12.0",
         "@dhis2/ui-core": "^4.8.0",
-        "@eyeseetea/d2-api": "1.16.0-beta.13",
+        "@eyeseetea/d2-api": "1.21.0-beta.5",
         "@eyeseetea/d2-ui-components": "2.7.0",
         "@eyeseetea/feedback-component": "0.1.2",
         "@krakenjs/post-robot": "^11.0.0",

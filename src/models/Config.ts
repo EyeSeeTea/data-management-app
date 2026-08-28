@@ -320,7 +320,7 @@ class ConfigLoader {
         const metadata: Metadata = await this.api.metadata.get(metadataParams).getData();
         const d2CurrentUser = await this.getCurrentUser();
         const { funders, locations } = getFundersAndLocations(metadata);
-        const { userRoles, username } = d2CurrentUser.userCredentials;
+        const { userRoles, username } = d2CurrentUser;
         const currentUser: Config["currentUser"] = { ...d2CurrentUser, userRoles, username };
         const dataElementsMetadata = await this.getDataElementsMetadata(currentUser, metadata);
         const categoryCombos = indexObjects(metadata, "categoryCombos");
@@ -370,7 +370,8 @@ class ConfigLoader {
                 fields: {
                     id: true,
                     displayName: true,
-                    userCredentials: { username: true, userRoles: { name: true } },
+                    username: true,
+                    userRoles: { name: true },
                     organisationUnits: { id: true, displayName: true, level: true },
                     authorities: true,
                 },

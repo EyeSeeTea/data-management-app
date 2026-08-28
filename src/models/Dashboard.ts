@@ -90,12 +90,11 @@ export function getD2Visualization(visualization: Visualization): MaybeD2Visuali
         type: visualization.type === "table" ? "PIVOT_TABLE" : visualization.chartType || "COLUMN",
         name: visualization.name,
         numberType: "VALUE",
-        legendDisplayStyle: "FILL",
         rowSubTotals: true,
         showDimensionLabels: true,
         showData: true,
         aggregationType: "DEFAULT",
-        legendDisplayStrategy: "FIXED",
+        legend: { strategy: "FIXED", style: "FILL", showKey: false },
         rowTotals: visualization.rowTotals ?? true,
         digitGroupSeparator: "SPACE",
         dataDimensionItems,
@@ -109,7 +108,7 @@ export function getD2Visualization(visualization: Visualization): MaybeD2Visuali
         rows: visualization.rows,
         rowDimensions: visualization.rows.map(dimension => dimension.id),
         categoryDimensions: getCategoryDimensions(categoryDimensions),
-        ...visualization.sharing,
+        sharing: visualization.sharing,
     };
 
     return _.merge({}, d2Table, visualization.extra || {});
@@ -135,7 +134,7 @@ export function getReportTableItem(
     if (!reportTable) return null;
     return {
         id: getUid("dashboardItem", reportTable.id),
-        type: "REPORT_TABLE" as const,
+        type: "VISUALIZATION" as const,
         visualization: { id: reportTable.id },
         ...(dashboardItemAttributes || {}),
     };
@@ -148,7 +147,7 @@ export function getChartDashboardItem(
     if (!chart) return null;
     return {
         id: getUid("dashboardItem", chart.id),
-        type: "CHART" as const,
+        type: "VISUALIZATION" as const,
         visualization: { id: chart.id },
         ...(dashboardItemAttributes || {}),
     };

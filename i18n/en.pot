@@ -975,6 +975,18 @@ msgid "Projects with global validations reported ({{projectsCount}}): {{-project
 msgstr ""
 
 msgid ""
+"Paired indicator missing values: benefit indicator {{-benefitName}} has "
+"values but its paired people indicator {{-peopleName}} is empty. Both must "
+"be filled before leaving the page."
+msgstr ""
+
+msgid ""
+"Paired indicator missing values: people indicator {{-peopleName}} has "
+"values but its paired benefit indicator {{-benefitName}} is empty. Both "
+"must be filled before leaving the page."
+msgstr ""
+
+msgid ""
 "Returning value ({{returningFormula}}) is greater than the sum of New "
 "values for past periods: {{pastFormula}}"
 msgstr ""
@@ -1098,6 +1110,9 @@ msgid "List of users"
 msgstr ""
 
 msgid "Message"
+msgstr ""
+
+msgid "Error generating custom form"
 msgstr ""
 
 msgid "Set Target Values for Project"
