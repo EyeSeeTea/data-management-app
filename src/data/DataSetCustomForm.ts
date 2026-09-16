@@ -21,7 +21,11 @@ type Section = { id: Id; name: string; dataElements: DataElement[] };
 type DataSet = { id: Id; name: string; sections: Section[] };
 
 type Group = { categoryCombo: CategoryCombo; elements: DataElement[] };
-type GroupOptions = { valueColumns: number; maxValueColumns: number };
+type GroupOptions = Readonly<{
+    valueColumns: number;
+    maxValueColumns: number;
+    tabIndexes: ReadonlyMap<string, number>;
+}>;
 
 /* Width of the column of names, as a percentage of the width of the section. */
 const nameColumnWidth = 45;
@@ -115,6 +119,7 @@ export class DataSetCustomForm {
 
     private buildHtml(ds: DataSet): string {
         const sections = ds.sections;
+        const tabIndexes = this.getTabIndexes(sections);
         const tabs = sections
             .map(
                 (s, i) =>
@@ -123,8 +128,8 @@ export class DataSetCustomForm {
                     }" data-section="${s.id}">${escapeHtml(s.name)}</button>`
             )
             .join("");
-        const panels = sections.map((s, i) => this.renderSection(s, i === 0)).join("");
-        return [
+        const panels = sections.map((s, i) => this.renderSection(s, i === 0, tabIndexes)).join("");
+        const html = [
             `<style>${this.styles()}</style>`,
             `<div class="cf-wrapper">`,
             `  <div class="cf-tabs">${tabs}</div>`,
@@ -132,6 +137,28 @@ export class DataSetCustomForm {
             `</div>`,
             `<script>${this.script()}</script>`,
         ].join("\n");
+
+        /* See renderCell: one single self-closing tag anywhere in the form is enough for the pattern
+           of the server to match again, as it scans forward through the whole document looking for
+           the first "/>", and data entry would go back to answering 400. */
+        if (html.includes("/>"))
+            throw new Error("The custom form cannot contain self-closing tags");
+
+        return html;
+    }
+
+    /* The legacy custom form plugin of the data entry app moves between fields with the selector
+       input[name="entryfield"][tabindex="N"], so every cell needs an index of its own, numbered in
+       reading order as the server numbered them. */
+    private getTabIndexes(sections: Section[]): ReadonlyMap<string, number> {
+        const keys = sections.flatMap(section =>
+            groupByCategoryCombo(section.dataElements).flatMap(group =>
+                group.elements.flatMap(de =>
+                    this.cocsOf(group.categoryCombo).map(coc => cellKey(de, coc))
+                )
+            )
+        );
+        return new Map(keys.map((key, index): [string, number] => [key, index + 1]));
     }
 
     /* The server-side data set report (used by the data approval screen) builds one grid per table,
@@ -139,7 +166,11 @@ export class DataSetCustomForm {
        columns. So each category combo needs a table of its own, and the title of the section and
        the filter are rendered outside of them: otherwise the data elements of every group but the
        first are dropped from the report. */
-    private renderSection(section: Section, active: boolean): string {
+    private renderSection(
+        section: Section,
+        active: boolean,
+        tabIndexes: ReadonlyMap<string, number>
+    ): string {
         const groups = groupByCategoryCombo(section.dataElements);
         const columnsByGroup = groups.map(group => this.getValueColumns(group));
         const maxColumns = Math.max(...columnsByGroup);
@@ -148,19 +179,24 @@ export class DataSetCustomForm {
                 this.renderGroup(group, {
                     valueColumns: columnsByGroup[index],
                     maxValueColumns: maxColumns,
+                    tabIndexes,
                 })
             )
             .join("\n  ");
         return `<div class="cf-panel${active ? " active" : ""}" data-section="${section.id}">
   <div class="cf-section-header">${escapeHtml(section.name)}</div>
-  <div class="cf-filter-cell"><input type="text" class="cf-filter" placeholder="Type here to filter rows in this section"/></div>
+  <div class="cf-filter-cell"><input type="text" class="cf-filter" placeholder="Type here to filter rows in this section"></div>
   ${tables}
 </div>`;
     }
 
+    /* A group with the default category combo shows a single column of values. */
+    private cocsOf(cc: CategoryCombo): CategoryOptionCombo[] {
+        return cc.name === "default" ? [cc.categoryOptionCombos[0]] : this.orderedCocs(cc);
+    }
+
     private getValueColumns(group: Group): number {
-        const { categoryCombo: cc } = group;
-        return cc.name === "default" ? 1 : this.orderedCocs(cc).length;
+        return this.cocsOf(group.categoryCombo).length;
     }
 
     /* All the groups of a section show their values in columns of the same width, as if they still
@@ -186,53 +222,58 @@ export class DataSetCustomForm {
     }
 
     private renderGroup(group: Group, options: GroupOptions): string {
-        const { valueColumns, maxValueColumns } = options;
+        const { valueColumns, maxValueColumns, tabIndexes } = options;
         const { categoryCombo: cc, elements } = group;
         const widths = this.getGroupWidths(valueColumns, maxValueColumns);
-        const isDefault = cc.name === "default";
-        if (isDefault) {
-            const coc = cc.categoryOptionCombos[0];
-            const rows = elements
-                .map(
-                    de =>
-                        `<tr class="cf-data-row"><td class="cf-de-name">${escapeHtml(
-                            formNameOf(de)
-                        )}</td><td class="cf-cell"><input id="${de.id}-${
-                            coc.id
-                        }-val" name="entryfield" title="${escapeHtml(de.name)}"/></td></tr>`
-                )
-                .join("");
-            return `<table class="cf-table" style="width:${widths.table}">
-  ${this.renderReportHeader([valueColumnName])}
+        const cocs = this.cocsOf(cc);
+        const headerRows =
+            cc.name === "default"
+                ? `${this.renderReportHeader([valueColumnName])}
   <tr><th class="cf-cat-corner" style="width:${
       widths.nameCell
-  }"></th><th class="cf-cat-header">${valueColumnName}</th></tr>
-  ${rows}
-</table>`;
-        }
-        const cats = cc.categories;
-        const headerRows = this.renderCategoryHeaders(cats, widths.nameCell);
-        const colCocs = this.orderedCocs(cc);
+  }"></th><th class="cf-cat-header">${valueColumnName}</th></tr>`
+                : `${this.renderReportHeader(cocs.map(coc => coc.name))}
+  ${this.renderCategoryHeaders(cc.categories, widths.nameCell)}`;
         const rows = elements
             .map(de => {
-                const cells = colCocs
-                    .map(
-                        coc =>
-                            `<td class="cf-cell"><input id="${de.id}-${
-                                coc.id
-                            }-val" name="entryfield" title="${escapeHtml(de.name)}"/></td>`
-                    )
-                    .join("");
+                const cells = cocs.map(coc => this.renderCell(de, coc, tabIndexes)).join("");
                 return `<tr class="cf-data-row"><td class="cf-de-name">${escapeHtml(
                     formNameOf(de)
                 )}</td>${cells}</tr>`;
             })
             .join("");
         return `<table class="cf-table" style="width:${widths.table}">
-  ${this.renderReportHeader(colCocs.map(coc => coc.name))}
   ${headerRows}
   ${rows}
 </table>`;
+    }
+
+    /* DHIS2 post-processes the custom form before the data entry app renders it, in
+       DefaultDataEntryFormService.prepareDataEntryFormForEntry: it matches every `<input.*?/>`, adds
+       its own attributes and two hidden spans with the names of the data element and of the category
+       option combo, and inserts the result with Matcher.appendReplacement, where `$` means a group
+       reference. Sixteen data elements of this instance are named "[B120100] $ amount of cash
+       distributed", so that insertion throws "Illegal group reference" and the endpoint answers 400.
+       An input written without the self-closing "/>" never matches that pattern, so the form comes
+       back untouched and what the server would have appended is rendered here instead. Every data
+       element of a project is numeric, so a plain text input is all the server would have rendered
+       for it: one with an option set or a boolean value type would need its own markup here. */
+    private renderCell(
+        de: DataElement,
+        coc: CategoryOptionCombo,
+        tabIndexes: ReadonlyMap<string, number>
+    ): string {
+        const key = cellKey(de, coc);
+        const tabIndex = tabIndexes.get(key);
+        if (tabIndex === undefined) throw new Error(`Tab index not found for cell: ${key}`);
+
+        return `<td class="cf-cell"><input id="${key}-val" name="entryfield" class="entryfield" type="text" tabindex="${tabIndex}" title="${escapeHtml(
+            de.name
+        )}"><span id="${de.id}-dataelement" style="display:none">${escapeHtml(
+            formNameOf(de)
+        )}</span><span id="${coc.id}-optioncombo" style="display:none">${escapeHtml(
+            coc.name
+        )}</span></td>`;
     }
 
     private renderCategoryHeaders(cats: Category[], nameCellWidth: string): string {
@@ -350,6 +391,10 @@ export class DataSetCustomForm {
 
 function percent(value: number): string {
     return `${Math.round(value * 100) / 100}%`;
+}
+
+function cellKey(de: DataElement, coc: CategoryOptionCombo): string {
+    return `${de.id}-${coc.id}`;
 }
 
 function formNameOf(de: DataElement): string {
