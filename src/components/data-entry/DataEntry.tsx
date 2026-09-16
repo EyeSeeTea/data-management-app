@@ -27,13 +27,19 @@ interface DataEntryProps {
 
 export type ValidateFn = { execute: () => Promise<boolean> };
 
-const hideHeaderFooterCss = "header, footer { display: none !important; }";
+/* For the footer we need to hide ONLY the last div because it contains the buttons: Run Validation, Mark as Completed.
+   The other div contain the View Details button of the highlighted input field where user can enter a comment, view history values, etc
+ */
+const hideChromeCss = [
+    "header { display: none !important; }",
+    "footer > div > div:last-child { display: none !important; }",
+].join("\n");
 
 function injectHideStyles(doc: Document) {
     if (doc.querySelector("style[data-dm-hide]")) return;
     const style = doc.createElement("style");
     style.setAttribute("data-dm-hide", "true");
-    style.textContent = hideHeaderFooterCss;
+    style.textContent = hideChromeCss;
     doc.head.appendChild(style);
 }
 
