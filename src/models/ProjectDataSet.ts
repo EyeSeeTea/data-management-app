@@ -5,14 +5,19 @@ import {
     D2DataInputPeriod,
     DataValueSetsGetResponse,
     DataValueSetsDataValue,
+    DataValueSetsPostResponse,
 } from "../types/d2-api";
 import { Config } from "./Config";
 import Project, { OrganisationUnit, DataSet, DataSetType } from "./Project";
 import ProjectDb, { DataSetOpenAttributes } from "./ProjectDb";
 import { toISOString } from "../utils/date";
 import { promiseMap } from "../migrations/utils";
+import i18n from "../locales";
 
 const monthFormat = "YYYYMM";
+
+/* Values of a single period are still split, as a project may hold hundreds of them. */
+const maxDataValuesPerRequest = 100;
 
 export interface DataSetOpenInfo {
     isOpen: boolean;
@@ -155,16 +160,28 @@ export default class ProjectDataSet {
         await this.saveDataValuesForOtherPeriods(dataValuesToOverride, dataSet);
     }
 
+    /* The server takes only the first period of a request as open and answers "Period: X is not open
+       for this data set at this time" for every other one, however open they are, so the values of
+       each period are sent in a request of their own. */
     private async saveDataValuesForOtherPeriods(
         dataValuesToOverride: DataValueSetsDataValue[],
         dataSet: DataSet
     ): Promise<void> {
-        await promiseMap(_.chunk(dataValuesToOverride, 100), async dataValuesToSave => {
+        const requests = _(dataValuesToOverride)
+            .groupBy(dataValue => dataValue.period)
+            .values()
+            .flatMap(dataValuesOfPeriod => _.chunk(dataValuesOfPeriod, maxDataValuesPerRequest))
+            .value();
+
+        await promiseMap(requests, async dataValuesToSave => {
             const response = await this.api.dataValues
                 .postSet({}, { dataSet: dataSet.id, dataValues: dataValuesToSave })
-                .getData();
-            if (response.status === "ERROR") {
-                throw Error(response.description);
+                .getData()
+                .catch(getImportSummaryFromError);
+
+            /* Rejected values are reported as conflicts with status WARNING, not as an error. */
+            if (response.status === "ERROR" || !_.isEmpty(response.conflicts)) {
+                throw new Error(getImportErrorMessage(response));
             }
         });
     }
@@ -280,6 +297,30 @@ export default class ProjectDataSet {
             .add(dataSet.expiryDays - 1, "days")
             .isAfter(now);
     }
+}
+
+/* A request that rejects values answers 409 with the same import summary in the body of the error,
+   so the accepted and the rejected response are reported the same way. */
+function getImportSummaryFromError(error: unknown): DataValueSetsPostResponse {
+    const body = _.get(error, "response.data");
+    const summary = _.get(body, "response", body);
+    if (isImportSummary(summary)) return summary;
+    throw error;
+}
+
+function isImportSummary(value: unknown): value is DataValueSetsPostResponse {
+    return _.isObject(value) && _.has(value, "status") && _.has(value, "importCount");
+}
+
+function getImportErrorMessage(response: DataValueSetsPostResponse): string {
+    const conflicts = _(response.conflicts || [])
+        .map(conflict => conflict.value)
+        .uniq()
+        .value();
+    const summary = i18n.t("{{count}} data values could not be saved", {
+        count: response.importCount.ignored,
+    });
+    return [summary, ...conflicts].join("\n");
 }
 
 function expandDataInputPeriod(dip: D2DataInputPeriod) {
