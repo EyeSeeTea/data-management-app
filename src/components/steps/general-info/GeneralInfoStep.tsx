@@ -63,6 +63,11 @@ class GeneralInfoStep extends React.Component<StepProps> {
                 ],
             }),
             getTextField("additional", project.additional, {
+                /* The label is longer than the field: without nowrap it breaks into two lines on
+                   laptop screens. */
+                props: {
+                    floatingLabelStyle: { whiteSpace: "nowrap" },
+                },
                 validators: [
                     validators.length({
                         max: Project.lengths.additional,

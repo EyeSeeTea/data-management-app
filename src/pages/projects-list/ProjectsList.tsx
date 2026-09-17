@@ -1,5 +1,4 @@
 import _ from "lodash";
-import { TableSorting } from "@eyeseetea/d2-ui-components";
 import React, { useCallback } from "react";
 import styled from "styled-components";
 import ActionButton from "../../components/action-button/ActionButton";
@@ -15,7 +14,7 @@ import { ObjectsList, ObjectsListProps } from "../../components/objects-list/Obj
 import { useAppContext } from "../../contexts/api-context";
 import i18n from "../../locales";
 import Project from "../../models/Project";
-import { FiltersForList, ProjectForList } from "../../models/ProjectsList";
+import { FiltersForList, ProjectForList, TableSorting } from "../../models/ProjectsList";
 import { useGoTo } from "../../router";
 import { Id } from "../../types/d2-api";
 import { ActionName, getComponentConfig, UrlState } from "./ProjectsListConfig";

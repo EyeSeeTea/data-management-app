@@ -1,9 +1,8 @@
-import { D2Api, D2ModelSchemas, MetadataPayloadBase } from "@eyeseetea/d2-api/2.36";
-import MockAdapter from "axios-mock-adapter/types";
+import { D2Api, D2ModelSchemas, MetadataPayloadBase } from "@eyeseetea/d2-api/2.42";
 
-export * from "@eyeseetea/d2-api/2.36";
+export * from "@eyeseetea/d2-api/2.42";
 
-export function getMockApi(): { api: D2Api; mock: MockAdapter } {
+export function getMockApi() {
     const api = new D2Api({ backend: "xhr" });
     const mock = api.getMockAdapter();
     return { api, mock };

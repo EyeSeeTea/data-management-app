@@ -7,6 +7,7 @@ import Project, { DataSetType } from "./Project";
 import { DataValue, ValidationItem, ValidationResult } from "./validators/validator-common";
 import { GlobalValidator } from "./validators/GlobalValidator";
 import { BenefitValidator } from "./validators/BenefitValidator";
+import { PairedValidator } from "./validators/PairedValidator";
 import { Config } from "./Config";
 
 interface Validators {
@@ -14,6 +15,7 @@ interface Validators {
     recurring: RecurringValidator;
     global: GlobalValidator;
     benefit: BenefitValidator;
+    paired: PairedValidator;
 }
 
 export class Validator {
@@ -31,6 +33,7 @@ export class Validator {
             recurring: await RecurringValidator.build(api, project, dataSetType, period),
             global: await GlobalValidator.build(api, project, dataSetType, period),
             benefit: await BenefitValidator.build(config),
+            paired: await PairedValidator.build(api, config, project, dataSetType, period),
         };
         return new Validator(period, validators);
     }
@@ -51,12 +54,16 @@ export class Validator {
         const newValidators = {
             ...this.validators,
             global: this.validators.global.onSave(dataValue),
+            paired: this.validators.paired.onSave(dataValue),
         };
         return new Validator(this.period, newValidators);
     }
 
     async validate(): Promise<ValidationResult> {
-        const items: ValidationItem[] = await this.validators.global.validate();
+        const items: ValidationItem[] = _.concat(
+            await this.validators.global.validate(),
+            this.validators.paired.validate()
+        );
         return this.getValidationResult(items);
     }
 

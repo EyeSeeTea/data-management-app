@@ -43,15 +43,14 @@ const inputMsgFromIframeTypes: MsgFromIframe["type"][] = [
 ];
 
 export function useDhis2EntryEvents(
-    iframeRef: React.RefObject<HTMLIFrameElement>,
+    iframe: HTMLIFrameElement | null,
     onMessage: (inputMsg: InputMsg) => Promise<boolean> | undefined,
     options: Options = {},
     iframeKey: object
 ): void {
     const onMessageFromIframe = React.useCallback(
         async ev => {
-            const iwindow =
-                iframeRef.current && (iframeRef.current.contentWindow as DataEntryWindow);
+            const iwindow = iframe && (iframe.contentWindow as DataEntryWindow);
             if (!iwindow) return;
             const { data } = ev;
             if (!isInputMsgFromIframe(data)) return;
@@ -113,11 +112,11 @@ export function useDhis2EntryEvents(
                 }
             }
         },
-        [iframeRef, onMessage]
+        [iframe, onMessage]
     );
 
     React.useEffect(() => {
-        const iwindow = getIframeWindow(iframeRef);
+        const iwindow = getIframeWindow(iframe);
         if (!iwindow || !onMessage) return;
 
         window.addEventListener("message", onMessageFromIframe);
@@ -125,21 +124,26 @@ export function useDhis2EntryEvents(
         return () => {
             window.removeEventListener("message", onMessageFromIframe);
         };
-    }, [iframeRef, onMessage, options, onMessageFromIframe]);
+    }, [iframe, onMessage, options, onMessageFromIframe]);
 
     React.useEffect(() => {
-        const iwindow = getIframeWindow(iframeRef);
+        const iwindow = getIframeWindow(iframe);
         if (!iwindow) return;
 
-        iwindow.addEventListener("load", () => {
+        const inject = () => {
             const init = setupDataEntryInterceptors.toString();
             iwindow.eval(`(${init})(${JSON.stringify(options)});`);
-        });
-    }, [iframeRef, options, iframeKey]);
+        };
+
+        if (iwindow.document?.readyState === "complete") {
+            inject();
+        } else {
+            iwindow.addEventListener("load", inject, { once: true });
+        }
+    }, [iframe, options, iframeKey]);
 }
 
-function getIframeWindow(iframeRef: React.RefObject<HTMLIFrameElement>) {
-    const iframe = iframeRef.current;
+function getIframeWindow(iframe: HTMLIFrameElement | null) {
     return iframe ? (iframe.contentWindow as DataEntryWindow) : undefined;
 }
 
@@ -176,6 +180,25 @@ function setupDataEntryInterceptors(options: Options = {}) {
     console.debug("|data-entry|:setup-interceptors", iframeWindow.dataEntryHooksInit, options);
     if (iframeWindow.dataEntryHooksInit) return;
 
+    const postToAncestors = (msg: unknown) => {
+        const targets: Window[] = [];
+        let prev: Window = iframeWindow;
+        let win: Window | null = iframeWindow.parent;
+        while (win && win !== prev) {
+            targets.push(win);
+            prev = win;
+            win = win.parent;
+        }
+        console.debug("<-|data-entry| posting to", targets.length, "ancestors", msg);
+        targets.forEach(t => {
+            try {
+                t.postMessage(msg, window.location.origin);
+            } catch (e) {
+                console.debug("<-|data-entry| post failed", e);
+            }
+        });
+    };
+
     if (options.getOnSaveEvent) {
         iframeWindow
             .jQuery(iframeWindow)
@@ -186,13 +209,13 @@ function setupDataEntryInterceptors(options: Options = {}) {
                         type: "dataValueSavedFromIframe",
                         dataValue: dataValue,
                     };
-                    console.debug("<-|data-entry|", msg);
-                    iframeWindow.parent.postMessage(msg, window.location.origin);
+                    postToAncestors(msg);
                 }
             );
     }
 
     const saveValOld = iframeWindow.saveVal;
+    console.debug("|data-entry|:saveValOld type:", typeof saveValOld);
 
     if (options.interceptSave) {
         // Wrap saveVal (dhis-web-dataentry/javascript/entry.js)
@@ -208,8 +231,7 @@ function setupDataEntryInterceptors(options: Options = {}) {
                 type: "preSaveDataValueFromIframe",
                 dataValue: preSaveDataValue,
             };
-            console.debug("<-|data-entry|", msg);
-            iframeWindow.parent.postMessage(msg, window.location.origin);
+            postToAncestors(msg);
         };
     }
 

@@ -16,6 +16,7 @@ import Project, {
     getOrgUnitDatesFromProject,
     getDatesFromOrgUnit,
     DataSetType,
+    dataSetTypes,
     Dashboards,
     Dashboard,
     getProjectFromOrgUnit,
@@ -37,6 +38,7 @@ import { DashboardSourceMetadata } from "./ProjectsListDashboard";
 import { promiseMap } from "../migrations/utils";
 import { ProjectDocument } from "./ProjectDocument";
 import { ProjectDocumentRepository } from "./ProjectDocumentRepository";
+import { DataSetCustomForm } from "../data/DataSetCustomForm";
 
 const expiryDaysInMonthActual = 10;
 
@@ -315,6 +317,7 @@ export default class ProjectDb {
             workflow: { id: config.dataApprovalWorkflows.project.id },
             ...this.getDataSetOpenAttributes("actual"),
         });
+
         const dataSetActual = _(dataSetActualMetadata.dataSets).getOrFail(0);
 
         const projectMetadata = this.getProjectMetadataForDashboard(orgUnit, dataSetActual);
@@ -395,7 +398,19 @@ export default class ProjectDb {
 
         await this.updateOrgUnit(response, orgUnit);
 
+        if (response && response.status === "OK") {
+            await this.saveCustomForms(savedProject);
+        }
+
         return { payload, response, project: savedProject };
+    }
+
+    private async saveCustomForms(savedProject: Project) {
+        const dataSets = savedProject.dataSets;
+        if (!dataSets) return;
+        const customForm = new DataSetCustomForm(this.api);
+        await customForm.saveCustomForm(dataSets.actual.id, savedProject, "actual");
+        await customForm.saveCustomForm(dataSets.target.id, savedProject, "target");
     }
 
     getProjectMetadataForDashboard(
@@ -471,7 +486,8 @@ export default class ProjectDb {
             const dataSetAttrs = { ...dbDataSet, ...attrs, id: dbDataSet.id };
             const res = await this.api.models.dataSets.put(dataSetAttrs).getData();
 
-            if (res.status !== "OK") throw new Error("Error saving data set");
+            if (res.errorReports && res.errorReports.length > 0)
+                throw new Error("Error saving data set");
         }
     }
 
@@ -588,7 +604,8 @@ export default class ProjectDb {
 
             const res = await api.models.dataSets.put(dataSetUpdated).getData();
 
-            if (res.status !== "OK") console.error("Error saving data set");
+            if (res.errorReports && res.errorReports.length > 0)
+                console.error("Error saving data set");
         }
     }
 
@@ -626,7 +643,7 @@ export default class ProjectDb {
         baseDataSet: PartialModel<D2DataSet> & Pick<D2DataSet, "code" | OpenProperties>
     ) {
         const { config, project } = this;
-        const dataSetId = getUid("dataSet", project.uid + baseDataSet.code);
+        const dataSetId = this.getDataSetId(project.uid, baseDataSet.code);
         const selectedDataElements = project.getSelectedDataElements();
 
         const dataSetElements = _.uniqBy(selectedDataElements, de => de.id).map(dataElement => ({
@@ -664,11 +681,25 @@ export default class ProjectDb {
             ...baseDataSet,
             sections: sections.map(section => ({ id: section.id, code: section.code })),
             dataSetElements,
-            code: `${orgUnit.id}_${baseDataSet.code}`,
-            ...projectSharing.getSharingAttributesForDataSets(),
+            code: getDataSetCode(orgUnit.id, baseDataSet.code),
+            sharing: projectSharing.getSharingAttributesForDataSets(),
         };
 
         return { dataSets: [dataSet], sections };
+    }
+
+    /* The data sets of a project are identified by a code built from its organisation unit, so they
+       can be fetched without depending on their metadata attributes, which cannot be used as a
+       filter path in the metadata API. */
+    static getDataSetCodes(orgUnitId: Id): string[] {
+        return dataSetTypes.map(dataSetType =>
+            getDataSetCode(orgUnitId, dataSetType.toUpperCase())
+        );
+    }
+
+    private getDataSetId(projectId: Id, dataSetCode: string) {
+        const dataSetId = getUid("dataSet", projectId + dataSetCode);
+        return dataSetId;
     }
 
     static getCodeInfo(code: string) {
@@ -1062,6 +1093,10 @@ function getOrgUnitId(orgUnit: { path: string }): string {
 
 type AttributeValue = { attribute: { id: Id }; value: string };
 
+export function getDataSetCode(orgUnitId: Id, dataSetCode: string): string {
+    return `${orgUnitId}_${dataSetCode}`;
+}
+
 export function getDashboardId<OrgUnit extends { attributeValues: AttributeValue[] }>(
     config: Config,
     orgUnit: OrgUnit
@@ -1246,10 +1281,8 @@ export const dataSetFields = {
     sections: { code: true, dataElements: { id: true } },
     openFuturePeriods: true,
     expiryDays: true,
-    publicAccess: true,
-    externalAccess: true,
-    userAccesses: { id: true, displayName: true, access: true },
-    userGroupAccesses: { id: true, displayName: true, access: true },
+    sharing: { public: true, external: true, users: true, userGroups: true },
+    access: { read: true, write: true, data: true },
 } as const;
 
 export type SaveOptions = { skipValidation?: boolean };

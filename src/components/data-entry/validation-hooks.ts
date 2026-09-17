@@ -21,7 +21,7 @@ export interface UseValidationResponse {
 }
 
 export function useValidation(hookOptions: {
-    iframeRef: React.RefObject<HTMLIFrameElement>;
+    iframe: HTMLIFrameElement | null;
     project: Project;
     dataSetType: DataSetType;
     period: Maybe<string>;
@@ -31,7 +31,7 @@ export function useValidation(hookOptions: {
     disableValidation: boolean;
 }): UseValidationResponse {
     const {
-        iframeRef,
+        iframe,
         project,
         dataSetType,
         period,
@@ -117,7 +117,7 @@ export function useValidation(hookOptions: {
 
     usePageExitConfirmation(showPromptFn, disableValidation);
 
-    useDhis2EntryEvents(iframeRef, onMessage, options, iframeKey);
+    useDhis2EntryEvents(iframe, onMessage, options, iframeKey);
 
     return { result: validationResult, clear: clearResult, validate: validate };
 }
