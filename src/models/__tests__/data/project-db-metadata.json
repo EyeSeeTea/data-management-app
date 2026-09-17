@@ -1432,25 +1432,27 @@
                     "y": 500
                 }
             ],
-            "public": "--------",
-            "external": false,
-            "users": {
-                "M5zQapPyTZI": {
-                    "id": "M5zQapPyTZI",
-                    "displayName": "admin admin",
-                    "access": "rw------"
-                }
-            },
-            "userGroups": {
-                "ywuI2WspUUG": {
-                    "id": "ywuI2WspUUG",
-                    "displayName": "System Admin",
-                    "access": "rw------"
+            "sharing": {
+                "public": "--------",
+                "external": false,
+                "users": {
+                    "M5zQapPyTZI": {
+                        "id": "M5zQapPyTZI",
+                        "displayName": "admin admin",
+                        "access": "rw------"
+                    }
                 },
-                "mKKNXzeIAJs": {
-                    "id": "mKKNXzeIAJs",
-                    "displayName": "Data Management Admin",
-                    "access": "rw------"
+                "userGroups": {
+                    "ywuI2WspUUG": {
+                        "id": "ywuI2WspUUG",
+                        "displayName": "System Admin",
+                        "access": "rw------"
+                    },
+                    "mKKNXzeIAJs": {
+                        "id": "mKKNXzeIAJs",
+                        "displayName": "Data Management Admin",
+                        "access": "rw------"
+                    }
                 }
             }
         },
