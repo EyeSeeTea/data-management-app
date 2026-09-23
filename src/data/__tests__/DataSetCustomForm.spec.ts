@@ -1,5 +1,6 @@
 import { getMockApi } from "../../types/d2-api";
 import { DataSetCustomForm } from "../DataSetCustomForm";
+import { getUid } from "../../utils/dhis2";
 
 const { api, mock } = getMockApi();
 
@@ -87,7 +88,30 @@ function cellHtml(options: {
     );
 }
 
+const project = { name: "MyProject", code: "12345en" };
+const customFormId = getUid("dataEntryForm", dataSetId);
+
+async function saveCustomForm(storedForm: object | null) {
+    mock.onGet("/metadata").replyOnce(200, { dataSets: [dataSet] });
+    mock.onGet(`/dataSets/${dataSetId}`).replyOnce(200, {
+        id: dataSetId,
+        dataEntryForm: storedForm,
+    });
+
+    const posted: object[] = [];
+    mock.onPost("/metadata").replyOnce(config => {
+        posted.push(JSON.parse(config.data));
+        return [200, { status: "OK" }];
+    });
+
+    const id = await new DataSetCustomForm(api).saveCustomForm(dataSetId, project, "target");
+    return { id, posted };
+}
+
 describe("DataSetCustomForm", () => {
+    /* A replyOnce handler that a test leaves unconsumed stays queued and answers the next one. */
+    beforeEach(() => mock.reset());
+
     describe("generate", () => {
         it("closes no tag with '/>', so DHIS2 returns the form without processing it", async () => {
             const html = await generateForm();
@@ -128,6 +152,41 @@ describe("DataSetCustomForm", () => {
             );
 
             expect(tabIndexes).toEqual(["1", "2", "3"]);
+        });
+    });
+
+    describe("saveCustomForm", () => {
+        it("posts nothing when the stored form already says the same", async () => {
+            const htmlCode = await generateForm();
+            const storedForm = {
+                id: customFormId,
+                name: `${project.name} [${project.code}] Target`,
+                htmlCode,
+            };
+
+            const { id, posted } = await saveCustomForm(storedForm);
+
+            expect(posted).toEqual([]);
+            expect(id).toEqual(customFormId);
+        });
+
+        it("posts the form when the stored one is outdated", async () => {
+            const storedForm = {
+                id: customFormId,
+                name: `${project.name} [${project.code}] Target`,
+                htmlCode: "<table>an older form</table>",
+            };
+
+            const { id, posted } = await saveCustomForm(storedForm);
+
+            expect(posted).toHaveLength(1);
+            expect(id).toEqual(customFormId);
+        });
+
+        it("posts the form when the data set has none", async () => {
+            const { posted } = await saveCustomForm(null);
+
+            expect(posted).toHaveLength(1);
         });
     });
 });

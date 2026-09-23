@@ -1,6 +1,7 @@
 import Project, { DataSetType } from "../models/Project";
 import { D2Api, Id } from "../types/d2-api";
 import { getUid } from "../utils/dhis2";
+import { Maybe } from "../types/utils";
 
 type CategoryOption = { id: Id; name: string };
 type Category = { id: Id; name: string; categoryOptions: CategoryOption[] };
@@ -19,6 +20,8 @@ type DataElement = {
 };
 type Section = { id: Id; name: string; dataElements: DataElement[] };
 type DataSet = { id: Id; name: string; sections: Section[] };
+
+type CustomForm = { id: Id; name: string; htmlCode: string };
 
 type Group = { categoryCombo: CategoryCombo; elements: DataElement[] };
 type GroupOptions = Readonly<{
@@ -43,37 +46,38 @@ export class DataSetCustomForm {
 
     async saveCustomForm(
         dataSetId: Id,
-        project: Project,
+        project: Pick<Project, "name" | "code">,
         dataSetType: DataSetType
     ): Promise<Id | undefined> {
-        const dataEntryForm = await this.generate(dataSetId);
-        if (!dataEntryForm) return undefined;
+        const htmlCode = await this.generate(dataSetId);
+        if (!htmlCode) return undefined;
 
-        const customFormId = getUid("dataEntryForm", dataSetId);
         const labelType = dataSetType === "actual" ? "Actual" : "Target";
+        const form: CustomForm = {
+            id: getUid("dataEntryForm", dataSetId),
+            /* DHIS2 requires the name of a data entry form to be unique, and two projects
+               may share the same name (only the code is validated as unique), so include the
+               project id, as the short name of the data set does. */
+            name: `${project.name} [${project.code}] ${labelType}`,
+            htmlCode: htmlCode,
+        };
 
         const dataSetMetadata = await this.api.models.dataSets
-            .getById(dataSetId, { fields: { $owner: true } })
+            .getById(dataSetId, {
+                fields: { $owner: true, dataEntryForm: { id: true, name: true, htmlCode: true } },
+            })
             .getData();
 
+        if (isStored(form, dataSetMetadata.dataEntryForm)) return form.id;
+
         const metadata = {
-            dataEntryForms: [
-                {
-                    id: customFormId,
-                    /* DHIS2 requires the name of a data entry form to be unique, and two projects
-                       may share the same name (only the code is validated as unique), so include the
-                       project id, as the short name of the data set does. */
-                    name: `${project.name} [${project.code}] ${labelType}`,
-                    style: "NORMAL" as const,
-                    htmlCode: dataEntryForm,
-                },
-            ],
-            dataSets: [{ ...dataSetMetadata, dataEntryForm: { id: customFormId } }],
+            dataEntryForms: [{ ...form, style: "NORMAL" as const }],
+            dataSets: [{ ...dataSetMetadata, dataEntryForm: { id: form.id } }],
         };
 
         await this.api.metadata.post(metadata).getData();
 
-        return customFormId;
+        return form.id;
     }
 
     private async fetchDataSet(id: Id): Promise<DataSet | undefined> {
@@ -387,6 +391,17 @@ export class DataSetCustomForm {
 })();
 `;
     }
+}
+
+/* The data entry page regenerates the form on every visit, and posting it rewrites the whole data
+   set, which bumps its lastUpdated and can undo a change someone else is making to its open
+   periods. Nothing is posted when the stored form already says the same. */
+function isStored(form: CustomForm, storedForm: Maybe<Partial<CustomForm>>): boolean {
+    return (
+        storedForm?.id === form.id &&
+        storedForm.name === form.name &&
+        storedForm.htmlCode === form.htmlCode
+    );
 }
 
 function percent(value: number): string {

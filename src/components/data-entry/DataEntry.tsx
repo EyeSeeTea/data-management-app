@@ -346,6 +346,7 @@ const DataEntry = (props: DataEntryProps) => {
                 src={iFrameSrc}
                 style={isDataSetOpen || showControls ? styles.iframe : styles.iframeHidden}
                 title={i18n.t("Data Entry")}
+                sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
             ></iframe>
         </React.Fragment>
     );
