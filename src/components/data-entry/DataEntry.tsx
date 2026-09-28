@@ -10,6 +10,9 @@ import { ValidationDialog } from "./ValidationDialog";
 import { useValidation } from "./validation-hooks";
 import { DataSetOpenInfo } from "../../models/ProjectDataSet";
 import { navigateTop, useHeaderLogoInterceptor } from "../../utils/app-shell";
+import { useFillViewportHeight } from "../../utils/use-fill-viewport-height";
+import { useEvalInIframe } from "./iframe-eval";
+import { setupAutoOpenDetailsPanel } from "./details-panel";
 
 const showControls = false;
 
@@ -27,19 +30,50 @@ interface DataEntryProps {
 
 export type ValidateFn = { execute: () => Promise<boolean> };
 
+interface LegacyCustomFormWindow extends Window {
+    saveVal?: unknown;
+    dhis2?: { shim?: unknown };
+}
+
+const pluginPollMs = 250;
+
 /* For the footer we need to hide ONLY the last div because it contains the buttons: Run Validation, Mark as Completed.
    The other div contain the View Details button of the highlighted input field where user can enter a comment, view history values, etc
+   The title of the details panel is also a header (inside the aside) and contains its close button, so it must stay visible.
  */
 const hideChromeCss = [
-    "header { display: none !important; }",
+    "header:not(aside header) { display: none !important; }",
     "footer > div > div:last-child { display: none !important; }",
 ].join("\n");
 
-function injectHideStyles(doc: Document) {
-    if (doc.querySelector("style[data-dm-hide]")) return;
+/* Height of the bar with the View Details button (padding, small button and border). It is only
+   rendered once a field is highlighted, so its space is reserved: otherwise the form would be pushed
+   down on the first click. */
+const dataItemBarHeight = 37;
+
+/* The form scrolls inside <main id="data-workspace">, so moving the footer (the bar with the View
+   Details button) above it in the grid keeps the bar in sight while the user goes through the form.
+   Its shadow is turned down to match its new position. */
+const dataItemBarOnTopCss = [
+    `div:has(> main#data-workspace) {
+        grid-template-areas: "footer" "workspace" !important;
+        grid-template-rows: auto minmax(0, 1fr) !important;
+    }`,
+    `div:has(> main#data-workspace) > footer {
+        min-block-size: ${dataItemBarHeight}px;
+        background-color: #ffffff;
+        box-shadow: 0px 4px 6px -1px rgba(33, 41, 52, 0.1), 0px 2px 4px -1px rgba(33, 41, 52, 0.06);
+    }`,
+    "div:has(> main#data-workspace) > footer > div { box-shadow: none !important; }",
+].join("\n");
+
+const dataEntryCss = [hideChromeCss, dataItemBarOnTopCss].join("\n");
+
+function injectStyles(doc: Document) {
+    if (doc.querySelector("style[data-dm-styles]")) return;
     const style = doc.createElement("style");
-    style.setAttribute("data-dm-hide", "true");
-    style.textContent = hideChromeCss;
+    style.setAttribute("data-dm-styles", "true");
+    style.textContent = dataEntryCss;
     doc.head.appendChild(style);
 }
 
@@ -50,11 +84,11 @@ function setEntryStyling(iframe: HTMLIFrameElement) {
         const outerDoc = iframe.contentWindow?.document;
         if (!outerDoc) return;
 
-        injectHideStyles(outerDoc);
+        injectStyles(outerDoc);
 
         outerDoc.querySelectorAll<HTMLIFrameElement>("iframe").forEach(innerIframe => {
             if (innerIframe.contentDocument) {
-                injectHideStyles(innerIframe.contentDocument);
+                injectStyles(innerIframe.contentDocument);
             }
         });
     };
@@ -74,6 +108,7 @@ const DataEntry = (props: DataEntryProps) => {
     const [disableValidation, setDisableValidation] = React.useState(false);
     const { periodIds, currentPeriodId } = React.useMemo(() => getPeriodsData(dataSet), [dataSet]);
     const iframeRef = React.useRef<HTMLIFrameElement>(null);
+    const iframeHeight = useFillViewportHeight(iframeRef, minIframeHeight);
     const [pluginIframe, setPluginIframe] = React.useState<HTMLIFrameElement | null>(null);
     const categoryId = config.categories.targetActual.id;
 
@@ -83,14 +118,26 @@ const DataEntry = (props: DataEntryProps) => {
 
         const observers: MutationObserver[] = [];
         const loadListeners: Array<{ el: HTMLIFrameElement; fn: () => void }> = [];
+        const pollIntervalIds: number[] = [];
         const tracked = new WeakSet<HTMLIFrameElement>();
+        const polled = new WeakSet<HTMLIFrameElement>();
         let cancelled = false;
         let found: HTMLIFrameElement | null = null;
 
-        const isLegacyCustomFormPlugin = (ifr: HTMLIFrameElement) => {
+        /* The code evaluated in the plugin needs the scripts of the legacy form (jQuery, saveVal) and
+           its shim, which the plugin loads a while after rendering the form, without any change in the
+           DOM to observe. */
+        const isLegacyCustomFormReady = (ifr: HTMLIFrameElement) => {
             const doc = ifr.contentDocument;
-            if (!doc) return false;
-            return Boolean(doc.querySelector(".plugin-legacy-custom-forms-wrapper"));
+            const win = ifr.contentWindow as LegacyCustomFormWindow | null;
+            if (!doc || !win) return false;
+
+            return (
+                Boolean(doc.querySelector(".plugin-legacy-custom-forms-wrapper")) &&
+                typeof win.jQuery === "function" &&
+                typeof win.saveVal === "function" &&
+                Boolean(win.dhis2?.shim)
+            );
         };
 
         const setFound = (ifr: HTMLIFrameElement) => {
@@ -103,7 +150,21 @@ const DataEntry = (props: DataEntryProps) => {
         const checkPluginCandidate = (ifr: HTMLIFrameElement) => {
             if (found || cancelled) return;
             if (!ifr.src.includes("plugin.html")) return;
-            if (isLegacyCustomFormPlugin(ifr)) setFound(ifr);
+            if (isLegacyCustomFormReady(ifr)) setFound(ifr);
+        };
+
+        const waitForPlugin = (ifr: HTMLIFrameElement) => {
+            if (!ifr.src.includes("plugin.html") || polled.has(ifr)) return;
+            polled.add(ifr);
+
+            const intervalId = window.setInterval(() => {
+                if (found || cancelled) {
+                    window.clearInterval(intervalId);
+                } else {
+                    checkPluginCandidate(ifr);
+                }
+            }, pluginPollMs);
+            pollIntervalIds.push(intervalId);
         };
 
         const trackIframe = (ifr: HTMLIFrameElement) => {
@@ -112,6 +173,7 @@ const DataEntry = (props: DataEntryProps) => {
 
             const onLoad = () => {
                 checkPluginCandidate(ifr);
+                waitForPlugin(ifr);
 
                 if (ifr.contentDocument) watch(ifr.contentDocument);
             };
@@ -153,6 +215,7 @@ const DataEntry = (props: DataEntryProps) => {
         return () => {
             cancelled = true;
             observers.forEach(o => o.disconnect());
+            pollIntervalIds.forEach(intervalId => window.clearInterval(intervalId));
             loadListeners.forEach(({ el, fn }) => el.removeEventListener("load", fn));
             outer.removeEventListener("load", start);
             setPluginIframe(null);
@@ -247,6 +310,8 @@ const DataEntry = (props: DataEntryProps) => {
         isValidationEnabled: isValidationEnabled,
         disableValidation: disableValidation,
     });
+
+    useEvalInIframe(pluginIframe, setupAutoOpenDetailsPanel, iframeKey, undefined);
 
     useEffect(() => {
         const iframe = iframeRef.current;
@@ -344,7 +409,11 @@ const DataEntry = (props: DataEntryProps) => {
                 height={showControls ? 1000 : undefined}
                 ref={iframeRef}
                 src={iFrameSrc}
-                style={isDataSetOpen || showControls ? styles.iframe : styles.iframeHidden}
+                style={
+                    isDataSetOpen || showControls
+                        ? { ...styles.iframe, height: iframeHeight }
+                        : styles.iframeHidden
+                }
                 title={i18n.t("Data Entry")}
                 sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
             ></iframe>
@@ -353,7 +422,7 @@ const DataEntry = (props: DataEntryProps) => {
 };
 
 const styles = {
-    iframe: { width: "100%", border: 0, overflow: "hidden", minHeight: "100vh" },
+    iframe: { width: "100%", border: 0, overflow: "hidden", display: "block" },
     iframeHidden: { maxHeight: 0, border: 0 },
     backgroundIframe: { backgroundColor: "white" },
     selector: { padding: "35px  10px 10px 5px", backgroundColor: "white" },
@@ -362,5 +431,9 @@ const styles = {
 };
 
 const validationOptions = { interceptSave: true, getOnSaveEvent: true };
+
+/* The iframe fills the window below the page header, so the page does not scroll and the bar with the
+   View Details button stays on screen. Below this height it would be too small to enter data. */
+const minIframeHeight = 480;
 
 export default React.memo(DataEntry);
