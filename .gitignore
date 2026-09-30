@@ -50,4 +50,3 @@ src/dev
 .eslintcache
 /server
 deploy/auth.sh
-.claude

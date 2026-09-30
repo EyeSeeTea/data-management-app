@@ -8,7 +8,7 @@ interface PluginWindow extends Window {
    way Ctrl/Cmd+Enter does (keyPress in the plugin's form.js). If the user closes the panel, it is
    opened again on the next field focused. */
 export function setupAutoOpenDetailsPanel(): void {
-    const pluginWindow = window as unknown as PluginWindow;
+    const pluginWindow = window as PluginWindow;
     if (pluginWindow.dmAutoOpenDetailsPanelInit) return;
 
     const entryFieldSelector =
@@ -22,10 +22,7 @@ export function setupAutoOpenDetailsPanel(): void {
         /* The focus handler of the plugin (valueFocus) sends the highlighted field to the Data Entry
            app. It must get there before the panel opens: the panel closes itself when no field is
            highlighted. */
-        window.setTimeout(() => {
-            const showDetailsBar = pluginWindow.dhis2?.shim?.showDetailsBar;
-            if (showDetailsBar) showDetailsBar();
-        }, 0);
+        window.setTimeout(() => pluginWindow.dhis2?.shim?.showDetailsBar?.(), 0);
     });
 
     pluginWindow.dmAutoOpenDetailsPanelInit = true;

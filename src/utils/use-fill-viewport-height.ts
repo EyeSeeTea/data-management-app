@@ -59,13 +59,12 @@ export function useFillViewportHeight(
         /* The content above the element changes after the first render (i.e. selectors shown once
            loaded). Setting the height resizes the body again, but the next measure returns the same
            height, as the top of the element does not depend on it. */
-        const observer =
-            typeof ResizeObserver === "undefined" ? undefined : new ResizeObserver(measure);
-        observer?.observe(document.body);
+        const observer = new ResizeObserver(measure);
+        observer.observe(document.body);
 
         return () => {
             window.removeEventListener("resize", measure);
-            observer?.disconnect();
+            observer.disconnect();
         };
     }, [ref, minHeight]);
 

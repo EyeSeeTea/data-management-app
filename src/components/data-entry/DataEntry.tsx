@@ -37,6 +37,10 @@ interface LegacyCustomFormWindow extends Window {
 
 const pluginPollMs = 250;
 
+/* The iframe fills the window below the page header, so the page does not scroll and the bar with the
+   View Details button stays on screen. Below this height it would be too small to enter data. */
+const minIframeHeight = 480;
+
 /* For the footer we need to hide ONLY the last div because it contains the buttons: Run Validation, Mark as Completed.
    The other div contain the View Details button of the highlighted input field where user can enter a comment, view history values, etc
    The title of the details panel is also a header (inside the aside) and contains its close button, so it must stay visible.
@@ -431,9 +435,5 @@ const styles = {
 };
 
 const validationOptions = { interceptSave: true, getOnSaveEvent: true };
-
-/* The iframe fills the window below the page header, so the page does not scroll and the bar with the
-   View Details button stays on screen. Below this height it would be too small to enter data. */
-const minIframeHeight = 480;
 
 export default React.memo(DataEntry);
