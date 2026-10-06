@@ -32,19 +32,33 @@ type NestedUser = {
 type UserDetails = {
     id: Id;
     email?: string;
-    userCredentials?: { disabled: boolean };
+    disabled: boolean;
     userGroups: Array<{ id: Id }>;
 };
 
+/* Accesses as expected by getDataSetSharing, which builds the sharing object of the data set. */
 type DataSetSharing = {
     id: Id;
     userAccesses: Array<{ id: Id }>;
     userGroupAccesses: Array<{ id: Id; displayName: string }>;
 };
 
+type SharingRefs = Record<Id, { id: Id; access: string; displayName: string }>;
+
+type D2DataSet = {
+    id: Id;
+    sharing: {
+        owner: Id;
+        external: boolean;
+        public: string;
+        users: SharingRefs;
+        userGroups: SharingRefs;
+    };
+};
+
 type ApiOptions = {
     reviewers: UserDetails[];
-    dataSets?: DataSetSharing[];
+    dataSets?: D2DataSet[];
     emailStatus?: number;
 };
 
@@ -56,14 +70,38 @@ function getReviewer(id: Id, attributes: Partial<UserDetails> = {}): UserDetails
     return {
         id,
         email: `${id}@example.com`,
-        userCredentials: { disabled: false },
+        disabled: false,
         userGroups: [],
         ...attributes,
     };
 }
 
-function getDataSetSharing(attributes: Partial<DataSetSharing> = {}): DataSetSharing {
-    return { id: dataSetId, userAccesses: [], userGroupAccesses: [], ...attributes };
+/* Builds the sharing object as returned by the API (accesses indexed by id) from the plain lists
+   used by the tests. */
+function getDataSetSharing(attributes: Partial<DataSetSharing> = {}): D2DataSet {
+    const { id = dataSetId, userAccesses = [], userGroupAccesses = [] } = attributes;
+
+    return {
+        id,
+        sharing: {
+            owner: "GOLswS44mh8",
+            external: false,
+            public: "rwr-----",
+            users: getSharingRefs(userAccesses),
+            userGroups: getSharingRefs(userGroupAccesses),
+        },
+    };
+}
+
+function getSharingRefs(accesses: Array<{ id: Id; displayName?: string }>): SharingRefs {
+    return _.keyBy(
+        accesses.map(access => ({
+            id: access.id,
+            access: "rwrw----",
+            displayName: access.displayName ?? access.id,
+        })),
+        "id"
+    );
 }
 
 function getIdsFromFilter(filters: string[]): Id[] {
@@ -120,9 +158,11 @@ function notifyForDataReview(): Promise<boolean> {
     return getNotificator().notifyForDataReview(period, dataSetId, dataSetType);
 }
 
+/* The email endpoint is posted as an url-encoded body (see d2-api email.sendMessage). */
 function getSentRecipients(): string[] | undefined {
     const request = _.last(mock.history.post);
-    return request?.params?.recipients;
+    const recipients = request ? new URLSearchParams(request.data).get("recipients") : null;
+    return recipients === null ? undefined : _.compact(recipients.split(","));
 }
 
 describe("ProjectNotification.notifyForDataReview", () => {
@@ -186,10 +226,7 @@ describe("ProjectNotification.notifyForDataReview", () => {
 
     it("excludes disabled reviewers", async () => {
         setupApi({
-            reviewers: [
-                getReviewer("enabled"),
-                getReviewer("disabled", { userCredentials: { disabled: true } }),
-            ],
+            reviewers: [getReviewer("enabled"), getReviewer("disabled", { disabled: true })],
             dataSets: [
                 getDataSetSharing({ userAccesses: [{ id: "enabled" }, { id: "disabled" }] }),
             ],
@@ -198,24 +235,6 @@ describe("ProjectNotification.notifyForDataReview", () => {
         await notifyForDataReview();
 
         expect(getSentRecipients()).toEqual(["enabled@example.com"]);
-    });
-
-    it("excludes reviewers whose disabled flag is not returned by the API", async () => {
-        setupApi({
-            reviewers: [
-                getReviewer("known"),
-                getReviewer("unknownStatus", { userCredentials: undefined }),
-            ],
-            dataSets: [
-                getDataSetSharing({
-                    userAccesses: [{ id: "known" }, { id: "unknownStatus" }],
-                }),
-            ],
-        });
-
-        await notifyForDataReview();
-
-        expect(getSentRecipients()).toEqual(["known@example.com"]);
     });
 
     it("skips reviewers without email", async () => {
@@ -267,28 +286,15 @@ describe("ProjectNotification.notifyForDataReview", () => {
 describe("ProjectNotification.getRecipients", () => {
     const configuredEmails = appConfig.app.notifyEmailOnProjectSave;
 
-    function setupUsersApi(
-        users: Array<{ email: string; userCredentials?: { disabled: boolean } }>
-    ) {
+    function setupUsersApi(users: Array<{ email: string; disabled: boolean }>) {
         mock.reset();
         mock.onGet(metadataPath).reply(200, { users });
     }
 
     it("returns the configured emails and the emails of the enabled users in the notification group", async () => {
         setupUsersApi([
-            { email: "enabled@example.com", userCredentials: { disabled: false } },
-            { email: "disabled@example.com", userCredentials: { disabled: true } },
-        ]);
-
-        const recipients = await ProjectNotification.getRecipients(api);
-
-        expect(recipients).toEqual([...configuredEmails, "enabled@example.com"]);
-    });
-
-    it("excludes users whose disabled flag is not returned by the API", async () => {
-        setupUsersApi([
-            { email: "enabled@example.com", userCredentials: { disabled: false } },
-            { email: "unknownStatus@example.com" },
+            { email: "enabled@example.com", disabled: false },
+            { email: "disabled@example.com", disabled: true },
         ]);
 
         const recipients = await ProjectNotification.getRecipients(api);

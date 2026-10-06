@@ -30,6 +30,7 @@ import i18n from "../../locales";
 import { getCompositionRoot } from "../../CompositionRoot";
 import ExitWizardButton from "../wizard/ExitWizardButton";
 import { Maybe } from "../../types/utils";
+import { navigateTop, useHeaderLogoInterceptor } from "../../utils/app-shell";
 
 const settingsQuery = { userSettings: { resource: "/userSettings" } };
 
@@ -102,16 +103,18 @@ const App: React.FC<AppProps> = props => {
         }
     }, [api, d2, data, isDev, dhis2Url, migrations]);
 
-    const headerClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        if (disableLogoNav?.state) {
-            event.preventDefault();
-            updateExitDialog(true);
-        }
-    };
+    const openExitDialog = React.useCallback(() => updateExitDialog(true), [updateExitDialog]);
+
+    useHeaderLogoInterceptor({
+        isActive: Boolean(disableLogoNav?.state),
+        onIntercept: openExitDialog,
+    });
 
     if (loadError) {
         return <div>Cannot load app: {loadError}</div>;
     }
+
+    const shouldRenderHeaderBar = window.self === window.top;
 
     if (error) {
         return (
@@ -142,14 +145,12 @@ const App: React.FC<AppProps> = props => {
                             <SnackbarProvider>
                                 <ExitWizardButton
                                     isOpen={exitDialog}
-                                    onConfirm={() => (window.location.href = api.baseUrl)}
+                                    onConfirm={() => navigateTop(api.baseUrl)}
                                     onCancel={() => updateExitDialog(false)}
                                     title={disableLogoNav?.title}
                                     description={disableLogoNav?.description}
                                 />
-                                <div onClick={headerClick}>
-                                    <HeaderBar appName={"Data Management"} />
-                                </div>
+                                {shouldRenderHeaderBar && <HeaderBar appName={"Data Management"} />}
 
                                 <div id="app" className="content">
                                     <ApiContext.Provider value={appContext}>

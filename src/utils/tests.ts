@@ -1,16 +1,17 @@
 import fs from "fs";
 import tmp from "tmp";
 import _ from "lodash";
-import MockAdapter from "axios-mock-adapter";
-import { Method } from "axios";
+import { getMockApi } from "../types/d2-api";
 
-interface MockAdapterWithHandlers extends MockAdapter {
-    handlers: Record<Method, Handler[]>;
-}
+type MockAdapter = ReturnType<typeof getMockApi>["mock"];
 
 type Url = string;
 type Data = object;
 type Handler = [Url, Data];
+
+interface MockAdapterWithHandlers extends MockAdapter {
+    handlers: Record<string, Handler[]>;
+}
 
 export function logUnknownRequest(mockAdapter: MockAdapter) {
     const mock = mockAdapter as MockAdapterWithHandlers;

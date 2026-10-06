@@ -33,7 +33,7 @@ import {
     Condition,
     DashboardSourceMetadata,
 } from "./ProjectsListDashboard";
-import { D2Sharing, getD2EntitiesAccess, fullMetadataAccess } from "./Sharing";
+import { D2Sharing, getD2Access } from "./Sharing";
 
 type D2VisualizationPayload = PartialPersistedModel<D2Visualization>;
 
@@ -125,7 +125,7 @@ export default class CountryDashboard {
             id: getUid("country-dashboard", country.id),
             name: country.name,
             dashboardItems: positionItems(items, positionItemsOptions),
-            ...this.getSharing(),
+            sharing: this.getSharing(),
         };
 
         const countryUpdated = addAttributeValueToObj(d2Country, {
@@ -241,14 +241,9 @@ export default class CountryDashboard {
         return d2Table ? { ...d2Table, ...chart.extra } : null;
     }
 
-    getSharing(): D2Sharing {
-        const { userAccesses, userGroupAccesses } = this.country.projectsListDashboard.sharing;
-
+    getSharing(): Partial<D2Sharing> {
         return {
-            publicAccess: "--------",
-            externalAccess: false,
-            userAccesses: getD2EntitiesAccess(userAccesses, fullMetadataAccess),
-            userGroupAccesses: getD2EntitiesAccess(userGroupAccesses, fullMetadataAccess),
+            public: getD2Access({ meta: { read: true, write: true } }),
         };
     }
 }
