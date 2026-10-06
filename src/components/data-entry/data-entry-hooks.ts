@@ -1,4 +1,5 @@
 import React from "react";
+import { useEvalInIframe } from "./iframe-eval";
 
 export interface PreSaveDataValue {
     dataElementId: string;
@@ -126,21 +127,7 @@ export function useDhis2EntryEvents(
         };
     }, [iframe, onMessage, options, onMessageFromIframe]);
 
-    React.useEffect(() => {
-        const iwindow = getIframeWindow(iframe);
-        if (!iwindow) return;
-
-        const inject = () => {
-            const init = setupDataEntryInterceptors.toString();
-            iwindow.eval(`(${init})(${JSON.stringify(options)});`);
-        };
-
-        if (iwindow.document?.readyState === "complete") {
-            inject();
-        } else {
-            iwindow.addEventListener("load", inject, { once: true });
-        }
-    }, [iframe, options, iframeKey]);
+    useEvalInIframe(iframe, setupDataEntryInterceptors, iframeKey, options);
 }
 
 function getIframeWindow(iframe: HTMLIFrameElement | null) {
