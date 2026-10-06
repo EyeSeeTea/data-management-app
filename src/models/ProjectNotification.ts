@@ -40,13 +40,15 @@ export class ProjectNotification {
         const { users: usersInGroup } = await api.metadata
             .get({
                 users: {
-                    fields: { email: true, userCredentials: { disabled: true } },
+                    fields: { email: true, disabled: true },
                     filter: { "userGroups.code": { eq: groupCode } },
                 },
             })
             .getData();
 
-        const users = _(usersInGroup).reject(isUserDisabled).value();
+        const users = _(usersInGroup)
+            .reject(user => user.disabled)
+            .value();
 
         return _(appConfig.app.notifyEmailOnProjectSave)
             .concat(users.map(user => user.email))
@@ -77,11 +79,7 @@ export class ProjectNotification {
                 dataSets: {
                     fields: {
                         id: true,
-                        userGroupAccesses: {
-                            id: true,
-                            displayName: true,
-                        },
-                        userAccesses: { id: true },
+                        sharing: { public: true, external: true, users: true, userGroups: true },
                     },
                     filter: { id: { in: [id] } },
                 },
@@ -113,9 +111,12 @@ export class ProjectNotification {
             .value();
         const reviewers = await this.getDataReviewers(reviewerIds);
 
-        const sharedUserIds = new Set(dataSet.userAccesses.map(userAccess => userAccess.id));
+        const sharedUserIds = new Set(Object.keys(dataSet.sharing.users));
+
+        const dataSetsUserGroups = Object.values(dataSet.sharing.userGroups);
+
         const sharedCountryAdminGroupIds = new Set(
-            dataSet.userGroupAccesses
+            dataSetsUserGroups
                 .filter(userGroupAccess =>
                     userGroupAccess.displayName.includes(countryAdminGroupName)
                 )
@@ -179,7 +180,7 @@ Go to approval screen: {{- projectUrl}}`,
                     fields: {
                         id: true,
                         email: true,
-                        userCredentials: { disabled: true },
+                        disabled: true,
                         userGroups: { id: true },
                     },
                     filter: { id: { in: userIds } },
@@ -190,7 +191,7 @@ Go to approval screen: {{- projectUrl}}`,
         return users.map(user => ({
             id: user.id,
             email: user.email,
-            isDisabled: isUserDisabled(user),
+            isDisabled: user.disabled,
             userGroupIds: user.userGroups.map(userGroup => userGroup.id),
         }));
     }
@@ -320,10 +321,6 @@ The reason provided by the user was:
             return false;
         }
     }
-}
-
-function isUserDisabled(user: { userCredentials?: { disabled?: boolean } }): boolean {
-    return user.userCredentials?.disabled ?? true;
 }
 
 function getProjectUrl(project: Project) {

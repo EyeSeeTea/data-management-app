@@ -60,10 +60,7 @@ const query = {
         id: true,
         code: true,
         dataInputPeriods: { period: { id: true } },
-        publicAccess: true,
-        externalAccess: true,
-        userAccesses: { id: true, access: true, displayName: true },
-        userGroupAccesses: { id: true, access: true, displayName: true },
+        sharing: { public: true, external: true, users: true, userGroups: true },
         dataSetElements: {
             dataElement: {
                 id: true,
@@ -189,13 +186,14 @@ async function getMetadata(api: D2Api, condition: Condition): Promise<DashboardS
     return {
         orgUnits,
         dataSets: dataSets.map(d2DataSet => {
+            // TODO: Further research on "ghosts users"
+            // there're some references to non-existing users in some dataSets
+            // sharing.users may contain ids of users that don't exist but without displayName.
+            // As a temporal fix we're filtering out those users.
+            const filteredUsers = _.pickBy(d2DataSet.sharing.users, user => user.displayName);
             return {
                 ...d2DataSet,
-                // TODO: Further research on "ghosts users"
-                // there're some references to non-existing users in some dataSets
-                // userAccesses is returning ids of users that don't exist but without displayName.
-                // As a temporal fix we're filtering out those users.
-                userAccesses: d2DataSet.userAccesses.filter(userAccess => userAccess.displayName),
+                sharing: { ...d2DataSet.sharing, users: filteredUsers },
             };
         }),
     };

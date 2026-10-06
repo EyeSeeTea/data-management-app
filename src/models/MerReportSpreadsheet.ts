@@ -1,4 +1,4 @@
-import ExcelJS, { CellValue, Font, Alignment, Worksheet, Workbook, Column } from "exceljs";
+import ExcelJS, { CellValue, Font, Alignment, Worksheet, Workbook, Column, Borders } from "exceljs";
 import _ from "lodash";
 import wrap from "word-wrap";
 import "../utils/lodash-mixins";
@@ -19,6 +19,7 @@ interface ValueBase {
     height?: number;
     colspan?: number;
     numFmt?: string;
+    bordered?: boolean;
 }
 
 interface NumberValue extends ValueBase {
@@ -42,6 +43,13 @@ const defaultFont: Partial<Font> = {
 };
 
 const rowHeightPerLine = 16 * 1.5;
+
+const thinBorder: Partial<Borders> = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+};
 
 class MerReportSpreadsheet {
     constructor(public merReport: MerReport) {}
@@ -79,38 +87,31 @@ class MerReportSpreadsheet {
         const now = moment();
 
         const rows = [
-            [
-                text(title, {
-                    colspan: 6,
-                    font: { bold: true, size: 13 },
-                    alignment: { horizontal: "center" },
-                }),
-            ],
-            [text(date.format("MMMM YYYY"), { colspan: 6 })],
-            [text(i18n.t("Country Director") + ": " + countryDirector, { colspan: 6 })],
-            [text(i18n.t("Prepared by") + ": " + config.currentUser.displayName, { colspan: 6 })],
-            [text(now.format("LL"), { colspan: 6 })],
+            [centered(title, { font: { bold: true, size: 13 } })],
+            [centered(date.format("MMMM YYYY"))],
+            [centered(i18n.t("Country Director") + ": " + countryDirector)],
+            [centered(i18n.t("Prepared by") + ": " + config.currentUser.displayName)],
+            [centered(now.format("LL"))],
             [],
             [bold(i18n.t("Executive Summary"), { colspan: 6 })],
             ...merReport
                 .getExecutiveSummariesForDownload()
-                .map(({ sector, value }) => [
-                    text(sector.displayName),
-                    text(value, { colspan: 5 }),
-                ]),
+                .map(({ sector, value }) =>
+                    bordered([text(sector.displayName), text(value, { colspan: 5 })])
+                ),
             [],
             [bold(i18n.t("Additional comments"), { colspan: 6 })],
-            [text(merReport.data.additionalComments, { colspan: 6 })],
+            bordered([text(merReport.data.additionalComments, { colspan: 6 })]),
             [],
             [bold(i18n.t("Ministry Summary"), { colspan: 6 })],
-            [text(merReport.data.ministrySummary, { colspan: 6 })],
+            bordered([text(merReport.data.ministrySummary, { colspan: 6 })]),
             [],
             [bold(i18n.t("Staff Summary"), { colspan: 6 })],
             [],
-            ...insertColumns(getStaffSummary(merReport), 1),
+            ...insertColumns(getStaffSummary(merReport).map(bordered), 1),
             [],
             [bold(i18n.t("Projected Activities for the Next Month"), { colspan: 6 })],
-            [text(projectedActivitiesNextMonth, { colspan: 6 })],
+            bordered([text(projectedActivitiesNextMonth, { colspan: 6 })]),
             [],
         ];
 
@@ -287,13 +288,19 @@ function applyStyles(sheet: Worksheet, rows: Row[], options: { hasColumns: boole
             const iRow = rowIndex + rowOffset;
             const sheetCell = sheet.getCell(iRow, columnIndex + 1);
 
+            const left = columnIndex + 1;
+            const right = left + (cell.colspan || 1) - 1;
+
             if (cell.colspan) {
-                const left = columnIndex + 1;
-                sheet.mergeCells({
-                    top: iRow,
-                    left,
-                    bottom: iRow,
-                    right: left + cell.colspan - 1,
+                sheet.mergeCells({ top: iRow, left, bottom: iRow, right });
+            }
+
+            /* Excel only draws the outline of a merged range when every cell of it carries the
+               border, so it is set on the whole span and not just on the cell that holds the
+               value. */
+            if (cell.bordered) {
+                _.range(left, right + 1).forEach(column => {
+                    sheet.getCell(iRow, column).border = thinBorder;
                 });
             }
 
@@ -414,6 +421,15 @@ function text(s: string, options: Options = {}): Value {
     const defaultOptions = { alignment: { wrapText: true } };
     const fullOptions = _.merge({}, defaultOptions, options);
     return { type: "text", value: toExcelString(s), ...fullOptions };
+}
+
+/* The example the client approved draws every block of content as a table. */
+function bordered(row: Row): Row {
+    return row.map(value => ({ ...value, bordered: true }));
+}
+
+function centered(s: string, options: Options = {}): Value {
+    return text(s, { colspan: 6, alignment: { horizontal: "center" }, ...options });
 }
 
 function bold(s: string, options: Options = {}): Value {

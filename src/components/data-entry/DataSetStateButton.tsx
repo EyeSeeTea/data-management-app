@@ -96,7 +96,7 @@ const DataSetStateButton: React.FunctionComponent<DataSetStateButtonProps> = pro
                     snackbar.success(i18n.t("Values applied to future months"));
                     notifyOnChange();
                 })
-                .catch(snackbar.error)
+                .catch(showErrorAndSetInactive)
                 .finally(() => {
                     loading.hide();
                 });
