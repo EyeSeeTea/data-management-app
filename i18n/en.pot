@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-05-22T20:15:03.101Z\n"
-"PO-Revision-Date: 2026-05-22T20:15:03.101Z\n"
+"POT-Creation-Date: 2026-09-16T21:54:12.116Z\n"
+"PO-Revision-Date: 2026-09-16T21:54:12.116Z\n"
 
 msgid "Validating Project"
 msgstr ""
@@ -739,6 +739,11 @@ msgstr ""
 msgid "Benefits Per Person"
 msgstr ""
 
+msgid "{{count}} data values could not be saved"
+msgid_plural "{{count}} data values could not be saved"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid ""
 "There are data values associated, the delete operation cannot be completed. "
 "Contact the administrators."
@@ -975,6 +980,18 @@ msgid "Projects with global validations reported ({{projectsCount}}): {{-project
 msgstr ""
 
 msgid ""
+"Paired indicator missing values: benefit indicator {{-benefitName}} has "
+"values but its paired people indicator {{-peopleName}} is empty. Both must "
+"be filled before leaving the page."
+msgstr ""
+
+msgid ""
+"Paired indicator missing values: people indicator {{-peopleName}} has "
+"values but its paired benefit indicator {{-benefitName}} is empty. Both "
+"must be filled before leaving the page."
+msgstr ""
+
+msgid ""
 "Returning value ({{returningFormula}}) is greater than the sum of New "
 "values for past periods: {{pastFormula}}"
 msgstr ""
@@ -1098,6 +1115,9 @@ msgid "List of users"
 msgstr ""
 
 msgid "Message"
+msgstr ""
+
+msgid "Error generating custom form"
 msgstr ""
 
 msgid "Set Target Values for Project"
