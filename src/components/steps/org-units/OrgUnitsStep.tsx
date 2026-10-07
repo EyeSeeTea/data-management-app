@@ -5,6 +5,7 @@ import { Title, getValuesFromSelection } from "../utils/common";
 import { MultiSelector } from "@eyeseetea/d2-ui-components";
 import { getProjectFieldName } from "../../../utils/form";
 import { useAppContext } from "../../../contexts/api-context";
+import { baseConfig } from "../../../models/Config";
 
 interface OrganisationUnit {
     id: string;
@@ -75,6 +76,6 @@ const styles = {
     locations: { paddingBottom: 10 },
 };
 
-const selectableLevels = [2];
+const selectableLevels = [baseConfig.orgUnits.levelForCountries];
 
 export default React.memo(OrgUnitsStep);

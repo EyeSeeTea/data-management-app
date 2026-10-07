@@ -30,6 +30,7 @@ import { useAppHistory } from "../../utils/use-app-history";
 import { ErrorMessage } from "./ErrorMessage";
 import { useProjectStore } from "../../components/app/App";
 import { AnalyticsInfo } from "../../domain/entities/AnalyticsInfo";
+import { baseConfig } from "../../models/Config";
 
 type ProceedWarning = { type: "hidden" } | { type: "visible"; action: () => void };
 
@@ -269,7 +270,7 @@ function getTranslations() {
     };
 }
 
-const selectableLevels = [2];
+const selectableLevels = [baseConfig.orgUnits.levelForCountries];
 
 const useStyles = makeStyles({
     buttonsWrapper: {
